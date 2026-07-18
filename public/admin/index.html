@@ -1,1 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jonathan Runs — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--orange:#ff5c00;--bg:#0e0e0e;--card:#1a1a1a;--border:#2e2e2e;--text:#f5f0eb;--muted:#888;--green:#00b341;--red:#e5193b;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.logo{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--orange);}
+.logout-btn{font-size:11px;font-weight:700;color:var(--muted);background:none;border:1px solid var(--border);padding:6px 12px;border-radius:6px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;}
+.logout-btn:hover{color:var(--text);border-color:var(--text);}
+/* LOGIN */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:32px;width:100%;max-width:340px;text-align:center;}
+.login-box h2{font-family:'Bebas Neue',cursive;font-size:28px;color:var(--orange);margin-bottom:6px;}
+.login-box p{font-size:13px;color:var(--muted);margin-bottom:20px;}
+input[type=password],input[type=text],input[type=email],input[type=date],textarea,select{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:#222;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;margin-bottom:10px;}
+input:focus,textarea:focus,select:focus{border-color:var(--orange);}
+textarea{resize:vertical;min-height:120px;}
+.btn{width:100%;padding:11px;border-radius:8px;border:none;background:var(--orange);color:#fff;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:background .2s;}
+.btn:hover{background:#cc4a00;}
+.btn-sm{width:auto;padding:7px 14px;font-size:11px;}
+.btn-danger{background:var(--red);}
+.btn-danger:hover{background:#b5102e;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-ghost:hover{border-color:var(--orange);color:var(--orange);}
+.err{font-size:12px;color:var(--red);margin-top:6px;}
+/* MAIN */
+#mainApp{display:none;}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 20px;}
+.tab{font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:.06em;padding:12px 16px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:color .2s,border-color .2s;}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange);}
+.tab-content{display:none;padding:24px 20px;max-width:680px;margin:0 auto;}
+.tab-content.active{display:block;}
+/* STRAVA STATUS */
+.strava-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;}
+.strava-card h3{font-family:'Bebas Neue',cursive;font-size:20px;color:var(--text);margin-bottom:6px;}
+.strava-card p{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
+.dot-green{background:var(--green);}
+.dot-red{background:var(--red);}
+.dot-orange{background:var(--orange);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+/* POSTS */
+.post-form{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;}
+.post-form h3{font-family:'Bebas Neue',cursive;font-size:20px;margin-bottom:14px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block;}
+.post-list{display:flex;flex-direction:column;gap:10px;}
+.post-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.post-item-title{font-family:'Bebas Neue',cursive;font-size:17px;color:var(--text);}
+.post-item-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.post-actions{display:flex;gap:6px;flex-shrink:0;}
+/* RESULTS */
+.result-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;}
+.result-name{font-family:'Bebas Neue',cursive;font-size:17px;}
+.result-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.pr-badge{display:inline-block;background:rgba(255,92,0,.15);border:1px solid rgba(255,92,0,.3);color:var(--orange);font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px;}
+/* SUBS */
+.sub-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;font-family:'DM Mono',monospace;color:var(--muted);}
+.sub-item:last-child{border-bottom:none;}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:20px;background:var(--green);color:#fff;font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.error{background:var(--red);}
+/* SYNC STATUS */
+.sync-info{font-size:12px;color:var(--muted);margin-top:8px;}
+.run-preview{background:#111;border-radius:8px;padding:12px;margin-top:12px;}
+.run-preview-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);}
+.run-preview-item:last-child{border-bottom:none;}
+.run-preview-item strong{color:var(--text);}
+</style>
+</head>
+<body>
 
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h2>Jonathan Runs</h2>
+    <p>Admin Dashboard — Enter your password to continue</p>
+    <input type="password" id="pwInput" placeholder="Password" autocomplete="current-password"/>
+    <button class="btn" id="loginBtn">Sign In</button>
+    <div class="err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp">
+  <header>
+    <div class="logo">Jonathan Runs — Admin</div>
+    <button class="logout-btn" id="logoutBtn">Sign Out</button>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="strava">🏃 Strava</div>
+    <div class="tab" data-tab="posts">📝 Journal</div>
+    <div class="tab" data-tab="results">🏁 Results</div>
+    <div class="tab" data-tab="subs">📧 Subscribers</div>
+  </div>
+
+  <!-- STRAVA TAB -->
+  <div class="tab-content active" id="tab-strava">
+    <div class="strava-card">
+      <h3>Strava Connection</h3>
+      <p id="stravaStatusText">Checking connection...</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="/api/strava/auth" class="btn btn-sm" style="text-decoration:none;display:inline-block;" id="connectBtn">Connect Strava</a>
+        <button class="btn btn-sm btn-ghost" id="syncBtn">Sync Runs Now</button>
+      </div>
+      <div class="sync-info" id="syncInfo"></div>
+    </div>
+
+    <div class="strava-card">
+      <h3>Recent Runs Preview</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Last 5 runs pulled from Strava. These auto-populate the public site.</p>
+      <button class="btn btn-sm btn-ghost" id="previewRunsBtn">Load Runs</button>
+      <div class="run-preview" id="runPreview" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- POSTS TAB -->
+  <div class="tab-content" id="tab-posts">
+    <div class="post-form">
+      <h3>New Journal Post</h3>
+      <label class="form-label">Title</label>
+      <input type="text" id="postTitle" placeholder="What happened on this run?"/>
+      <label class="form-label">Body</label>
+      <textarea id="postBody" placeholder="Write your journal entry here..."></textarea>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Tag</label>
+          <select id="postTag">
+            <option>Training</option>
+            <option>Race Day</option>
+            <option>Long Run</option>
+            <option>Recovery</option>
+            <option>Why I Run</option>
+            <option>Weekly Recap</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Miles (optional)</label>
+          <input type="text" id="postMiles" placeholder="e.g. 8.2"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Time (optional)</label>
+          <input type="text" id="postTime" placeholder="e.g. 1:32:14"/>
+        </div>
+        <div>
+          <label class="form-label">Avg HR (optional)</label>
+          <input type="text" id="postHR" placeholder="e.g. 158"/>
+        </div>
+      </div>
+      <button class="btn" id="submitPost">Publish Post</button>
+    </div>
+
+    <h3 style="font-family:'Bebas Neue',cursive;font-size:22px;margin-bottom:12px;">Published Posts</h3>
+    <div class="post-list" id="postList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
+  </div>
+
+  <!-- RESULTS TAB -->
+  <div class="tab-content" id="tab-results">
+    <div class="post-form">
+      <h3>Add Race Result</h3>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Race Name</label>
+          <input type="text" id="raceName" placeholder="e.g. Hot Trot 5K"/>
+        </div>
+        <div>
+          <label class="form-label">Date</label>
+          <input type="date" id="raceDate"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Location</label>
+          <input type="text" id="raceLocation" placeholder="e.g. Dallas, TX"/>
+        </div>
+        <div>
+          <label class="form-label">Distance</label>
+          <select id="raceDist">
+            <option>5K</option>
+            <option>10K</option>
+            <option>Half Marathon</option>
+            <option>Marathon</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Chip Time</label>
+          <input type="text" id="raceChip" placeholder="e.g. 29:22.9"/>
+        </div>
+        <div>
+          <label class="form-label">Gun Time (optional)</label>
+          <input type="text" id="raceGun" placeholder="e.g. 29:32.8"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Overall Place / Total</label>
+          <input type="text" id="raceOverall" placeholder="e.g. 718 / 1955"/>
+        </div>
+        <div>
+          <label class="form-label">Age Group Place / Total</label>
+          <input type="text" id="raceAG" placeholder="e.g. 78 / 119"/>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <input type="checkbox" id="raceIsPR" style="width:auto;margin:0;"/>
+        <label for="raceIsPR" style="font-size:13px;font-weight:700;color:var(--orange);">This is a PR ★</label>
+      </div>
+      <input type="text" id="raceNotes" placeholder="Notes (optional)"/>
+      <button class="btn" id="submitResult">Add Result</button>
+    </div>
+
+    <h3 style="font-family:'Bebas Neue',cursive;font-size:22px;margin-bottom:12px;">Race Results</h3>
+    <div id="resultsList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
+  </div>
+
+  <!-- SUBSCRIBERS TAB -->
+  <div class="tab-content" id="tab-subs">
+    <div class="strava-card">
+      <h3>Email Subscribers</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Everyone who signed up via the subscribe form on your site.</p>
+      <div id="subsList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';
+let adminPassword = '';
+
+function toast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+function authHeaders() {
+  return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminPassword}` };
+}
+
+// LOGIN
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const pw = document.getElementById('pwInput').value.trim();
+  if (!pw) return;
+
+  // Test password by hitting a protected endpoint
+  const res = await fetch(`${API}/api/posts`, {
+    headers: { Authorization: `Bearer ${pw}` }
+  });
+
+  // Posts GET is public so we just check if we can reach the API
+  // Real auth test: try to create a dummy post and see if we get 401
+  const testRes = await fetch(`${API}/api/results`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${pw}` },
+    body: JSON.stringify({ _test: true })
+  });
+
+  if (testRes.status === 400 || testRes.status === 201) {
+    // 400 = validation failed (password was accepted), 201 = created
+    adminPassword = pw;
+    try { sessionStorage.setItem('adminPw', pw); } catch(e) {}
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    loadAll();
+    checkStravaConnection();
+  } else if (testRes.status === 401) {
+    document.getElementById('loginErr').textContent = 'Incorrect password.';
+  } else {
+    // Assume correct if API is reachable
+    adminPassword = pw;
+    try { sessionStorage.setItem('adminPw', pw); } catch(e) {}
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    loadAll();
+    checkStravaConnection();
+  }
+});
+
+document.getElementById('pwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+});
+
+// Auto-login from session
+try {
+  const saved = sessionStorage.getItem('adminPw');
+  if (saved) {
+    adminPassword = saved;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    setTimeout(() => { loadAll(); checkStravaConnection(); }, 100);
+  }
+} catch(e) {}
+
+// LOGOUT
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  adminPassword = '';
+  try { sessionStorage.removeItem('adminPw'); } catch(e) {}
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('pwInput').value = '';
+});
+
+// TABS
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// Check Strava connection status
+async function checkStravaConnection() {
+  const statusEl = document.getElementById('stravaStatusText');
+  const connectBtn = document.getElementById('connectBtn');
+  statusEl.innerHTML = '<span class="status-dot dot-orange"></span>Checking Strava connection...';
+
+  try {
+    const res = await fetch(`${API}/api/strava/runs?limit=1`);
+    if (res.ok) {
+      statusEl.innerHTML = '<span class="status-dot dot-green"></span>Strava connected and syncing runs automatically.';
+      connectBtn.textContent = 'Reconnect Strava';
+    } else {
+      const data = await res.json();
+      statusEl.innerHTML = `<span class="status-dot dot-red"></span>Not connected: ${data.error || 'Click Connect Strava to authorize.'}`;
+    }
+  } catch(e) {
+    statusEl.innerHTML = '<span class="status-dot dot-red"></span>Could not reach API. Make sure the site is deployed.';
+  }
+
+  // Check if redirected back from Strava auth
+  if (window.location.search.includes('strava=connected')) {
+    toast('Strava connected successfully!');
+    window.history.replaceState({}, '', '/admin');
+  }
+}
+
+// Sync runs
+document.getElementById('syncBtn').addEventListener('click', async () => {
+  document.getElementById('syncInfo').textContent = 'Syncing...';
+  try {
+    const res = await fetch(`${API}/api/strava/runs?bust=${Date.now()}`);
+    const data = await res.json();
+    if (Array.isArray(data)) {
+      document.getElementById('syncInfo').textContent = `✅ Synced ${data.length} runs successfully.`;
+      toast(`Synced ${data.length} runs`);
+    } else {
+      document.getElementById('syncInfo').textContent = `Error: ${data.error}`;
+    }
+  } catch(e) {
+    document.getElementById('syncInfo').textContent = 'Sync failed — check API logs in Vercel.';
+  }
+});
+
+// Preview runs
+document.getElementById('previewRunsBtn').addEventListener('click', async () => {
+  const preview = document.getElementById('runPreview');
+  preview.style.display = 'block';
+  preview.innerHTML = '<div style="color:var(--muted);font-size:12px;">Loading runs...</div>';
+
+  try {
+    const res = await fetch(`${API}/api/strava/runs?limit=5`);
+    const runs = await res.json();
+
+    if (!Array.isArray(runs) || runs.length === 0) {
+      preview.innerHTML = '<div style="color:var(--muted);font-size:12px;">No runs found. Connect Strava first.</div>';
+      return;
+    }
+
+    preview.innerHTML = runs.map(r => `
+      <div class="run-preview-item">
+        <strong>${r.name}</strong><br>
+        ${new Date(r.date).toLocaleDateString()} · ${r.distance_miles} mi · ${r.moving_time} · ${r.pace}/mi
+        ${r.calories ? ` · 🔥 ${r.calories} cal` : ''}
+        ${r.avg_hr ? ` · ❤️ ${r.avg_hr} bpm avg` : ''}
+      </div>
+    `).join('');
+  } catch(e) {
+    preview.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load runs.</div>';
+  }
+});
+
+// POSTS
+async function loadPosts() {
+  const res = await fetch(`${API}/api/posts`);
+  const posts = await res.json();
+  const list = document.getElementById('postList');
+
+  if (!posts.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:13px;">No posts yet.</div>';
+    return;
+  }
+
+  list.innerHTML = posts.map(p => `
+    <div class="post-item">
+      <div>
+        <div class="post-item-title">${p.title}</div>
+        <div class="post-item-meta">${new Date(p.created_at).toLocaleDateString()} · ${p.tag}</div>
+      </div>
+      <div class="post-actions">
+        <button class="btn btn-sm btn-danger" onclick="deletePost('${p.id}')">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('submitPost').addEventListener('click', async () => {
+  const title = document.getElementById('postTitle').value.trim();
+  const body = document.getElementById('postBody').value.trim();
+
+  if (!title || !body) { toast('Title and body are required', true); return; }
+
+  const res = await fetch(`${API}/api/posts`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({
+      title,
+      body,
+      tag: document.getElementById('postTag').value,
+      run_miles: document.getElementById('postMiles').value || null,
+      run_time: document.getElementById('postTime').value || null,
+      avg_hr: document.getElementById('postHR').value || null,
+    }),
+  });
+
+  if (res.ok) {
+    toast('Post published!');
+    document.getElementById('postTitle').value = '';
+    document.getElementById('postBody').value = '';
+    document.getElementById('postMiles').value = '';
+    document.getElementById('postTime').value = '';
+    document.getElementById('postHR').value = '';
+    loadPosts();
+  } else {
+    const err = await res.json();
+    toast(err.error || 'Failed to publish', true);
+  }
+});
+
+async function deletePost(id) {
+  if (!confirm('Delete this post?')) return;
+  const res = await fetch(`${API}/api/posts/${id}`, { method: 'DELETE', headers: authHeaders() });
+  if (res.ok) { toast('Post deleted'); loadPosts(); }
+  else toast('Failed to delete', true);
+}
+
+// RESULTS
+async function loadResults() {
+  const res = await fetch(`${API}/api/results`);
+  const results = await res.json();
+  const list = document.getElementById('resultsList');
+
+  if (!results.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:13px;">No results yet.</div>';
+    return;
+  }
+
+  list.innerHTML = results.map(r => `
+    <div class="result-item">
+      <div>
+        <div class="result-name">${r.race_name}${r.is_pr ? '<span class="pr-badge">PR ★</span>' : ''}</div>
+        <div class="result-meta">
+          ${new Date(r.race_date).toLocaleDateString()} · ${r.location || ''} · ${r.distance}<br>
+          Chip: <strong style="color:#00b341">${r.chip_time}</strong>
+          ${r.overall_place ? ` · ${r.overall_place}/${r.overall_total} overall` : ''}
+          ${r.ag_place ? ` · ${r.ag_place}/${r.ag_total} AG` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('submitResult').addEventListener('click', async () => {
+  const overall = document.getElementById('raceOverall').value.split('/').map(s => s.trim());
+  const ag = document.getElementById('raceAG').value.split('/').map(s => s.trim());
+
+  const body = {
+    race_name: document.getElementById('raceName').value.trim(),
+    race_date: document.getElementById('raceDate').value,
+    location: document.getElementById('raceLocation').value.trim(),
+    distance: document.getElementById('raceDist').value,
+    chip_time: document.getElementById('raceChip').value.trim(),
+    gun_time: document.getElementById('raceGun').value.trim() || null,
+    overall_place: overall[0] ? parseInt(overall[0]) : null,
+    overall_total: overall[1] ? parseInt(overall[1]) : null,
+    ag_place: ag[0] ? parseInt(ag[0]) : null,
+    ag_total: ag[1] ? parseInt(ag[1]) : null,
+    is_pr: document.getElementById('raceIsPR').checked,
+    notes: document.getElementById('raceNotes').value.trim() || null,
+  };
+
+  if (!body.race_name || !body.race_date || !body.chip_time) {
+    toast('Race name, date and chip time are required', true); return;
+  }
+
+  const res = await fetch(`${API}/api/results`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(body),
+  });
+
+  if (res.ok) {
+    toast('Result added!');
+    ['raceName','raceDate','raceLocation','raceChip','raceGun','raceOverall','raceAG','raceNotes']
+      .forEach(id => document.getElementById(id).value = '');
+    document.getElementById('raceIsPR').checked = false;
+    loadResults();
+  } else {
+    const err = await res.json();
+    toast(err.error || 'Failed to add result', true);
+  }
+});
+
+// SUBSCRIBERS
+async function loadSubscribers() {
+  try {
+    const res = await fetch(`${API}/api/subscribe`, {
+      headers: authHeaders()
+    });
+    // Note: subscribe endpoint doesn't have a GET — we'll add basic display
+    document.getElementById('subsList').innerHTML =
+      '<div style="color:var(--muted);font-size:12px;">To view subscribers, go to your Supabase dashboard → Table Editor → subscribers table.</div>';
+  } catch(e) {
+    document.getElementById('subsList').innerHTML =
+      '<div style="color:var(--muted);font-size:12px;">View subscribers in your Supabase dashboard → Table Editor → subscribers.</div>';
+  }
+}
+
+function loadAll() {
+  loadPosts();
+  loadResults();
+  loadSubscribers();
+}
+</script>
+</body>
+</html>
