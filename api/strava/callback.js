@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 
     if (dbError) {
       console.error('Supabase error:', dbError);
-      return res.status(500).send('Failed to save tokens to database.');
+      return res.status(500).send(`Supabase error: ${JSON.stringify(dbError)}`);
     }
 
     // Success — redirect to admin
