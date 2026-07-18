@@ -1,553 +1,801 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jonathan Runs — Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Jonathan Runs — Road to Dec 13</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--orange:#ff5c00;--bg:#0e0e0e;--card:#1a1a1a;--border:#2e2e2e;--text:#f5f0eb;--muted:#888;--green:#00b341;--red:#e5193b;}
+:root {
+  --orange:#ff5c00;--orange-light:#ff7a2e;--orange-pale:#fff2eb;
+  --green:#00b341;--green-pale:#e6f9ed;
+  --red:#e5193b;--blue:#0062ff;--purple:#7c3aed;--yellow:#f59e0b;
+  --bg:#faf7f4;--bg2:#f0ebe4;--card:#ffffff;--card2:#f7f3ef;
+  --border:#e8e0d8;--text:#1a1208;--text2:#3d3128;--muted:#6b5e52;
+  --nav-bg:rgba(250,247,244,0.95);--bib-bg:#ffffff;--bib-text:#1a1208;--bib-footer:#f0ebe4;
+  --shadow:0 4px 24px rgba(0,0,0,0.09);--shadow-lg:0 16px 56px rgba(0,0,0,0.13);
+  --hr-z1:#4ade80;--hr-z2:#86efac;--hr-z3:#fbbf24;--hr-z4:#f97316;--hr-z5:#ef4444;
+  --chart-build:#ff7a2e;--chart-recovery:#00b341;--chart-peak:#ff5c00;--chart-taper:#0062ff;
+}
+[data-theme="dark"]{
+  --bg:#0e0e0e;--bg2:#161616;--card:#1a1a1a;--card2:#222;
+  --border:#2e2e2e;--text:#f5f0eb;--text2:#c0b8b0;--muted:#666;
+  --nav-bg:rgba(14,14,14,0.95);--bib-bg:#f5f0eb;--bib-text:#1a1208;--bib-footer:#e8e0d8;
+  --shadow:0 4px 24px rgba(0,0,0,0.4);--shadow-lg:0 16px 56px rgba(0,0,0,0.6);
+  --chart-build:#ff7a2e;--chart-recovery:#00b341;--chart-peak:#ff5c00;--chart-taper:#4488ff;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-.logo{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--orange);}
-.logout-btn{font-size:11px;font-weight:700;color:var(--muted);background:none;border:1px solid var(--border);padding:6px 12px;border-radius:6px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;}
-.logout-btn:hover{color:var(--text);border-color:var(--text);}
-/* LOGIN */
-#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;}
-.login-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:32px;width:100%;max-width:340px;text-align:center;}
-.login-box h2{font-family:'Bebas Neue',cursive;font-size:28px;color:var(--orange);margin-bottom:6px;}
-.login-box p{font-size:13px;color:var(--muted);margin-bottom:20px;}
-input[type=password],input[type=text],input[type=email],input[type=date],textarea,select{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:#222;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;margin-bottom:10px;}
-input:focus,textarea:focus,select:focus{border-color:var(--orange);}
-textarea{resize:vertical;min-height:120px;}
-.btn{width:100%;padding:11px;border-radius:8px;border:none;background:var(--orange);color:#fff;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:background .2s;}
-.btn:hover{background:#cc4a00;}
-.btn-sm{width:auto;padding:7px 14px;font-size:11px;}
-.btn-danger{background:var(--red);}
-.btn-danger:hover{background:#b5102e;}
-.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;justify-content:space-between;align-items:center;padding:0 20px;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s;}
+.nav-logo{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:.1em;color:var(--orange);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-links{display:flex;gap:14px;}
+.nav-links a{font-size:11px;font-weight:600;color:var(--text2);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--orange);}
+.theme-btn{width:36px;height:20px;border-radius:10px;background:var(--border);border:none;cursor:pointer;position:relative;transition:background .3s;flex-shrink:0;}
+.theme-btn::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--orange);transition:transform .3s;}
+[data-theme="dark"] .theme-btn::after{transform:translateX(16px);}
+[data-theme="dark"] .theme-btn{background:#3a3a3a;}
+/* hamburger */
+.ham-btn{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px;}
+.ham-btn span{display:block;width:20px;height:2px;background:var(--text);border-radius:1px;transition:background .3s;}
+.ham-btn:hover span{background:var(--orange);}
+@media(max-width:540px){
+  .nav-links{display:none;}
+  .ham-btn{display:flex;}
+}
+/* mobile menu drawer */
+.mobile-menu{display:none;position:fixed;top:52px;left:0;right:0;z-index:199;background:var(--card);border-bottom:2px solid var(--border);padding:16px 20px;flex-direction:column;gap:2px;box-shadow:var(--shadow);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:14px;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:.06em;text-transform:uppercase;padding:10px 0;border-bottom:1px solid var(--border);transition:color .2s;}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover{color:var(--orange);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 60px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(255,92,0,.07) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(255,122,46,.05) 0%,transparent 50%);}
+[data-theme="dark"] .hero-bg{background:radial-gradient(ellipse at 30% 20%,rgba(255,92,0,.1) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(255,92,0,.06) 0%,transparent 50%);}
+.hero-dots{position:absolute;inset:0;background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:28px 28px;opacity:.5;pointer-events:none;}
+
+/* BIB */
+.bib{background:var(--bib-bg);border-radius:6px;width:100%;max-width:400px;box-shadow:var(--shadow-lg);overflow:hidden;}
+.bib::before{content:'';display:block;height:5px;background:linear-gradient(90deg,var(--orange),#ff8c00,var(--orange));}
+.bib-perf{height:16px;display:flex;align-items:center;padding:0 10px;background:linear-gradient(90deg,var(--orange),#ff8c00);}
+.bib-perf-holes{flex:1;height:6px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.4) 0,rgba(255,255,255,.4) 5px,transparent 5px,transparent 10px);border-radius:3px;}
+.bib-body{padding:18px 22px 14px;color:var(--bib-text);}
+.bib-eyebrow{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5a5048;margin-bottom:5px;}
+.bib-race-name{font-family:'Bebas Neue',cursive;font-size:12px;letter-spacing:.15em;color:#3d3128;margin-bottom:4px;}
+.bib-name{font-family:'Bebas Neue',cursive;font-size:52px;line-height:.9;color:var(--bib-text);}
+.bib-num-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:4px;}
+.bib-num{font-family:'Bebas Neue',cursive;font-size:88px;line-height:.85;color:var(--orange);letter-spacing:-.02em;}
+.bib-badges{display:flex;flex-direction:column;gap:4px;align-items:flex-end;padding-bottom:8px;}
+.bib-badge{font-size:9px;font-weight:700;letter-spacing:.1em;padding:3px 8px;border-radius:4px;text-transform:uppercase;}
+.b-pr{background:rgba(255,92,0,.12);color:var(--orange);border:1px solid rgba(255,92,0,.25);}
+.b-dist{background:rgba(0,179,65,.1);color:var(--green);border:1px solid rgba(0,179,65,.2);}
+.bib-div{height:1px;background:repeating-linear-gradient(90deg,#ddd 0,#ddd 6px,transparent 6px,transparent 10px);margin:10px 0;}
+.bib-cd-lbl{font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#5a5048;margin-bottom:5px;}
+.bib-cd{display:flex;gap:10px;align-items:flex-end;}
+.bib-unit{text-align:center;}
+.bib-unit-num{font-family:'Bebas Neue',cursive;font-size:32px;line-height:1;color:var(--bib-text);display:block;}
+.bib-unit-lbl{font-size:7px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6b5e52;display:block;}
+.bib-sep{font-family:'Bebas Neue',cursive;font-size:26px;color:#8a7e76;line-height:1.15;padding-bottom:3px;}
+.bib-footer{background:var(--bib-footer);padding:12px 22px;display:grid;grid-template-columns:repeat(4,1fr);}
+.bib-foot{text-align:center;}
+.bib-foot-num{font-family:'Bebas Neue',cursive;font-size:18px;color:var(--bib-text);line-height:1;}
+.bib-foot-lbl{font-size:7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5a5048;margin-top:1px;}
+
+/* HERO BELOW */
+.hero-sub{text-align:center;margin-top:22px;max-width:380px;}
+.hero-sub h2{font-family:'Bebas Neue',cursive;font-size:26px;letter-spacing:.06em;color:var(--text);line-height:1.15;}
+.hero-sub p{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.65;}
+.hero-actions{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;background:var(--orange);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 18px;border-radius:7px;text-decoration:none;transition:background .2s;border:none;cursor:pointer;}
+.btn-primary:hover{background:#cc4a00;}
+.btn-ghost{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--text2);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 18px;border-radius:7px;text-decoration:none;border:1.5px solid var(--border);transition:border-color .2s,color .2s;}
 .btn-ghost:hover{border-color:var(--orange);color:var(--orange);}
-.err{font-size:12px;color:var(--red);margin-top:6px;}
-/* MAIN */
-#mainApp{display:none;}
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 20px;}
-.tab{font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:.06em;padding:12px 16px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:color .2s,border-color .2s;}
-.tab.active{color:var(--orange);border-bottom-color:var(--orange);}
-.tab-content{display:none;padding:24px 20px;max-width:680px;margin:0 auto;}
-.tab-content.active{display:block;}
-/* STRAVA STATUS */
-.strava-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;}
-.strava-card h3{font-family:'Bebas Neue',cursive;font-size:20px;color:var(--text);margin-bottom:6px;}
-.strava-card p{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;}
-.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
-.dot-green{background:var(--green);}
-.dot-red{background:var(--red);}
-.dot-orange{background:var(--orange);animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-/* POSTS */
-.post-form{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;}
-.post-form h3{font-family:'Bebas Neue',cursive;font-size:20px;margin-bottom:14px;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.form-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block;}
-.post-list{display:flex;flex-direction:column;gap:10px;}
-.post-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
-.post-item-title{font-family:'Bebas Neue',cursive;font-size:17px;color:var(--text);}
-.post-item-meta{font-size:11px;color:var(--muted);margin-top:2px;}
-.post-actions{display:flex;gap:6px;flex-shrink:0;}
-/* RESULTS */
-.result-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;}
-.result-name{font-family:'Bebas Neue',cursive;font-size:17px;}
-.result-meta{font-size:11px;color:var(--muted);margin-top:2px;}
-.pr-badge{display:inline-block;background:rgba(255,92,0,.15);border:1px solid rgba(255,92,0,.3);color:var(--orange);font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px;}
-/* SUBS */
-.sub-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;font-family:'DM Mono',monospace;color:var(--muted);}
-.sub-item:last-child{border-bottom:none;}
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:20px;background:var(--green);color:#fff;font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none;z-index:999;}
-.toast.show{opacity:1;transform:translateY(0);}
-.toast.error{background:var(--red);}
-/* SYNC STATUS */
-.sync-info{font-size:12px;color:var(--muted);margin-top:8px;}
-.run-preview{background:#111;border-radius:8px;padding:12px;margin-top:12px;}
-.run-preview-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);}
-.run-preview-item:last-child{border-bottom:none;}
-.run-preview-item strong{color:var(--text);}
+/* scroll hint — hides on scroll */
+.scroll-hint{display:flex;flex-direction:column;align-items:center;gap:5px;margin-top:26px;transition:opacity .4s;}
+.scroll-hint.hidden{opacity:0;pointer-events:none;}
+.scroll-lbl{font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+.scroll-arrow{font-size:16px;color:var(--orange);animation:bob 2s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
+
+/* ── SECTIONS ── */
+.section{padding:60px 20px;max-width:680px;margin:0 auto;}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin-bottom:8px;}
+.section-title{font-family:'Bebas Neue',cursive;font-size:34px;letter-spacing:.04em;color:var(--text);line-height:1;margin-bottom:20px;}
+.divider{width:100%;height:1px;background:var(--border);transition:background .3s;}
+
+/* SUBSCRIBE BANNER */
+.sub-banner{background:linear-gradient(135deg,var(--orange),#ff8c00);border-radius:14px;padding:20px;margin-bottom:20px;color:#fff;}
+.sub-banner h3{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:.05em;margin-bottom:4px;}
+.sub-banner p{font-size:12px;opacity:.9;margin-bottom:14px;line-height:1.6;}
+.sub-form{display:flex;gap:8px;flex-wrap:wrap;}
+.sub-input{flex:1;min-width:180px;padding:10px 14px;border-radius:7px;border:none;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;background:rgba(255,255,255,.95);color:var(--text);outline:none;}
+.sub-input::placeholder{color:#999;}
+.sub-btn{padding:10px 18px;border-radius:7px;border:none;background:rgba(0,0,0,.2);color:#fff;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:background .2s;font-family:'DM Sans',sans-serif;}
+.sub-btn:hover{background:rgba(0,0,0,.35);}
+.sub-success{display:none;font-size:13px;font-weight:700;color:#fff;background:rgba(0,0,0,.2);border-radius:7px;padding:10px 14px;}
+
+/* CARD */
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow);transition:background .3s,border-color .2s,box-shadow .2s;}
+.card:hover{box-shadow:0 8px 32px rgba(255,92,0,.08);}
+
+/* PROGRESS */
+.prog-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+.prog-title{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:.05em;color:var(--text);}
+.prog-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.phase-pill{font-size:10px;font-weight:700;background:var(--orange);color:#fff;padding:4px 10px;border-radius:5px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+.prog-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.prog-stat{text-align:center;padding:11px 4px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);}
+.prog-stat-num{font-family:'Bebas Neue',cursive;font-size:24px;color:var(--orange);line-height:1;}
+.prog-stat-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-top:2px;}
+.prog-bar-wrap{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-bottom:5px;border:1px solid var(--border);}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--orange),#ff8c00);border-radius:4px;}
+.prog-bar-meta{display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:var(--text2);}
+.chart-wrap{margin-top:16px;}
+.chart-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);margin-bottom:8px;}
+.chart-bars{display:flex;align-items:flex-end;gap:3px;height:68px;}
+.c-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.c-bar{width:100%;border-radius:2px 2px 0 0;min-height:3px;cursor:pointer;transition:opacity .2s,transform .15s;}
+.c-bar:hover{opacity:.75;transform:scaleY(1.05);transform-origin:bottom;}
+.c-num{font-size:8px;font-weight:700;color:var(--text2);font-family:'DM Mono',monospace;}
+
+/* RUN CARDS */
+.run-card{margin-bottom:12px;}
+.run-card:hover{border-color:var(--orange);}
+.run-top{display:flex;gap:12px;}
+.run-left{flex:1;min-width:0;}
+.run-date{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:3px;}
+.run-name{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:.04em;color:var(--text);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.run-stats{display:flex;gap:14px;flex-wrap:wrap;}
+.rsv{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--text);}
+.rsl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-top:1px;}
+.run-tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-top:8px;}
+.tag-easy{background:var(--green-pale);color:var(--green);border:1px solid rgba(0,179,65,.2);}
+.tag-long{background:#fff7e6;color:#b45309;border:1px solid rgba(245,158,11,.2);}
+.tag-tempo{background:#f3e8ff;color:var(--purple);border:1px solid rgba(124,58,237,.2);}
+.tag-race{background:#fff0f2;color:var(--red);border:1px solid rgba(229,25,59,.15);}
+[data-theme="dark"] .tag-easy{background:rgba(0,179,65,.12);border-color:rgba(0,179,65,.25);}
+[data-theme="dark"] .tag-long{background:rgba(245,158,11,.1);color:#fbbf24;border-color:rgba(245,158,11,.2);}
+[data-theme="dark"] .tag-tempo{background:rgba(124,58,237,.1);color:#a78bfa;border-color:rgba(124,58,237,.2);}
+[data-theme="dark"] .tag-race{background:rgba(229,25,59,.1);border-color:rgba(229,25,59,.2);}
+.run-map{width:72px;height:72px;border-radius:10px;background:var(--bg2);border:1.5px solid var(--border);overflow:hidden;flex-shrink:0;}
+
+/* HR ZONES — touch-friendly */
+.hr-section{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+.hr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.hr-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);display:flex;align-items:center;gap:5px;}
+.cal-chip{display:inline-flex;align-items:center;gap:4px;background:var(--orange-pale);border:1px solid rgba(255,92,0,.15);border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700;color:var(--orange);}
+[data-theme="dark"] .cal-chip{background:rgba(255,92,0,.1);border-color:rgba(255,92,0,.2);}
+.hr-zones{display:flex;gap:3px;height:32px;border-radius:8px;overflow:hidden;cursor:pointer;}
+.hz{display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:rgba(255,255,255,.95);transition:flex .4s ease;position:relative;min-width:0;}
+.hz span{overflow:hidden;white-space:nowrap;}
+.z1{background:var(--hr-z1);}
+.z2{background:var(--hr-z2);}
+.z3{background:var(--hr-z3);}
+.z4{background:var(--hr-z4);}
+.z5{background:var(--hr-z5);}
+/* tap tooltip */
+.hr-tooltip{display:none;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:11px;font-weight:700;color:var(--text);box-shadow:var(--shadow);}
+.hr-tooltip.show{display:block;}
+.hr-tooltip-row{display:flex;justify-content:space-between;gap:16px;padding:3px 0;border-bottom:1px solid var(--border);}
+.hr-tooltip-row:last-child{border-bottom:none;}
+.hr-tooltip-zone{display:flex;align-items:center;gap:6px;}
+.hr-tooltip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.hr-meta{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;font-weight:700;}
+.hr-avg{color:var(--text);}
+.hr-max{color:var(--red);}
+.hr-tap-hint{font-size:9px;color:var(--text2);margin-top:4px;font-weight:600;}
+.strava-link{display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:11px;font-weight:600;color:var(--text2);text-decoration:none;transition:color .2s;}
+.strava-link:hover{color:var(--orange);}
+
+/* PACE CHART with annotations */
+.pace-chart{margin-top:14px;}
+.pace-chart-title{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:.05em;color:var(--text);margin-bottom:12px;}
+.pace-wrap{position:relative;padding-left:40px;}
+.pace-y{position:absolute;left:0;top:0;bottom:18px;display:flex;flex-direction:column;justify-content:space-between;font-size:9px;font-weight:700;color:var(--text2);font-family:'DM Mono',monospace;}
+.pace-svg-wrap{border-left:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:visible;}
+.pace-svg-wrap svg{display:block;overflow:visible;}
+.pace-x{display:flex;justify-content:space-between;margin-top:4px;font-size:9px;font-weight:700;color:var(--text2);font-family:'DM Mono',monospace;}
+.pace-note{font-size:10px;color:var(--text2);margin-top:8px;font-weight:600;}
+
+/* RESULTS TABLE — responsive */
+.results-wrap{background:var(--card);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
+.results-table{width:100%;border-collapse:collapse;}
+.results-table th{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text2);padding:10px 12px;text-align:left;border-bottom:1.5px solid var(--border);background:var(--bg2);}
+.results-table td{padding:12px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top;}
+.results-table tr:last-child td{border-bottom:none;}
+.results-table tr:hover td{background:var(--bg2);}
+.race-nm{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:.04em;color:var(--text);}
+.race-sub{font-size:10px;color:var(--text2);font-weight:600;margin-top:1px;}
+.chip-t{font-family:'DM Mono',monospace;font-size:13px;color:var(--green);font-weight:500;}
+.pr-pill{display:inline-flex;align-items:center;gap:3px;background:var(--orange-pale);border:1px solid rgba(255,92,0,.2);color:var(--orange);font-size:8px;font-weight:700;letter-spacing:.08em;padding:2px 6px;border-radius:4px;margin-left:5px;white-space:nowrap;}
+[data-theme="dark"] .pr-pill{background:rgba(255,92,0,.12);}
+.place-c{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);}
+.upc td{background:var(--orange-pale);}
+[data-theme="dark"] .upc td{background:rgba(255,92,0,.06);}
+.upc .race-nm{color:var(--orange);}
+/* hide less-important columns on mobile */
+@media(max-width:480px){
+  .results-table .col-date{display:none;}
+  .results-table th:nth-child(2){display:none;}
+  .race-sub{font-size:9px;}
+}
+
+/* JOURNAL */
+.j-card{margin-bottom:16px;}
+.j-card:hover{border-color:var(--orange);}
+.j-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.j-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--orange),#ff8c00);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:14px;color:#fff;flex-shrink:0;}
+.j-author{font-size:12px;font-weight:700;color:var(--text);}
+.j-date{font-size:11px;color:var(--text2);}
+.j-tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--bg2);color:var(--text2);border:1px solid var(--border);padding:2px 8px;border-radius:5px;margin-left:auto;}
+.j-title{font-family:'Bebas Neue',cursive;font-size:24px;letter-spacing:.04em;color:var(--text);margin-bottom:10px;line-height:1.1;}
+.j-body{font-size:13px;line-height:1.75;color:var(--text2);}
+.j-body p{margin-bottom:10px;}
+.j-body p:last-child{margin-bottom:0;}
+.j-footer{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;}
+.j-stat{font-size:11px;font-weight:600;color:var(--text2);}
+.j-stat span{color:var(--text);font-weight:700;}
+
+/* PHOTOS */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.photo-cell{aspect-ratio:1;border-radius:10px;overflow:hidden;position:relative;background:var(--bg2);border:1.5px solid var(--border);cursor:pointer;transition:transform .2s,border-color .2s;}
+.photo-cell:hover,.photo-cell.tapped{transform:scale(1.03);border-color:var(--orange);}
+.photo-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;}
+.photo-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(255,92,0,.9),rgba(255,92,0,.4));display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:10px;opacity:0;transition:opacity .25s;}
+.photo-cell:hover .photo-overlay,.photo-cell.tapped .photo-overlay{opacity:1;}
+.photo-caption{font-size:10px;font-weight:700;color:#fff;text-align:center;line-height:1.4;}
+.photo-add{border:1.5px dashed var(--border);background:transparent;}
+.photo-add .photo-emoji{font-size:22px;color:var(--orange);}
+
+/* CTA */
+.cta-box{background:linear-gradient(135deg,var(--orange-pale),rgba(255,140,0,.06));border:1.5px solid rgba(255,92,0,.18);border-radius:14px;padding:24px;text-align:center;margin-top:20px;}
+[data-theme="dark"] .cta-box{background:rgba(255,92,0,.07);border-color:rgba(255,92,0,.18);}
+.cta-box h3{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:.05em;color:var(--text);margin-bottom:5px;}
+.cta-box p{font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6;}
+
+/* FOOTER */
+footer{padding:40px 20px;border-top:1px solid var(--border);max-width:680px;margin:0 auto;text-align:center;}
+.footer-logo{font-family:'Bebas Neue',cursive;font-size:26px;letter-spacing:.1em;color:var(--orange);margin-bottom:5px;}
+.footer-sub{font-size:11px;color:var(--text2);margin-bottom:14px;}
+.footer-links{display:flex;gap:18px;justify-content:center;}
+.footer-links a{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--orange);}
+
+@media(max-width:480px){
+  .prog-stats{grid-template-columns:repeat(2,1fr);}
+  .bib-num{font-size:70px;}
+  .bib-name{font-size:42px;}
+  .hero-actions{flex-direction:column;align-items:stretch;}
+  .hero-actions .btn-primary,.hero-actions .btn-ghost{justify-content:center;}
+}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="loginScreen">
-  <div class="login-box">
-    <h2>Jonathan Runs</h2>
-    <p>Admin Dashboard — Enter your password to continue</p>
-    <input type="password" id="pwInput" placeholder="Password" autocomplete="current-password"/>
-    <button class="btn" id="loginBtn">Sign In</button>
-    <div class="err" id="loginErr"></div>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Jonathan Runs</div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#progress">Progress</a>
+      <a href="#runs">Runs</a>
+      <a href="#results">Results</a>
+      <a href="#journal">Journal</a>
+      <a href="#photos">Photos</a>
+    </div>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode"></button>
+    <button class="ham-btn" id="hamBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#progress" class="mm-link">Progress</a>
+  <a href="#runs" class="mm-link">Runs</a>
+  <a href="#results" class="mm-link">Results</a>
+  <a href="#journal" class="mm-link">Journal</a>
+  <a href="#photos" class="mm-link">Photos</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-dots"></div>
+  <div class="bib">
+    <div class="bib-perf"><div class="bib-perf-holes"></div></div>
+    <div class="bib-body">
+      <div class="bib-eyebrow">Road to December 13 · Dallas, TX</div>
+      <div class="bib-race-name">2026 Half Marathon · First Finish</div>
+      <div class="bib-name">Jonathan</div>
+      <div class="bib-num-row">
+        <div class="bib-num">1301</div>
+        <div class="bib-badges">
+          <div class="bib-badge b-pr">5K PR 29:05</div>
+          <div class="bib-badge b-dist">Goal 13.1 mi</div>
+        </div>
+      </div>
+      <div class="bib-div"></div>
+      <div class="bib-cd-lbl">Time until race day</div>
+      <div class="bib-cd">
+        <div class="bib-unit"><span class="bib-unit-num" id="cd-d">148</span><span class="bib-unit-lbl">days</span></div>
+        <span class="bib-sep">:</span>
+        <div class="bib-unit"><span class="bib-unit-num" id="cd-h">00</span><span class="bib-unit-lbl">hrs</span></div>
+        <span class="bib-sep">:</span>
+        <div class="bib-unit"><span class="bib-unit-num" id="cd-m">00</span><span class="bib-unit-lbl">min</span></div>
+        <span class="bib-sep">:</span>
+        <div class="bib-unit"><span class="bib-unit-num" id="cd-s">00</span><span class="bib-unit-lbl">sec</span></div>
+      </div>
+    </div>
+    <div class="bib-footer">
+      <div class="bib-foot"><div class="bib-foot-num">14</div><div class="bib-foot-lbl">Weeks</div></div>
+      <div class="bib-foot"><div class="bib-foot-num">~300</div><div class="bib-foot-lbl">Miles</div></div>
+      <div class="bib-foot"><div class="bib-foot-num">sub-2:15</div><div class="bib-foot-lbl">Goal</div></div>
+      <div class="bib-foot"><div class="bib-foot-num">Sep 1</div><div class="bib-foot-lbl">Start</div></div>
+    </div>
+  </div>
+  <div class="hero-sub">
+    <h2>Building from a 29:05 5K<br>to 13.1 Miles by December</h2>
+    <p>14 weeks. Every run logged. Dallas heat and all.<br>Training starts September 1 — follow the journey.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="https://strava.com/athletes/jaycee501" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
+        Follow on Strava
+      </a>
+      <a class="btn-ghost" href="#journal">Read the Journal ↓</a>
+    </div>
+  </div>
+  <div class="scroll-hint" id="scrollHint">
+    <span class="scroll-lbl">Scroll</span>
+    <div class="scroll-arrow">↓</div>
   </div>
 </div>
 
-<!-- MAIN APP -->
-<div id="mainApp">
-  <header>
-    <div class="logo">Jonathan Runs — Admin</div>
-    <button class="logout-btn" id="logoutBtn">Sign Out</button>
-  </header>
+<div class="divider"></div>
 
-  <div class="tabs">
-    <div class="tab active" data-tab="strava">🏃 Strava</div>
-    <div class="tab" data-tab="posts">📝 Journal</div>
-    <div class="tab" data-tab="results">🏁 Results</div>
-    <div class="tab" data-tab="subs">📧 Subscribers</div>
+<!-- PROGRESS -->
+<section class="section" id="progress">
+  <!-- SUBSCRIBE BANNER -->
+  <div class="sub-banner">
+    <h3>Follow the Journey</h3>
+    <p>Get a weekly update — training recap, miles logged, how the Dallas heat is treating me, and race results as they happen. No spam, unsubscribe anytime.</p>
+    <div class="sub-form" id="subForm">
+      <input class="sub-input" type="email" id="subEmail" placeholder="your@email.com" autocomplete="email"/>
+      <button class="sub-btn" id="subBtn">Notify Me</button>
+    </div>
+    <div class="sub-success" id="subSuccess">✅ You're in! I'll send updates as the training unfolds.</div>
   </div>
 
-  <!-- STRAVA TAB -->
-  <div class="tab-content active" id="tab-strava">
-    <div class="strava-card">
-      <h3>Strava Connection</h3>
-      <p id="stravaStatusText">Checking connection...</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <a href="/api/strava/auth" class="btn btn-sm" style="text-decoration:none;display:inline-block;" id="connectBtn">Connect Strava</a>
-        <button class="btn btn-sm btn-ghost" id="syncBtn">Sync Runs Now</button>
-      </div>
-      <div class="sync-info" id="syncInfo"></div>
-    </div>
+  <div class="eyebrow">Training Progress</div>
+  <div class="section-title">The Journey So Far</div>
 
-    <div class="strava-card">
-      <h3>Recent Runs Preview</h3>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Last 5 runs pulled from Strava. These auto-populate the public site.</p>
-      <button class="btn btn-sm btn-ghost" id="previewRunsBtn">Load Runs</button>
-      <div class="run-preview" id="runPreview" style="display:none;"></div>
+  <div class="card">
+    <div class="prog-header">
+      <div>
+        <div class="prog-title">14-Week Plan · Sep 1 – Dec 13</div>
+        <div class="prog-sub">Plan starts September 1 · Currently building base</div>
+      </div>
+      <div class="phase-pill">Pre-Plan</div>
+    </div>
+    <div class="prog-stats">
+      <div class="prog-stat"><div class="prog-stat-num">0</div><div class="prog-stat-lbl">Weeks Done</div></div>
+      <div class="prog-stat"><div class="prog-stat-num">0</div><div class="prog-stat-lbl">Runs Logged</div></div>
+      <div class="prog-stat"><div class="prog-stat-num">0</div><div class="prog-stat-lbl">Miles Run</div></div>
+      <div class="prog-stat"><div class="prog-stat-num">29:05</div><div class="prog-stat-lbl">5K PR</div></div>
+    </div>
+    <div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:0%"></div></div>
+    <div class="prog-bar-meta"><span>Week 0 of 14</span><span>0%</span></div>
+    <div class="chart-wrap">
+      <div class="chart-lbl">Weekly Mileage Arc — 14-week plan overview</div>
+      <div class="chart-bars" id="mileageChart"></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RUNS -->
+<section class="section" id="runs">
+  <div class="eyebrow">Strava + Apple Watch</div>
+  <div class="section-title">Recent Runs</div>
+  <div style="display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--border);border-radius:7px;padding:5px 10px;font-size:10px;font-weight:700;color:var(--text2);margin-bottom:14px;">
+    <div style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.5s ease-in-out infinite;"></div>
+    Apple Watch · Heart Rate &amp; Calories · Tap zones for details
+  </div>
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+  <!-- RUN 1 -->
+  <div class="card run-card">
+    <div class="run-top">
+      <div class="run-left">
+        <div class="run-date">Jul 4, 2026 · 7:30 AM · Little Rock, AR</div>
+        <div class="run-name">Firecracker Fast 5K 🎆</div>
+        <div class="run-stats">
+          <div><div class="rsv">3.11</div><div class="rsl">Miles</div></div>
+          <div><div class="rsv">29:05</div><div class="rsl">Time</div></div>
+          <div><div class="rsv">9:22</div><div class="rsl">Pace</div></div>
+          <div><div class="rsv">74°F</div><div class="rsl">Temp</div></div>
+        </div>
+        <span class="run-tag tag-race">🏁 Race · PR</span>
+      </div>
+      <div class="run-map">
+        <svg viewBox="0 0 72 72" width="72" height="72"><rect width="72" height="72" fill="var(--bg2)"/><polyline points="8,60 14,48 20,52 28,38 34,42 40,28 46,32 52,18 58,22 64,12" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="60" r="3" fill="var(--green)"/><circle cx="64" cy="12" r="3" fill="var(--red)"/></svg>
+      </div>
+    </div>
+    <div class="hr-section">
+      <div class="hr-top">
+        <div class="hr-lbl">❤️ Heart Rate Zones</div>
+        <span class="cal-chip">🔥 312 cal</span>
+      </div>
+      <div class="hr-zones" data-run="r1">
+        <div class="hz z1" style="flex:5" data-z="1" data-pct="5%" data-lbl="Zone 1 · Recovery"><span>5%</span></div>
+        <div class="hz z2" style="flex:8" data-z="2" data-pct="8%" data-lbl="Zone 2 · Fat Burn"><span>8%</span></div>
+        <div class="hz z3" style="flex:22" data-z="3" data-pct="22%" data-lbl="Zone 3 · Aerobic"><span>22%</span></div>
+        <div class="hz z4" style="flex:42" data-z="4" data-pct="42%" data-lbl="Zone 4 · Threshold"><span>42%</span></div>
+        <div class="hz z5" style="flex:23" data-z="5" data-pct="23%" data-lbl="Zone 5 · Max Effort"><span>23%</span></div>
+      </div>
+      <div class="hr-tap-hint">Tap zones bar for details</div>
+      <div class="hr-tooltip" id="tt-r1">
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z1)"></div>Zone 1 · Recovery</div><span>5%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z2)"></div>Zone 2 · Fat Burn</div><span>8%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z3)"></div>Zone 3 · Aerobic</div><span>22%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z4)"></div>Zone 4 · Threshold</div><span>42%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z5)"></div>Zone 5 · Max Effort</div><span>23%</span></div>
+      </div>
+      <div class="hr-meta"><span class="hr-avg">Avg HR: <strong>172 bpm</strong></span><span class="hr-max">Max HR: <strong>191 bpm</strong></span></div>
+    </div>
+    <a class="strava-link" href="#">↗ View on Strava</a>
+  </div>
+
+  <!-- RUN 2 -->
+  <div class="card run-card">
+    <div class="run-top">
+      <div class="run-left">
+        <div class="run-date">Jun 28, 2026 · 6:15 AM · Dallas, TX</div>
+        <div class="run-name">Early Morning Easy — White Rock Lake</div>
+        <div class="run-stats">
+          <div><div class="rsv">4.2</div><div class="rsl">Miles</div></div>
+          <div><div class="rsv">47:20</div><div class="rsl">Time</div></div>
+          <div><div class="rsv">11:16</div><div class="rsl">Pace</div></div>
+          <div><div class="rsv">79°F</div><div class="rsl">Temp</div></div>
+        </div>
+        <span class="run-tag tag-easy">Easy Run</span>
+      </div>
+      <div class="run-map">
+        <svg viewBox="0 0 72 72" width="72" height="72"><rect width="72" height="72" fill="var(--bg2)"/><path d="M12,36 C12,20 20,12 36,12 C52,12 60,20 60,36 C60,52 52,60 36,60 C20,60 12,52 12,36 Z" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-dasharray="5,2"/><circle cx="12" cy="36" r="3" fill="var(--green)"/></svg>
+      </div>
+    </div>
+    <div class="hr-section">
+      <div class="hr-top">
+        <div class="hr-lbl">❤️ Heart Rate Zones</div>
+        <span class="cal-chip">🔥 428 cal</span>
+      </div>
+      <div class="hr-zones" data-run="r2">
+        <div class="hz z1" style="flex:12" data-z="1" data-pct="12%"><span>12%</span></div>
+        <div class="hz z2" style="flex:38" data-z="2" data-pct="38%"><span>38%</span></div>
+        <div class="hz z3" style="flex:35" data-z="3" data-pct="35%"><span>35%</span></div>
+        <div class="hz z4" style="flex:12" data-z="4" data-pct="12%"><span>12%</span></div>
+        <div class="hz z5" style="flex:3" data-z="5" data-pct="3%"><span>3%</span></div>
+      </div>
+      <div class="hr-tap-hint">Tap zones bar for details</div>
+      <div class="hr-tooltip" id="tt-r2">
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z1)"></div>Zone 1 · Recovery</div><span>12%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z2)"></div>Zone 2 · Fat Burn</div><span>38%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z3)"></div>Zone 3 · Aerobic</div><span>35%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z4)"></div>Zone 4 · Threshold</div><span>12%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z5)"></div>Zone 5 · Max Effort</div><span>3%</span></div>
+      </div>
+      <div class="hr-meta"><span class="hr-avg">Avg HR: <strong>148 bpm</strong></span><span class="hr-max">Max HR: <strong>168 bpm</strong></span></div>
+    </div>
+    <a class="strava-link" href="#">↗ View on Strava</a>
+  </div>
+
+  <!-- RUN 3 -->
+  <div class="card run-card">
+    <div class="run-top">
+      <div class="run-left">
+        <div class="run-date">Jun 21, 2026 · 6:00 AM · Dallas, TX</div>
+        <div class="run-name">Saturday Long — Katy Trail</div>
+        <div class="run-stats">
+          <div><div class="rsv">6.0</div><div class="rsl">Miles</div></div>
+          <div><div class="rsv">1:11:24</div><div class="rsl">Time</div></div>
+          <div><div class="rsv">11:54</div><div class="rsl">Pace</div></div>
+          <div><div class="rsv">81°F</div><div class="rsl">Temp</div></div>
+        </div>
+        <span class="run-tag tag-long">Long Run</span>
+      </div>
+      <div class="run-map">
+        <svg viewBox="0 0 72 72" width="72" height="72"><rect width="72" height="72" fill="var(--bg2)"/><polyline points="10,56 16,44 22,48 30,36 38,40 46,28 52,34 58,20 64,24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="56" r="3" fill="var(--green)"/><circle cx="64" cy="24" r="3" fill="var(--red)"/></svg>
+      </div>
+    </div>
+    <div class="hr-section">
+      <div class="hr-top">
+        <div class="hr-lbl">❤️ Heart Rate Zones</div>
+        <span class="cal-chip">🔥 694 cal</span>
+      </div>
+      <div class="hr-zones" data-run="r3">
+        <div class="hz z1" style="flex:8" data-z="1" data-pct="8%"><span>8%</span></div>
+        <div class="hz z2" style="flex:45" data-z="2" data-pct="45%"><span>45%</span></div>
+        <div class="hz z3" style="flex:32" data-z="3" data-pct="32%"><span>32%</span></div>
+        <div class="hz z4" style="flex:13" data-z="4" data-pct="13%"><span>13%</span></div>
+        <div class="hz z5" style="flex:2" data-z="5" data-pct="2%"><span>2%</span></div>
+      </div>
+      <div class="hr-tap-hint">Tap zones bar for details</div>
+      <div class="hr-tooltip" id="tt-r3">
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z1)"></div>Zone 1 · Recovery</div><span>8%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z2)"></div>Zone 2 · Fat Burn</div><span>45%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z3)"></div>Zone 3 · Aerobic</div><span>32%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z4)"></div>Zone 4 · Threshold</div><span>13%</span></div>
+        <div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:var(--hr-z5)"></div>Zone 5 · Max Effort</div><span>2%</span></div>
+      </div>
+      <div class="hr-meta"><span class="hr-avg">Avg HR: <strong>152 bpm</strong></span><span class="hr-max">Max HR: <strong>174 bpm</strong></span></div>
+    </div>
+    <a class="strava-link" href="#">↗ View on Strava</a>
+  </div>
+
+  <!-- PACE CHART with annotations -->
+  <div class="card pace-chart">
+    <div class="pace-chart-title">Pace Trend — Last 8 Runs</div>
+    <div class="pace-wrap">
+      <div class="pace-y"><span>9:00</span><span>10:00</span><span>11:00</span><span>12:00</span></div>
+      <div class="pace-svg-wrap">
+        <svg viewBox="0 0 300 100" width="100%" height="100" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ff5c00" stop-opacity=".18"/>
+              <stop offset="100%" stop-color="#ff5c00" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="1" x2="300" y2="1" stroke="var(--border)" stroke-width="0.5"/>
+          <line x1="0" y1="33" x2="300" y2="33" stroke="var(--border)" stroke-width="0.5"/>
+          <line x1="0" y1="66" x2="300" y2="66" stroke="var(--border)" stroke-width="0.5"/>
+          <path d="M0,72 L43,60 L86,78 L129,45 L172,54 L215,30 L258,66 L300,36 L300,100 L0,100Z" fill="url(#pg)"/>
+          <polyline points="0,72 43,60 86,78 129,45 172,54 215,30 258,66 300,36" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- dots -->
+          <circle cx="0" cy="72" r="3" fill="var(--orange)"/>
+          <circle cx="43" cy="60" r="3" fill="var(--orange)"/>
+          <circle cx="86" cy="78" r="3" fill="var(--orange)"/>
+          <!-- annotation: hot run -->
+          <circle cx="86" cy="78" r="6" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2,2"/>
+          <text x="88" y="95" font-size="7" fill="#f59e0b" font-family="DM Sans,sans-serif" font-weight="700">☀️ hot</text>
+          <circle cx="129" cy="45" r="3" fill="var(--orange)"/>
+          <circle cx="172" cy="54" r="3" fill="var(--orange)"/>
+          <circle cx="215" cy="30" r="3" fill="var(--orange)"/>
+          <!-- annotation: tempo -->
+          <circle cx="215" cy="30" r="6" fill="none" stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="2,2"/>
+          <text x="200" y="22" font-size="7" fill="var(--purple)" font-family="DM Sans,sans-serif" font-weight="700">⚡ tempo</text>
+          <circle cx="258" cy="66" r="3" fill="var(--orange)"/>
+          <!-- annotation: race -->
+          <circle cx="300" cy="36" r="5" fill="var(--orange)" stroke="white" stroke-width="1.5"/>
+          <circle cx="300" cy="36" r="9" fill="none" stroke="var(--red)" stroke-width="1.5"/>
+          <text x="262" y="28" font-size="7" fill="var(--red)" font-family="DM Sans,sans-serif" font-weight="700">🏁 race</text>
+        </svg>
+      </div>
+      <div class="pace-x"><span>Jun 1</span><span>Jun 8</span><span>Jun 15</span><span>Jun 21</span><span>Jun 28</span><span>Jul 4</span><span></span><span>Latest</span></div>
+    </div>
+    <div class="pace-note">📉 Lower = faster · ☀️ hot run · ⚡ tempo effort · 🏁 race</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESULTS -->
+<section class="section" id="results">
+  <div class="eyebrow">Race Results</div>
+  <div class="section-title">On the Clock</div>
+  <div class="results-wrap">
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Race</th>
+          <th class="col-date">Date</th>
+          <th>Chip Time</th>
+          <th>Place</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="race-nm">Firecracker Fast 5K</div><div class="race-sub">Little Rock, AR · 1,955 finishers</div></td>
+          <td class="col-date" style="font-size:12px;color:var(--text2);font-weight:600;">Jul 4, 2026</td>
+          <td><span class="chip-t">29:22.9</span><span class="pr-pill">PR ★</span></td>
+          <td><div class="place-c">78th/119<br><span style="font-size:10px;">M 30–34</span></div></td>
+        </tr>
+        <tr>
+          <td><div class="race-nm">DoNot Stop 5K</div><div class="race-sub">Dallas, TX · 162 finishers</div></td>
+          <td class="col-date" style="font-size:12px;color:var(--text2);font-weight:600;">2026</td>
+          <td><span class="chip-t">28:55.2</span></td>
+          <td><div class="place-c">37th/162<br><span style="font-size:10px;color:#f59e0b;font-weight:700;">🥇 1st M30–34</span></div></td>
+        </tr>
+        <tr class="upc">
+          <td><div class="race-nm">Hot Trot 5K</div><div class="race-sub">Dallas, TX · Aug 22</div></td>
+          <td class="col-date" style="font-size:12px;color:var(--orange);font-weight:700;">Coming up</td>
+          <td><span style="font-size:11px;color:var(--text2);">TBD</span></td>
+          <td><div style="font-size:10px;color:var(--orange);font-weight:700;">Pre-plan tune-up</div></td>
+        </tr>
+        <tr class="upc">
+          <td><div class="race-nm">Half Marathon 🏁</div><div class="race-sub">Dallas, TX · The Goal</div></td>
+          <td class="col-date" style="font-size:12px;color:var(--orange);font-weight:700;">Dec 13</td>
+          <td><span style="font-size:11px;color:var(--orange);font-weight:700;">Goal: sub-2:15</span></td>
+          <td><div style="font-size:10px;color:var(--text2);">First time</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- JOURNAL -->
+<section class="section" id="journal">
+  <div class="eyebrow">Running Journal</div>
+  <div class="section-title">The Long Miles</div>
+
+  <div class="card j-card">
+    <div class="j-meta">
+      <div class="j-avatar">JW</div>
+      <div><div class="j-author">Jonathan West</div><div class="j-date">July 4, 2026</div></div>
+      <div class="j-tag">Race Day</div>
+    </div>
+    <div class="j-title">PR'd on the 4th of July — and I walked half the hill</div>
+    <div class="j-body">
+      <p>Signed up for the Firecracker Fast 5K on a complete whim. Hadn't been running seriously — just resting before the half marathon block starts September 1. Figured a race would be a good fitness check.</p>
+      <p>The course runs point-to-point down Kavanaugh Boulevard and sounds flat until Zoo Hill — 0.24 miles at 12:48/mi pace on GPS. I walked half of it. 74°F, 70% humidity at 7:30am. I wasn't there to win.</p>
+      <p>Garmin said 29:05 at the finish. New all-time PR. Official chip came back 29:22.9. The 8:09 final kick after the hill told me there was more in the tank than I thought.</p>
+      <p>Going into September: I'm more fit than I realized. This block is going to be interesting.</p>
+    </div>
+    <div class="j-footer">
+      <span class="j-stat"><span>3.11</span> mi</span>
+      <span class="j-stat"><span>29:05</span> Garmin</span>
+      <span class="j-stat"><span>172 bpm</span> avg HR</span>
+      <span class="j-stat"><span>312</span> cal</span>
     </div>
   </div>
 
-  <!-- POSTS TAB -->
-  <div class="tab-content" id="tab-posts">
-    <div class="post-form">
-      <h3>New Journal Post</h3>
-      <label class="form-label">Title</label>
-      <input type="text" id="postTitle" placeholder="What happened on this run?"/>
-      <label class="form-label">Body</label>
-      <textarea id="postBody" placeholder="Write your journal entry here..."></textarea>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Tag</label>
-          <select id="postTag">
-            <option>Training</option>
-            <option>Race Day</option>
-            <option>Long Run</option>
-            <option>Recovery</option>
-            <option>Why I Run</option>
-            <option>Weekly Recap</option>
-          </select>
-        </div>
-        <div>
-          <label class="form-label">Miles (optional)</label>
-          <input type="text" id="postMiles" placeholder="e.g. 8.2"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Time (optional)</label>
-          <input type="text" id="postTime" placeholder="e.g. 1:32:14"/>
-        </div>
-        <div>
-          <label class="form-label">Avg HR (optional)</label>
-          <input type="text" id="postHR" placeholder="e.g. 158"/>
-        </div>
-      </div>
-      <button class="btn" id="submitPost">Publish Post</button>
+  <div class="card j-card">
+    <div class="j-meta">
+      <div class="j-avatar">JW</div>
+      <div><div class="j-author">Jonathan West</div><div class="j-date">June 15, 2026</div></div>
+      <div class="j-tag">Why I Run</div>
     </div>
-
-    <h3 style="font-family:'Bebas Neue',cursive;font-size:22px;margin-bottom:12px;">Published Posts</h3>
-    <div class="post-list" id="postList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
-  </div>
-
-  <!-- RESULTS TAB -->
-  <div class="tab-content" id="tab-results">
-    <div class="post-form">
-      <h3>Add Race Result</h3>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Race Name</label>
-          <input type="text" id="raceName" placeholder="e.g. Hot Trot 5K"/>
-        </div>
-        <div>
-          <label class="form-label">Date</label>
-          <input type="date" id="raceDate"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Location</label>
-          <input type="text" id="raceLocation" placeholder="e.g. Dallas, TX"/>
-        </div>
-        <div>
-          <label class="form-label">Distance</label>
-          <select id="raceDist">
-            <option>5K</option>
-            <option>10K</option>
-            <option>Half Marathon</option>
-            <option>Marathon</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Chip Time</label>
-          <input type="text" id="raceChip" placeholder="e.g. 29:22.9"/>
-        </div>
-        <div>
-          <label class="form-label">Gun Time (optional)</label>
-          <input type="text" id="raceGun" placeholder="e.g. 29:32.8"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Overall Place / Total</label>
-          <input type="text" id="raceOverall" placeholder="e.g. 718 / 1955"/>
-        </div>
-        <div>
-          <label class="form-label">Age Group Place / Total</label>
-          <input type="text" id="raceAG" placeholder="e.g. 78 / 119"/>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-        <input type="checkbox" id="raceIsPR" style="width:auto;margin:0;"/>
-        <label for="raceIsPR" style="font-size:13px;font-weight:700;color:var(--orange);">This is a PR ★</label>
-      </div>
-      <input type="text" id="raceNotes" placeholder="Notes (optional)"/>
-      <button class="btn" id="submitResult">Add Result</button>
+    <div class="j-title">Why I'm Running a Half Marathon</div>
+    <div class="j-body">
+      <p>I've been running casually for a while — 5Ks here and there, no real structure. Placing 1st in my age group at the DoNot Stop 5K was the moment something clicked. I wanted to see what I could do with a real plan.</p>
+      <p>December 13 is the goal. 14 weeks starting September 1. Sub-2:15. I've never run more than 6 miles at once. I'm logging every week here — the good and the ugly.</p>
     </div>
-
-    <h3 style="font-family:'Bebas Neue',cursive;font-size:22px;margin-bottom:12px;">Race Results</h3>
-    <div id="resultsList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
-  </div>
-
-  <!-- SUBSCRIBERS TAB -->
-  <div class="tab-content" id="tab-subs">
-    <div class="strava-card">
-      <h3>Email Subscribers</h3>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Everyone who signed up via the subscribe form on your site.</p>
-      <div id="subsList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
+    <div class="j-footer">
+      <span class="j-stat">First post</span>
+      <span class="j-stat"><span>148</span> days to race</span>
     </div>
   </div>
-</div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+  <div class="cta-box">
+    <h3>Admin Dashboard Coming Soon</h3>
+    <p>Post journal entries, upload photos, and sync race results from a private dashboard only you can access.</p>
+    <button class="btn-primary" style="margin:0 auto;" disabled>🔒 Admin Login — Launching with Backend</button>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PHOTOS -->
+<section class="section" id="photos">
+  <div class="eyebrow">Photo Feed</div>
+  <div class="section-title">Miles in Pictures</div>
+  <div class="photo-grid">
+    <div class="photo-cell" data-caption="Firecracker Fast 5K · Jul 4 · Little Rock, AR"><div class="photo-emoji">🏅</div><div class="photo-overlay"><div class="photo-caption">Firecracker Fast 5K<br>Jul 4 · Little Rock, AR</div></div></div>
+    <div class="photo-cell" data-caption="6am White Rock Lake · Dallas, TX"><div class="photo-emoji">🌅</div><div class="photo-overlay"><div class="photo-caption">6am White Rock Lake<br>Dallas, TX</div></div></div>
+    <div class="photo-cell" data-caption="ASICS Nimbus 28 · Sorting the shoe situation"><div class="photo-emoji">👟</div><div class="photo-overlay"><div class="photo-caption">ASICS Nimbus 28<br>Sorting the shoe situation</div></div></div>
+    <div class="photo-cell" data-caption="September in Dallas · The plan says go anyway"><div class="photo-emoji">🌡️</div><div class="photo-overlay"><div class="photo-caption">September in Dallas<br>The plan says go anyway</div></div></div>
+    <div class="photo-cell" data-caption="Friday pasta night · Pre-long-run ritual"><div class="photo-emoji">🍝</div><div class="photo-overlay"><div class="photo-caption">Friday pasta night<br>Pre-long-run ritual</div></div></div>
+    <div class="photo-cell photo-add"><div class="photo-emoji">+</div><div class="photo-overlay"><div class="photo-caption">Add from admin dashboard</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-logo">Jonathan Runs</div>
+  <div class="footer-sub">29:05 5K → 13.1 miles · Dallas, TX · Dec 13, 2026</div>
+  <div class="footer-links">
+    <a href="https://strava.com/athletes/jaycee501" target="_blank">Strava</a>
+    <a href="https://jaywest501.github.io" target="_blank">Portfolio</a>
+    <a href="https://twitch.tv/jaycee501" target="_blank">Twitch</a>
+  </div>
+  <div style="font-size:10px;color:var(--text2);margin-top:18px;">Built by Jonathan West · 2026</div>
+</footer>
 
 <script>
-const API = '';
-let adminPassword = '';
-
-function toast(msg, isError = false) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (isError ? ' error' : '');
-  setTimeout(() => t.className = 'toast', 3000);
-}
-
-function authHeaders() {
-  return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminPassword}` };
-}
-
-// LOGIN
-document.getElementById('loginBtn').addEventListener('click', async () => {
-  const pw = document.getElementById('pwInput').value.trim();
-  if (!pw) return;
-
-  // Test password by hitting a protected endpoint
-  const res = await fetch(`${API}/api/posts`, {
-    headers: { Authorization: `Bearer ${pw}` }
-  });
-
-  // Posts GET is public so we just check if we can reach the API
-  // Real auth test: try to create a dummy post and see if we get 401
-  const testRes = await fetch(`${API}/api/results`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${pw}` },
-    body: JSON.stringify({ _test: true })
-  });
-
-  if (testRes.status === 400 || testRes.status === 201) {
-    // 400 = validation failed (password was accepted), 201 = created
-    adminPassword = pw;
-    try { sessionStorage.setItem('adminPw', pw); } catch(e) {}
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-    loadAll();
-    checkStravaConnection();
-  } else if (testRes.status === 401) {
-    document.getElementById('loginErr').textContent = 'Incorrect password.';
-  } else {
-    // Assume correct if API is reachable
-    adminPassword = pw;
-    try { sessionStorage.setItem('adminPw', pw); } catch(e) {}
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-    loadAll();
-    checkStravaConnection();
+// THEME
+const html = document.documentElement;
+const themeBtn = document.getElementById('themeBtn');
+try { const s = localStorage.getItem('jrTheme'); if(s) html.setAttribute('data-theme',s); } catch(e){}
+themeBtn.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  try { localStorage.setItem('jrTheme', next); } catch(e) {
+    // localStorage blocked — toggle still works for session
   }
 });
 
-document.getElementById('pwInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+// HAMBURGER
+const hamBtn = document.getElementById('hamBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+hamBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+document.querySelectorAll('.mm-link').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+document.addEventListener('click', e => { if (!hamBtn.contains(e.target) && !mobileMenu.contains(e.target)) mobileMenu.classList.remove('open'); });
+
+// COUNTDOWN
+function tick() {
+  const diff = new Date('2026-12-13T07:00:00') - new Date();
+  if (diff <= 0) return;
+  const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000),
+        m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+  document.getElementById('cd-d').textContent = String(d).padStart(3,'0');
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+}
+tick(); setInterval(tick, 1000);
+
+// SCROLL HINT
+const scrollHint = document.getElementById('scrollHint');
+let scrolled = false;
+window.addEventListener('scroll', () => { if (!scrolled && window.scrollY > 60) { scrolled=true; scrollHint.classList.add('hidden'); } }, {passive:true});
+
+// MILEAGE CHART — uses CSS variables via JS
+const miles=[18,20,22,16,23,25,27,18,28,30,26,20,14,10];
+const types=['build','build','build','recovery','build','build','build','recovery','peak','peak','peak','taper','taper','taper'];
+const colorMap={build:'var(--chart-build)',recovery:'var(--chart-recovery)',peak:'var(--chart-peak)',taper:'var(--chart-taper)'};
+const mx=Math.max(...miles);
+const chartEl=document.getElementById('mileageChart');
+miles.forEach((m,i)=>{
+  const h=Math.max(4,Math.round((m/mx)*62));
+  const wrap=document.createElement('div'); wrap.className='c-bar-wrap';
+  const bar=document.createElement('div'); bar.className='c-bar';
+  bar.style.height=h+'px'; bar.style.background=colorMap[types[i]]; bar.style.opacity='0.75';
+  bar.title=`Week ${i+1}: ${m} miles`;
+  const num=document.createElement('div'); num.className='c-num'; num.textContent=i+1;
+  wrap.append(bar,num); chartEl.appendChild(wrap);
 });
 
-// Auto-login from session
-try {
-  const saved = sessionStorage.getItem('adminPw');
-  if (saved) {
-    adminPassword = saved;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-    setTimeout(() => { loadAll(); checkStravaConnection(); }, 100);
-  }
-} catch(e) {}
-
-// LOGOUT
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  adminPassword = '';
-  try { sessionStorage.removeItem('adminPw'); } catch(e) {}
-  document.getElementById('mainApp').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('pwInput').value = '';
+// HR ZONES — tap to toggle tooltip
+document.querySelectorAll('.hr-zones').forEach(zoneBar => {
+  const runId = zoneBar.dataset.run;
+  const tooltip = document.getElementById('tt-'+runId);
+  if (!tooltip) return;
+  zoneBar.addEventListener('click', () => tooltip.classList.toggle('show'));
 });
 
-// TABS
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+// PHOTO CELLS — tap to toggle on mobile
+document.querySelectorAll('.photo-cell:not(.photo-add)').forEach(cell => {
+  cell.addEventListener('click', () => {
+    document.querySelectorAll('.photo-cell').forEach(c => { if(c!==cell) c.classList.remove('tapped'); });
+    cell.classList.toggle('tapped');
   });
 });
 
-// Check Strava connection status
-async function checkStravaConnection() {
-  const statusEl = document.getElementById('stravaStatusText');
-  const connectBtn = document.getElementById('connectBtn');
-  statusEl.innerHTML = '<span class="status-dot dot-orange"></span>Checking Strava connection...';
-
-  try {
-    const res = await fetch(`${API}/api/strava/runs?limit=1`);
-    if (res.ok) {
-      statusEl.innerHTML = '<span class="status-dot dot-green"></span>Strava connected and syncing runs automatically.';
-      connectBtn.textContent = 'Reconnect Strava';
-    } else {
-      const data = await res.json();
-      statusEl.innerHTML = `<span class="status-dot dot-red"></span>Not connected: ${data.error || 'Click Connect Strava to authorize.'}`;
-    }
-  } catch(e) {
-    statusEl.innerHTML = '<span class="status-dot dot-red"></span>Could not reach API. Make sure the site is deployed.';
-  }
-
-  // Check if redirected back from Strava auth
-  if (window.location.search.includes('strava=connected')) {
-    toast('Strava connected successfully!');
-    window.history.replaceState({}, '', '/admin');
-  }
-}
-
-// Sync runs
-document.getElementById('syncBtn').addEventListener('click', async () => {
-  document.getElementById('syncInfo').textContent = 'Syncing...';
-  try {
-    const res = await fetch(`${API}/api/strava/runs?bust=${Date.now()}`);
-    const data = await res.json();
-    if (Array.isArray(data)) {
-      document.getElementById('syncInfo').textContent = `✅ Synced ${data.length} runs successfully.`;
-      toast(`Synced ${data.length} runs`);
-    } else {
-      document.getElementById('syncInfo').textContent = `Error: ${data.error}`;
-    }
-  } catch(e) {
-    document.getElementById('syncInfo').textContent = 'Sync failed — check API logs in Vercel.';
-  }
+// SUBSCRIBE
+const subBtn = document.getElementById('subBtn');
+const subEmail = document.getElementById('subEmail');
+const subForm = document.getElementById('subForm');
+const subSuccess = document.getElementById('subSuccess');
+subBtn.addEventListener('click', () => {
+  const email = subEmail.value.trim();
+  if (!email || !email.includes('@')) { subEmail.style.outline='2px solid #e5193b'; return; }
+  subEmail.style.outline='';
+  subForm.style.display='none';
+  subSuccess.style.display='block';
+  // In production this posts to your backend
 });
-
-// Preview runs
-document.getElementById('previewRunsBtn').addEventListener('click', async () => {
-  const preview = document.getElementById('runPreview');
-  preview.style.display = 'block';
-  preview.innerHTML = '<div style="color:var(--muted);font-size:12px;">Loading runs...</div>';
-
-  try {
-    const res = await fetch(`${API}/api/strava/runs?limit=5`);
-    const runs = await res.json();
-
-    if (!Array.isArray(runs) || runs.length === 0) {
-      preview.innerHTML = '<div style="color:var(--muted);font-size:12px;">No runs found. Connect Strava first.</div>';
-      return;
-    }
-
-    preview.innerHTML = runs.map(r => `
-      <div class="run-preview-item">
-        <strong>${r.name}</strong><br>
-        ${new Date(r.date).toLocaleDateString()} · ${r.distance_miles} mi · ${r.moving_time} · ${r.pace}/mi
-        ${r.calories ? ` · 🔥 ${r.calories} cal` : ''}
-        ${r.avg_hr ? ` · ❤️ ${r.avg_hr} bpm avg` : ''}
-      </div>
-    `).join('');
-  } catch(e) {
-    preview.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load runs.</div>';
-  }
-});
-
-// POSTS
-async function loadPosts() {
-  const res = await fetch(`${API}/api/posts`);
-  const posts = await res.json();
-  const list = document.getElementById('postList');
-
-  if (!posts.length) {
-    list.innerHTML = '<div style="color:var(--muted);font-size:13px;">No posts yet.</div>';
-    return;
-  }
-
-  list.innerHTML = posts.map(p => `
-    <div class="post-item">
-      <div>
-        <div class="post-item-title">${p.title}</div>
-        <div class="post-item-meta">${new Date(p.created_at).toLocaleDateString()} · ${p.tag}</div>
-      </div>
-      <div class="post-actions">
-        <button class="btn btn-sm btn-danger" onclick="deletePost('${p.id}')">Delete</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-document.getElementById('submitPost').addEventListener('click', async () => {
-  const title = document.getElementById('postTitle').value.trim();
-  const body = document.getElementById('postBody').value.trim();
-
-  if (!title || !body) { toast('Title and body are required', true); return; }
-
-  const res = await fetch(`${API}/api/posts`, {
-    method: 'POST',
-    headers: authHeaders(),
-    body: JSON.stringify({
-      title,
-      body,
-      tag: document.getElementById('postTag').value,
-      run_miles: document.getElementById('postMiles').value || null,
-      run_time: document.getElementById('postTime').value || null,
-      avg_hr: document.getElementById('postHR').value || null,
-    }),
-  });
-
-  if (res.ok) {
-    toast('Post published!');
-    document.getElementById('postTitle').value = '';
-    document.getElementById('postBody').value = '';
-    document.getElementById('postMiles').value = '';
-    document.getElementById('postTime').value = '';
-    document.getElementById('postHR').value = '';
-    loadPosts();
-  } else {
-    const err = await res.json();
-    toast(err.error || 'Failed to publish', true);
-  }
-});
-
-async function deletePost(id) {
-  if (!confirm('Delete this post?')) return;
-  const res = await fetch(`${API}/api/posts/${id}`, { method: 'DELETE', headers: authHeaders() });
-  if (res.ok) { toast('Post deleted'); loadPosts(); }
-  else toast('Failed to delete', true);
-}
-
-// RESULTS
-async function loadResults() {
-  const res = await fetch(`${API}/api/results`);
-  const results = await res.json();
-  const list = document.getElementById('resultsList');
-
-  if (!results.length) {
-    list.innerHTML = '<div style="color:var(--muted);font-size:13px;">No results yet.</div>';
-    return;
-  }
-
-  list.innerHTML = results.map(r => `
-    <div class="result-item">
-      <div>
-        <div class="result-name">${r.race_name}${r.is_pr ? '<span class="pr-badge">PR ★</span>' : ''}</div>
-        <div class="result-meta">
-          ${new Date(r.race_date).toLocaleDateString()} · ${r.location || ''} · ${r.distance}<br>
-          Chip: <strong style="color:#00b341">${r.chip_time}</strong>
-          ${r.overall_place ? ` · ${r.overall_place}/${r.overall_total} overall` : ''}
-          ${r.ag_place ? ` · ${r.ag_place}/${r.ag_total} AG` : ''}
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-document.getElementById('submitResult').addEventListener('click', async () => {
-  const overall = document.getElementById('raceOverall').value.split('/').map(s => s.trim());
-  const ag = document.getElementById('raceAG').value.split('/').map(s => s.trim());
-
-  const body = {
-    race_name: document.getElementById('raceName').value.trim(),
-    race_date: document.getElementById('raceDate').value,
-    location: document.getElementById('raceLocation').value.trim(),
-    distance: document.getElementById('raceDist').value,
-    chip_time: document.getElementById('raceChip').value.trim(),
-    gun_time: document.getElementById('raceGun').value.trim() || null,
-    overall_place: overall[0] ? parseInt(overall[0]) : null,
-    overall_total: overall[1] ? parseInt(overall[1]) : null,
-    ag_place: ag[0] ? parseInt(ag[0]) : null,
-    ag_total: ag[1] ? parseInt(ag[1]) : null,
-    is_pr: document.getElementById('raceIsPR').checked,
-    notes: document.getElementById('raceNotes').value.trim() || null,
-  };
-
-  if (!body.race_name || !body.race_date || !body.chip_time) {
-    toast('Race name, date and chip time are required', true); return;
-  }
-
-  const res = await fetch(`${API}/api/results`, {
-    method: 'POST',
-    headers: authHeaders(),
-    body: JSON.stringify(body),
-  });
-
-  if (res.ok) {
-    toast('Result added!');
-    ['raceName','raceDate','raceLocation','raceChip','raceGun','raceOverall','raceAG','raceNotes']
-      .forEach(id => document.getElementById(id).value = '');
-    document.getElementById('raceIsPR').checked = false;
-    loadResults();
-  } else {
-    const err = await res.json();
-    toast(err.error || 'Failed to add result', true);
-  }
-});
-
-// SUBSCRIBERS
-async function loadSubscribers() {
-  try {
-    const res = await fetch(`${API}/api/subscribe`, {
-      headers: authHeaders()
-    });
-    // Note: subscribe endpoint doesn't have a GET — we'll add basic display
-    document.getElementById('subsList').innerHTML =
-      '<div style="color:var(--muted);font-size:12px;">To view subscribers, go to your Supabase dashboard → Table Editor → subscribers table.</div>';
-  } catch(e) {
-    document.getElementById('subsList').innerHTML =
-      '<div style="color:var(--muted);font-size:12px;">View subscribers in your Supabase dashboard → Table Editor → subscribers.</div>';
-  }
-}
-
-function loadAll() {
-  loadPosts();
-  loadResults();
-  loadSubscribers();
-}
+subEmail.addEventListener('keydown', e => { if(e.key==='Enter') subBtn.click(); });
 </script>
 </body>
 </html>
