@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    { "source": "/api/strava/auth", "destination": "/api/strava/auth.js" },
+    { "source": "/api/strava/callback", "destination": "/api/strava/callback.js" },
+    { "source": "/api/strava/runs", "destination": "/api/strava/runs.js" },
+    { "source": "/api/posts", "destination": "/api/posts/index.js" },
+    { "source": "/api/posts/:id", "destination": "/api/posts/[id].js" },
+    { "source": "/api/results", "destination": "/api/results/index.js" },
+    { "source": "/api/subscribe", "destination": "/api/subscribe/index.js" },
+    { "source": "/admin", "destination": "/admin/index.html" }
+  ]
+}
