@@ -1,4 +1,9 @@
-}{
+{
+  "version": 2,
+  "buildCommand": null,
+  "outputDirectory": "public",
+  "installCommand": "npm install",
+  "framework": null,
   "rewrites": [
     { "source": "/api/strava/auth", "destination": "/api/strava/auth.js" },
     { "source": "/api/strava/callback", "destination": "/api/strava/callback.js" },
@@ -10,4 +15,3 @@
     { "source": "/admin", "destination": "/admin/index.html" }
   ]
 }
-
