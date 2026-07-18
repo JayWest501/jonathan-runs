@@ -100,6 +100,7 @@ textarea{resize:vertical;min-height:120px;}
     <div class="tab" data-tab="posts">📝 Journal</div>
     <div class="tab" data-tab="results">🏁 Results</div>
     <div class="tab" data-tab="subs">📧 Subscribers</div>
+    <div class="tab" data-tab="photos">📸 Photos</div>
   </div>
 
   <!-- STRAVA TAB -->
@@ -231,6 +232,30 @@ textarea{resize:vertical;min-height:120px;}
       <h3>Email Subscribers</h3>
       <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Everyone who signed up via the subscribe form on your site.</p>
       <div id="subsList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- PHOTOS TAB -->
+  <div class="tab-content" id="tab-photos">
+    <div class="strava-card">
+      <h3>Upload Photo</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Upload photos to your public feed. JPG, PNG, GIF, WebP supported.</p>
+      <div id="uploadArea" style="border:2px dashed var(--border);border-radius:10px;padding:30px;text-align:center;cursor:pointer;margin-bottom:12px;transition:border-color .2s;">
+        <div style="font-size:32px;margin-bottom:8px;">📸</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);">Click to select a photo</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">or drag and drop</div>
+      </div>
+      <input type="file" id="photoFile" accept="image/*" style="display:none"/>
+      <div id="photoPreview" style="display:none;margin-bottom:12px;">
+        <img id="previewImg" style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;border:1px solid var(--border);"/>
+      </div>
+      <input type="text" id="photoCaption" placeholder="Caption — e.g. Firecracker Fast 5K · Jul 4 · Little Rock"/>
+      <button class="btn" id="uploadBtn" style="display:none;">Upload Photo</button>
+      <div id="uploadStatus" style="font-size:12px;margin-top:8px;color:var(--red);"></div>
+    </div>
+    <h3 style="font-family:'Bebas Neue',cursive;font-size:22px;margin-bottom:12px;">Your Photos</h3>
+    <div id="photoGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+      <div style="color:var(--muted);font-size:13px;grid-column:1/-1;">Loading...</div>
     </div>
   </div>
 </div>
@@ -547,6 +572,115 @@ function loadAll() {
   loadPosts();
   loadResults();
   loadSubscribers();
+  loadPhotos();
+}
+
+// PHOTOS
+const uploadArea = document.getElementById('uploadArea');
+const photoFile = document.getElementById('photoFile');
+
+uploadArea.addEventListener('click', () => photoFile.click());
+
+uploadArea.addEventListener('dragover', e => {
+  e.preventDefault();
+  uploadArea.style.borderColor = 'var(--orange)';
+});
+uploadArea.addEventListener('dragleave', () => {
+  uploadArea.style.borderColor = 'var(--border)';
+});
+uploadArea.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadArea.style.borderColor = 'var(--border)';
+  const file = e.dataTransfer.files[0];
+  if (file) { photoFile._file = file; previewPhoto(file); }
+});
+
+photoFile.addEventListener('change', () => {
+  if (photoFile.files[0]) previewPhoto(photoFile.files[0]);
+});
+
+function previewPhoto(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('uploadBtn').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('uploadBtn').addEventListener('click', async () => {
+  const file = photoFile._file || photoFile.files[0];
+  const caption = document.getElementById('photoCaption').value.trim();
+  const status = document.getElementById('uploadStatus');
+  const btn = document.getElementById('uploadBtn');
+  if (!file) return;
+
+  btn.textContent = 'Uploading...';
+  btn.disabled = true;
+  status.textContent = '';
+
+  const formData = new FormData();
+  formData.append('photo', file);
+  formData.append('caption', caption);
+
+  try {
+    const res = await fetch('/api/photos', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${adminPassword}` },
+      body: formData
+    });
+    const data = await res.json();
+    if (res.ok) {
+      toast('Photo uploaded!');
+      photoFile.value = '';
+      photoFile._file = null;
+      document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('uploadBtn').style.display = 'none';
+      document.getElementById('photoCaption').value = '';
+      loadPhotos();
+    } else {
+      status.textContent = 'Error: ' + (data.error || 'Upload failed');
+    }
+  } catch(e) {
+    status.textContent = 'Upload failed. Try again.';
+  }
+  btn.textContent = 'Upload Photo';
+  btn.disabled = false;
+});
+
+async function loadPhotos() {
+  const grid = document.getElementById('photoGrid');
+  if (!grid) return;
+  try {
+    const res = await fetch('/api/photos');
+    const photos = await res.json();
+    if (!Array.isArray(photos) || photos.length === 0) {
+      grid.innerHTML = '<div style="color:var(--muted);font-size:13px;grid-column:1/-1;">No photos yet. Upload your first one above.</div>';
+      return;
+    }
+    grid.innerHTML = photos.map(p => `
+      <div style="border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+        <img src="${p.url}" style="width:100%;aspect-ratio:1;object-fit:cover;display:block;" loading="lazy"/>
+        <div style="padding:8px;background:var(--card);">
+          <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px;">${p.caption || 'No caption'}</div>
+          <button onclick="deletePhoto('${p.name}')" style="font-size:10px;font-weight:700;color:var(--red);background:none;border:1px solid var(--red);border-radius:4px;padding:2px 8px;cursor:pointer;">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    grid.innerHTML = '<div style="color:var(--muted);font-size:13px;grid-column:1/-1;">Could not load photos.</div>';
+  }
+}
+
+async function deletePhoto(name) {
+  if (!confirm('Delete this photo?')) return;
+  const res = await fetch(`/api/photos?name=${encodeURIComponent(name)}`, {
+    method: 'DELETE',
+    headers: authHeaders()
+  });
+  if (res.ok) { toast('Photo deleted'); loadPhotos(); }
+  else toast('Failed to delete', true);
 }
 </script>
 </body>
