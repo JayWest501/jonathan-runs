@@ -606,6 +606,35 @@ async function loadJournal() {
 loadRuns();
 loadResults();
 loadJournal();
+
+// Load photos from API — falls back to defaults if none uploaded yet
+async function loadPhotos() {
+  try {
+    const res = await fetch('/api/photos');
+    if (!res.ok) return;
+    const photos = await res.json();
+    if (!Array.isArray(photos) || photos.length === 0) return;
+    const grid = document.querySelector('.photo-grid');
+    if (!grid) return;
+    const addCell = grid.querySelector('.photo-add');
+    // Clear existing cells except the add cell
+    grid.querySelectorAll('.photo-cell:not(.photo-add)').forEach(c => c.remove());
+    // Add photos from API
+    photos.slice(0, 5).forEach(p => {
+      const cell = document.createElement('div');
+      cell.className = 'photo-cell';
+      cell.setAttribute('data-caption', p.caption || '');
+      cell.innerHTML = `<img class="photo-img" src="${p.url}" alt="${p.caption || 'Photo'}" loading="lazy"/>
+        <div class="photo-overlay"><div class="photo-caption">${p.caption || ''}</div></div>`;
+      cell.addEventListener('click', () => {
+        document.querySelectorAll('.photo-cell').forEach(c => { if(c!==cell) c.classList.remove('tapped'); });
+        cell.classList.toggle('tapped');
+      });
+      grid.insertBefore(cell, addCell);
+    });
+  } catch(e) { /* keep defaults */ }
+}
+loadPhotos();
 </script>
 </body>
 </html>
