@@ -1,4 +1,3 @@
-
 // /api/photos
 // GET: returns all photos from Supabase storage
 // POST: uploads a photo (admin only, multipart form data)
