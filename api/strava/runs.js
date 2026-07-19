@@ -123,8 +123,16 @@ export default async function handler(req, res) {
 
     // Exclude activities marked private on Strava — the API returns these
     // to the owner regardless of visibility, so we filter manually
+    // Also exclude walks: anything slower than 15:00/mile pace isn't a run
+    const MIN_PACE_SEC_PER_MILE = 15 * 60; // 15:00/mi — walking pace threshold
+
     activities = activities
       .filter(act => !act.private && act.visibility !== 'only_me')
+      .filter(act => {
+        if (!act.distance || act.distance <= 0) return false;
+        const paceSecPerMile = act.moving_time / (act.distance / 1609.34);
+        return paceSecPerMile <= MIN_PACE_SEC_PER_MILE;
+      })
       .slice(0, limit);
 
     // Enrich each run with HR stream data
