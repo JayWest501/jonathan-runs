@@ -55,13 +55,62 @@ $$('.navbtn').forEach(b=>b.onclick=()=>{$$('.navbtn').forEach(x=>x.classList.rem
 async function loadContent(){try{const d=await api('/api/content');for(const [k,v] of Object.entries(d)){const el=$('#siteForm [name="'+k+'"]');if(el)el.value=v??''}}catch(e){toast(e.message,true)}}
 $('#siteForm').onsubmit=async e=>{e.preventDefault();try{await api('/api/content',{method:'PUT',headers:authHeaders(),body:JSON.stringify(formObj(e.target))});toast('Site content saved')}catch(err){toast(err.message,true)}};
 async function loadGear(){try{gear=await api('/api/gear');$('#gearList').innerHTML=gear.map(x=>`<div class="item"><div style="display:flex;gap:12px;align-items:flex-start">${x.image_url?`<a href="${esc(x.image_url)}" target="_blank" rel="noopener"><img class="photo-thumb" src="${esc(x.image_url)}" alt=""></a>`:''}<div><span class="pill">${esc(x.category)}</span><h3>${esc(x.icon||'✦')} ${esc(x.name)}</h3><div class="meta">${esc(x.type||'')} · ${esc(x.status||'')}<br>${esc(x.note||'')}${x.product_url?`<br><a href="${esc(x.product_url)}" target="_blank" rel="noopener" style="color:var(--orange)">Open product link</a>`:''}</div></div></div><div class="actions"><button class="btn secondary small" onclick="editGear('${x.id}')">Edit</button><button class="btn danger small" onclick="deleteGear('${x.id}')">Delete</button></div></div>`).join('')||'<div class="card meta">No gear added yet.</div>'}catch(e){toast(e.message,true)}}
-function showGearImagePreview(url,label='Current image'){const box=$('#gearImagePreview'),img=$('#gearImagePreviewImg');if(url){img.src=url;box.classList.add('show');$('#gearImagePreviewText').textContent=label}else{img.removeAttribute('src');box.classList.remove('show')}}
-function resetGearForm(){$('#gearForm').reset();$('#gearForm [name=id]').value='';$('#gearForm [name=icon]').value='✦';$('#gearForm [name=published]').checked=true;showGearImagePreview('')}
-window.clearGearImage=()=>{const f=$('#gearForm');f.elements.image_url.value='';f.elements.gear_image_file.value='';showGearImagePreview('')};
-$('#gearImageFile').addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;showGearImagePreview(URL.createObjectURL(file),'Ready to upload when you save')});
-$('#gearForm [name=image_url]').addEventListener('input',e=>showGearImagePreview(e.target.value,'Image URL preview'))
+function showGearImagePreview(url, label = 'Current image') {
+  const preview = $('#gearImagePreview');
+  const image = $('#gearImagePreviewImg');
+
+  if (url) {
+    image.src = url;
+    preview.classList.add('show');
+    $('#gearImagePreviewText').textContent = label;
+  } else {
+    image.removeAttribute('src');
+    preview.classList.remove('show');
+  }
+}
+
+function resetGearForm() {
+  const form = $('#gearForm');
+
+  form.reset();
+  form.elements.id.value = '';
+  form.elements.icon.value = '✦';
+  form.elements.published.checked = true;
+  form.elements.gear_image_file.value = '';
+
+  showGearImagePreview('');
+}
+
+window.clearGearImage = function () {
+  const form = $('#gearForm');
+
+  form.elements.image_url.value = '';
+  form.elements.gear_image_file.value = '';
+
+  showGearImagePreview('');
+};
+
+$('#gearImageFile').addEventListener('change', function (event) {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const previewUrl = URL.createObjectURL(file);
+
+  showGearImagePreview(
+    previewUrl,
+    'Ready to upload when you save'
+  );
+});
+
+$('#gearForm [name=image_url]').addEventListener('input', function (event) {
+  showGearImagePreview(
+    event.target.value,
+    'Image URL preview'
+  );
+});
 window.editGear=id=>{const x=gear.find(i=>i.id===id),f=$('#gearForm');for(const [k,v] of Object.entries(x)){const el=f.elements[k];if(!el)continue;if(el.type==='checkbox')el.checked=!!v;else el.value=v??''}f.elements.gear_image_file.value='';showGearImagePreview(x.image_url||'');scrollTo({top:0,behavior:'smooth'})};
-window.deleteGear=async id=>{if(!confirm('Delete this gear item?'))return;try{await api('/api/gear/'+id,{method:'DELETE',headers:authHeaders(false)});toast('Gear deleted');loadGear()}catch(e){toast(e.message,true)}};
+window.deleteGear=async id=>{if(!confirm('Delete this gear item?'))return;try{await api('/api/gear?id='+encodeURIComponent(id),{method:'DELETE',headers:authHeaders(false)});toast('Gear deleted');loadGear()}catch(e){toast(e.message,true)}};
 async function uploadGearImage(file,name){
   const fd=new FormData();
   fd.append('file',file);
@@ -82,7 +131,7 @@ $('#gearForm').onsubmit=async e=>{
       const uploaded=await uploadGearImage(file,d.name);
       d.image_url=uploaded.url;
     }
-    await api(id?'/api/gear/'+id:'/api/gear',{method:id?'PATCH':'POST',headers:authHeaders(),body:JSON.stringify(d)});
+    await api(id?'/api/gear?id='+encodeURIComponent(id):'/api/gear',{method:id?'PATCH':'POST',headers:authHeaders(),body:JSON.stringify(d)});
     toast('Gear saved');
     resetGearForm();
     loadGear();
@@ -100,7 +149,7 @@ async function loadPhotos(){try{const p=await api('/api/photos');$('#photoList')
 $('#photoForm').onsubmit=async e=>{e.preventDefault();const fd=new FormData();fd.append('file',e.target.file.files[0]);fd.append('caption',e.target.caption.value);fd.append('race_id',e.target.race_id.value);try{await api('/api/photos',{method:'POST',headers:{Authorization:'Bearer '+token},body:fd});toast('Photo uploaded');e.target.reset();loadPhotos()}catch(err){toast(err.message,true)}};window.deletePhoto=async n=>{if(!confirm('Delete photo?'))return;try{await api('/api/photos?name='+n,{method:'DELETE',headers:authHeaders(false)});toast('Photo deleted');loadPhotos()}catch(e){toast(e.message,true)}};
 async function loadRuns(bust=false){$('#runList').innerHTML='<div class="card meta">Loading runs…</div>';try{const r=await api('/api/strava/runs?limit=20'+(bust?'&bust=1':''),{headers:authHeaders(false)});$('#runList').innerHTML=r.map(x=>`<div class="item"><div><h3>${esc(x.name)}</h3><div class="meta">${esc(x.date_display||'')} · ${x.distance_miles} mi · ${esc(x.pace||'')} /mi ${x.hidden?'· Hidden':''}</div></div><button class="btn ${x.hidden?'':'secondary'} small" onclick="toggleRun('${x.id}',${!x.hidden})">${x.hidden?'Unhide':'Hide'}</button></div>`).join('')}catch(e){toast(e.message,true)}}window.toggleRun=async(id,hide)=>{try{await api('/api/strava/runs',{method:'POST',headers:authHeaders(),body:JSON.stringify({activity_id:id,hide})});toast(hide?'Run hidden':'Run visible');loadRuns(true)}catch(e){toast(e.message,true)}};
 async function loadProgress(bust=false){$('#weekList').innerHTML='<div class="card meta">Loading weeks…</div>';try{const d=await api('/api/progress'+(bust?'?bust=1':''));$('#weekList').innerHTML=d.weeks.map(w=>`<div class="item week"><b>Week ${w.week}</b><div><div class="meta">${w.actualMiles} / ${w.target} miles · ${w.pct}% ${w.manualOverride!==null?'· manual':''}</div><div class="bar"><i style="width:${Math.min(100,w.pct)}%"></i></div></div><div class="actions"><button class="btn small ${w.complete?'':'secondary'}" onclick="setWeek(${w.week},true)">Complete</button><button class="btn secondary small" onclick="setWeek(${w.week},false)">Incomplete</button><button class="btn secondary small" onclick="setWeek(${w.week},null)">Auto</button></div></div>`).join('')}catch(e){toast(e.message,true)}}window.setWeek=async(week,override)=>{try{await api('/api/progress',{method:'POST',headers:authHeaders(),body:JSON.stringify({week,override})});toast('Week updated');loadProgress(true)}catch(e){toast(e.message,true)}};
-async function loadSubscribers(){try{const s=await api('/api/subscribers',{headers:authHeaders(false)});$('#subList').innerHTML=s.map(x=>`<div class="item"><div><h3>${esc(x.email)}</h3><div class="meta">${new Date(x.subscribed_at).toLocaleString()}</div></div><button class="btn danger small" onclick="deleteSub('${x.id}')">Remove</button></div>`).join('')||'<div class="card meta">No subscribers yet.</div>'}catch(e){toast(e.message,true)}}window.deleteSub=async id=>{if(!confirm('Remove subscriber?'))return;try{await api('/api/subscribers?id='+id,{method:'DELETE',headers:authHeaders(false)});toast('Subscriber removed');loadSubscribers()}catch(e){toast(e.message,true)}};
+async function loadSubscribers(){try{const s=await api('/api/subscribe',{headers:authHeaders(false)});$('#subList').innerHTML=s.map(x=>`<div class="item"><div><h3>${esc(x.email)}</h3><div class="meta">${new Date(x.subscribed_at).toLocaleString()}</div></div><button class="btn danger small" onclick="deleteSub('${x.id}')">Remove</button></div>`).join('')||'<div class="card meta">No subscribers yet.</div>'}catch(e){toast(e.message,true)}}window.deleteSub=async id=>{if(!confirm('Remove subscriber?'))return;try{await api('/api/subscribe?id='+encodeURIComponent(id),{method:'DELETE',headers:authHeaders(false)});toast('Subscriber removed');loadSubscribers()}catch(e){toast(e.message,true)}};
 function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 window.resetGearForm=resetGearForm;window.resetPostForm=resetPostForm;window.resetResultForm=resetResultForm;window.loadRuns=loadRuns;window.loadProgress=loadProgress;window.loadSubscribers=loadSubscribers;
 </script>
