@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -334,6 +335,68 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
 .gear-product-link{display:inline-flex;align-items:center;justify-content:center;margin-top:auto;padding-top:18px;color:var(--orange);font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;text-decoration:none}
 .gear-product-link:hover{text-decoration:underline}.gear-card:hover{transform:translateY(-3px);border-color:var(--orange);box-shadow:var(--shadow)}.gear-card-top{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.gear-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(255,92,0,.12);color:var(--orange);font-size:21px}.gear-status{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);border:1px solid rgba(255,92,0,.3);border-radius:999px;padding:4px 8px}.gear-name{font-family:'Archivo Black',sans-serif;font-size:20px;line-height:1.08;margin-top:22px}.gear-type{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:5px}.gear-note{font-size:12px;line-height:1.65;color:var(--text2);margin-top:12px}.wishlist-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#ff5c00,#e44800);border-radius:16px;padding:30px;color:#fff;margin-top:14px}.wishlist-card:after{content:'13.1';position:absolute;right:-10px;bottom:-35px;font-family:'Archivo Black',sans-serif;font-size:120px;color:rgba(0,0,0,.12);letter-spacing:-.08em}.wishlist-card h3{font-family:'Archivo Black',sans-serif;font-size:27px;position:relative;z-index:1}.wishlist-card p{font-size:13px;line-height:1.65;max-width:500px;margin:8px 0 19px;position:relative;z-index:1}.wishlist-btn{display:inline-flex;position:relative;z-index:1;background:#18100b;color:#fff;text-decoration:none;padding:11px 17px;border-radius:8px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:0;cursor:pointer}.wishlist-btn.is-placeholder{opacity:.72;cursor:default}.gear-disclosure{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px}.gear-empty{border:1.5px dashed var(--border);border-radius:12px;padding:18px;color:var(--muted);font-size:12px;line-height:1.6}@media(max-width:620px){.gear-grid{grid-template-columns:1fr}.gear-card{min-height:0}}
 
+
+/* PUBLIC TRAINING PLAN */
+.plan-overview{margin-bottom:18px}
+.current-week-panel{margin-bottom:24px;border-color:rgba(255,92,0,.35)}
+.current-week-heading{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.current-week-title{font-family:'Archivo Black',sans-serif;font-size:27px;line-height:1.05;color:var(--text);margin:0}
+.current-week-dates{font-size:12px;color:var(--muted);margin-top:7px}
+.current-week-mileage{text-align:right;min-width:100px}
+.current-week-mileage strong{display:block;font-family:'Archivo Black',sans-serif;font-size:36px;line-height:1;color:var(--orange)}
+.current-week-mileage span{font-size:11px;color:var(--muted);font-weight:700}
+.current-week-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.current-week-summary>div{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px}
+.current-week-summary span{display:block;font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.current-week-summary strong{font-size:12px;color:var(--text);line-height:1.45}
+.week-note-public{margin-top:14px;padding:13px 14px;border-left:3px solid var(--orange);background:rgba(255,92,0,.08);border-radius:0 9px 9px 0;font-size:12px;line-height:1.65;color:var(--text2)}
+.plan-browser{margin-top:32px;margin-bottom:24px}
+.plan-browser-header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:14px}
+.plan-browser-title{font-family:'Archivo Black',sans-serif;font-size:24px;color:var(--text);line-height:1}
+.phase-tabs,.week-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}
+.phase-tabs::-webkit-scrollbar,.week-tabs::-webkit-scrollbar{display:none}
+.phase-tab,.week-tab{flex:0 0 auto;border:1px solid var(--border);background:var(--card);color:var(--text2);font-family:'DM Sans',sans-serif;font-weight:800;cursor:pointer}
+.phase-tab{border-radius:999px;padding:8px 13px;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.week-tab{width:38px;height:38px;border-radius:9px;font-size:12px}
+.phase-tab.active,.week-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
+.week-tab.complete{border-color:var(--green);color:var(--green)}
+.week-tab.current:not(.active){box-shadow:0 0 0 2px rgba(255,92,0,.2);border-color:var(--orange)}
+.plan-week-card{padding:0;overflow:hidden;margin-top:4px}
+.plan-week-header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:20px;background:linear-gradient(135deg,rgba(255,92,0,.15),transparent)}
+.plan-week-header h3{font-family:'Archivo Black',sans-serif;font-size:23px;line-height:1.05;color:var(--text);margin:0}
+.plan-week-header p{font-size:11px;color:var(--muted);margin-top:6px}
+.plan-week-total{text-align:right}
+.plan-week-total strong{font-family:'Archivo Black',sans-serif;font-size:28px;color:var(--orange);display:block;line-height:1}
+.plan-week-total span{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.plan-days{padding:8px 16px 16px}
+.plan-day{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--border)}
+.plan-day:last-child{border-bottom:0}
+.plan-day-name{font-size:10px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.plan-day-workout{font-size:13px;font-weight:700;color:var(--text)}
+.plan-day-detail{font-size:10px;color:var(--muted);margin-top:3px}
+.plan-day-status{font-size:9px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;border-radius:999px;padding:4px 8px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.plan-day-status.rest{opacity:.7}
+.plan-day-status.easy{color:var(--green);border-color:rgba(0,179,65,.3)}
+.plan-day-status.tempo{color:var(--purple);border-color:rgba(124,58,237,.3)}
+.plan-day-status.long{color:var(--yellow);border-color:rgba(245,158,11,.35)}
+.plan-day-status.race{color:var(--red);border-color:rgba(229,25,59,.3)}
+.plan-week-note{padding:14px 18px;background:var(--bg2);border-top:1px solid var(--border);font-size:12px;line-height:1.6;color:var(--text2)}
+.mileage-chart-card{margin-top:24px}
+.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:15px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.chart-legend span{display:flex;align-items:center;gap:5px}
+.chart-legend i{display:inline-block;width:9px;height:9px;border-radius:2px}
+.legend-plan{background:var(--border)}
+.legend-complete{background:var(--green)}
+.legend-current{background:var(--orange)}
+.legend-missed{background:var(--red)}
+@media(max-width:560px){
+  .current-week-heading{align-items:flex-start}
+  .current-week-title{font-size:23px}
+  .current-week-summary{grid-template-columns:1fr}
+  .plan-day{grid-template-columns:42px minmax(0,1fr)}
+  .plan-day-status{grid-column:2;justify-self:start}
+}
+
 </style>
 </head>
 <body>
@@ -405,8 +468,8 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
       <div class="home-kicker">The target</div>
       <h2 class="home-title">Numbers that matter.</h2>
       <div class="metric-grid">
-        <div class="metric-card"><div class="metric-icon">▣</div><div><div class="metric-value">14</div><div class="metric-label">Weeks to race day</div></div></div>
-        <div class="metric-card"><div class="metric-icon">⌁</div><div><div class="metric-value">300</div><div class="metric-label">Miles planned</div></div></div>
+        <div class="metric-card"><div class="metric-icon">▣</div><div><div class="metric-value" id="homePlanWeeks">14</div><div class="metric-label">Training weeks</div></div></div>
+        <div class="metric-card"><div class="metric-icon">⌁</div><div><div class="metric-value" id="homePlanMiles">0</div><div class="metric-label">Miles planned</div></div></div>
         <div class="metric-card"><div class="metric-icon">◴</div><div><div class="metric-value">29:05</div><div class="metric-label">Current 5K PR</div></div></div>
         <div class="metric-card"><div class="metric-icon">♢</div><div><div class="metric-value">0</div><div class="metric-label">Halfs finished—for now</div></div></div>
       </div>
@@ -460,27 +523,79 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
       </div>
       <div class="sub-success" id="subSuccess">✅ You're in! I'll send updates as the training unfolds.</div>
     </div>
+
     <div class="eyebrow">Training Progress</div>
-    <div class="section-title">The Journey So Far</div>
-    <div class="card">
+    <div class="section-title">The 14-Week Plan</div>
+
+    <section class="plan-overview card" aria-labelledby="planOverviewTitle">
       <div class="prog-header">
-        <div><div class="prog-title" id="progTitle">14-Week Plan · Sep 1 – Dec 13</div><div class="prog-sub" id="progSub">Plan starts September 1 · Currently building base</div></div>
+        <div>
+          <div class="prog-title" id="planOverviewTitle">September 1 – December 13, 2026</div>
+          <div class="prog-sub" id="progSub">Base building now · Official plan begins September 1</div>
+        </div>
         <div class="phase-pill" id="progPhase">Pre-Plan</div>
       </div>
+
       <div class="prog-stats">
         <div class="prog-stat"><div class="prog-stat-num" id="weeksDone">0</div><div class="prog-stat-lbl">Weeks Done</div></div>
         <div class="prog-stat"><div class="prog-stat-num" id="totalRuns">0</div><div class="prog-stat-lbl">Runs Logged</div></div>
         <div class="prog-stat"><div class="prog-stat-num" id="totalMiles">0</div><div class="prog-stat-lbl">Miles Run</div></div>
-        <div class="prog-stat"><div class="prog-stat-num">29:05</div><div class="prog-stat-lbl">5K PR</div></div>
+        <div class="prog-stat"><div class="prog-stat-num" id="plannedMiles">0</div><div class="prog-stat-lbl">Plan Miles</div></div>
       </div>
+
       <div class="prog-bar-wrap"><div class="prog-bar-fill" id="progBarFill" style="width:0%"></div></div>
-      <div class="prog-bar-meta"><span id="progBarLeft">Week 0 of 14</span><span id="progBarRight">0%</span></div>
-      <div class="chart-wrap">
-        <div class="chart-lbl">Weekly Mileage Arc — tap a bar for details · live from Strava</div>
-        <div class="chart-bars" id="mileageChart"></div>
+      <div class="prog-bar-meta"><span id="progBarLeft">0 of 14 weeks complete</span><span id="progBarRight">0%</span></div>
+    </section>
+
+    <section class="current-week-panel card" aria-labelledby="currentWeekTitle">
+      <div class="current-week-heading">
+        <div>
+          <div class="eyebrow" id="currentWeekPhase">Base Phase</div>
+          <h2 class="current-week-title" id="currentWeekTitle">Week 1 · First Steps</h2>
+          <p class="current-week-dates" id="currentWeekDates">September 1–7</p>
+        </div>
+        <div class="current-week-mileage">
+          <strong id="currentWeekActual">0</strong>
+          <span>of <b id="currentWeekTarget">0</b> mi</span>
+        </div>
       </div>
-      <div id="weekDetail" style="display:none;margin-top:14px;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;"></div>
-    </div>
+
+      <div class="current-week-summary">
+        <div><span>Next workout</span><strong id="nextWorkout">Monday · 3 easy miles</strong></div>
+        <div><span>Long run</span><strong id="longRunWorkout">Saturday · 6 miles</strong></div>
+      </div>
+
+      <div class="week-note-public" id="currentWeekNote"></div>
+    </section>
+
+    <section class="plan-browser" aria-labelledby="planBrowserTitle">
+      <div class="plan-browser-header">
+        <div>
+          <div class="eyebrow">Explore the schedule</div>
+          <h2 class="plan-browser-title" id="planBrowserTitle">Week-by-Week Training</h2>
+        </div>
+      </div>
+
+      <div class="phase-tabs" id="phaseTabs" aria-label="Training phases"></div>
+      <div class="week-tabs" id="weekTabs" aria-label="Training weeks"></div>
+      <div class="card plan-week-card" id="planWeekCard"></div>
+    </section>
+
+    <section class="card mileage-chart-card">
+      <div class="prog-header">
+        <div>
+          <div class="prog-title">Planned vs. Completed Mileage</div>
+          <div class="prog-sub">Select any week to see its workouts and actual Strava mileage.</div>
+        </div>
+      </div>
+      <div class="chart-bars" id="mileageChart"></div>
+      <div class="chart-legend">
+        <span><i class="legend-plan"></i> Planned</span>
+        <span><i class="legend-complete"></i> Complete</span>
+        <span><i class="legend-current"></i> Current</span>
+        <span><i class="legend-missed"></i> Below target</span>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -812,566 +927,405 @@ const PHASE_FOR_WEEK = w => {
 
 let __progressCache = null;
 
-async function loadProgress() {
-  const chartEl = document.getElementById('mileageChart');
-  chartEl.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:10px 0;">Loading from Strava…</div>';
-  try {
-    const res = await fetch('/api/progress');
-    const data = await res.json();
-    __progressCache = data;
+const TRAINING_PLAN = [
+  // PHASE 0 — BASE
+  { phase:0, num:1, name:"First Steps 🌱", dates:"Sep 1–7", miles:18,
+    note:"Every run should feel embarrassingly easy. Slow down if you can't hold a full sentence.",
+    days:[
+      { d:"Mon", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Oatmeal + banana + peanut butter", post:"Grilled chicken rice bowl with veggies" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Toast + eggs + OJ", post:"Salmon + sweet potato + salad" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Greek yogurt + granola + fruit", post:"Turkey wrap + side salad" },
+      { d:"Sat", run:"Long run · 6 mi", tag:"long", dist:6,
+        pre:"Bagel + almond butter + banana (1hr before)", post:"Big pasta with marinara + side salad + garlic bread" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:0, num:2, name:"Find the Rhythm 🎵", dates:"Sep 8–14", miles:20,
+    note:"Add 2-3 strides at the end of Wednesday's run — 20 sec of fast relaxed running, walk back.",
+    days:[
+      { d:"Mon", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Smoothie (banana, oat milk, protein powder)", post:"Chicken stir fry + brown rice" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Easy + strides · 4 mi", tag:"easy", dist:4,
+        pre:"Whole wheat toast + avocado + eggs", post:"Shrimp tacos + black beans + salsa" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Banana + peanut butter on rice cakes", post:"Turkey meatballs + zucchini noodles" },
+      { d:"Sat", run:"Long run · 7 mi", tag:"long", dist:7,
+        pre:"Oatmeal + honey + blueberries (90 min before)", post:"Beef and broccoli + white rice + egg rolls" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:0, num:3, name:"Stack the Miles 📈", dates:"Sep 15–21", miles:22,
+    note:"Don't worry about pace this week — just cover the distance comfortably.",
+    days:[
+      { d:"Mon", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Cottage cheese + berries + granola", post:"Grilled salmon + quinoa + roasted broccoli" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Easy run · 5 mi", tag:"easy", dist:5,
+        pre:"Whole grain cereal + milk + banana", post:"Chicken burrito bowl (rice, beans, corn, guac)" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Apple + almond butter + string cheese", post:"Pork tenderloin + sweet potato + green beans" },
+      { d:"Sat", run:"Long run · 8 mi", tag:"long", dist:8,
+        pre:"Banana + toast + honey — bring a gel for mile 4", post:"Homemade Sunday gravy + pasta + big salad" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:0, num:4, name:"Recovery Week 😌", dates:"Sep 22–28", miles:16,
+    note:"Pulling back is part of the plan — your body adapts during rest, not during the run.",
+    days:[
+      { d:"Mon", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Smoothie + toast", post:"Light chicken soup + whole grain roll" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Yogurt parfait", post:"Tuna salad wrap + fruit" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Rice cakes + peanut butter", post:"Grilled chicken + roasted veggies + rice" },
+      { d:"Sat", run:"Long run · 6 mi", tag:"long", dist:6,
+        pre:"Oatmeal + banana (1hr before)", post:"Pasta + protein of choice + garlic bread" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
 
-    if (!data.weeks || !Array.isArray(data.weeks)) throw new Error('bad data');
+  // PHASE 1 — BUILD
+  { phase:1, num:5, name:"First Tempo 💜", dates:"Sep 29–Oct 5", miles:23,
+    note:"Tempo = 1 mi easy warmup → 20 min hard (can't hold a conversation) → 1 mi easy cooldown.",
+    days:[
+      { d:"Mon", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Oatmeal + berries + coffee", post:"Chicken piccata + pasta + roasted asparagus" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Tempo run · 5 mi", tag:"tempo", dist:5,
+        pre:"Toast + banana (45 min before) — light!", post:"Beef stir fry + rice noodles + bok choy" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Greek yogurt + granola + honey", post:"Turkey burger + sweet potato fries + slaw" },
+      { d:"Sat", run:"Long run · 9 mi", tag:"long", dist:9,
+        pre:"Bagel + peanut butter + banana — 2 gels on course", post:"Big pasta night — you earned it 🍝" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:1, num:6, name:"Double Digits 🔟", dates:"Oct 6–12", miles:25,
+    note:"First 10-miler. Bring 2 gels and water. Go 60 seconds per mile slower than you think you should.",
+    days:[
+      { d:"Mon", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Avocado toast + eggs + OJ", post:"Lemon herb chicken + couscous + roasted zucchini" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Tempo run · 5 mi", tag:"tempo", dist:5,
+        pre:"Banana + rice cake (light — 45 min before)", post:"Salmon + wild rice + steamed broccoli" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Smoothie + whole grain toast", post:"Chicken quesadillas + black beans + guac" },
+      { d:"Sat", run:"Long run · 10 mi", tag:"long", dist:10,
+        pre:"Oatmeal + honey + banana (90 min before) — 3 gels", post:"Carb-load dinner: pasta bolognese + garlic bread + salad" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:1, num:7, name:"Push the Pace ⬆️", dates:"Oct 13–19", miles:27,
+    note:"Four run days this week for the first time. Keep Monday and Friday truly easy.",
+    days:[
+      { d:"Mon", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Oatmeal + blueberries", post:"Grilled chicken bowl + brown rice + salsa verde" },
+      { d:"Tue", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Eggs + whole wheat toast + fruit", post:"Shrimp fried rice + steamed edamame" },
+      { d:"Wed", run:"Tempo run · 6 mi", tag:"tempo", dist:6,
+        pre:"Banana + energy chews (30 min before)", post:"Beef tacos + rice + beans + corn" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Light snack only — shake-out legs", post:"Pasta + red sauce + side salad (pre-long run dinner!)" },
+      { d:"Sat", run:"Long run · 11 mi", tag:"long", dist:11,
+        pre:"Toast + banana + peanut butter — 3 gels", post:"Recovery feast: protein + carbs + electrolytes + cake 🎂" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:1, num:8, name:"Recovery Week 🌊", dates:"Oct 20–26", miles:18,
+    note:"Deload week #2. Sleep more. Stretch more. This is where you get faster.",
+    days:[
+      { d:"Mon", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Smoothie + coffee", post:"Light chicken soup + crackers" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Easy + strides · 4 mi", tag:"easy", dist:4,
+        pre:"Yogurt + berries + granola", post:"Turkey chili + cornbread" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Rice cakes + almond butter", post:"Baked tilapia + sweet potato + green beans" },
+      { d:"Sat", run:"Easy long · 7 mi", tag:"long", dist:7,
+        pre:"Oatmeal + banana — no gel needed", post:"Pasta + marinara + Italian sausage" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
 
-    // Stats — animated count-up
-    countUp(document.getElementById('weeksDone'), data.completedWeeks, 700);
-    countUp(document.getElementById('totalRuns'), data.totalRunsLogged, 800);
-    countUp(document.getElementById('totalMiles'), data.totalMilesLogged, 900, 1);
+  // PHASE 2 — PEAK
+  { phase:2, num:9, name:"Grinding ⛰️", dates:"Oct 27–Nov 2", miles:28,
+    note:"Everything this week serves Saturday's long run. Sleep, eat, and rest like your race is coming.",
+    days:[
+      { d:"Mon", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Overnight oats + banana", post:"Chicken + sweet potato + roasted brussels" },
+      { d:"Tue", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Eggs + toast + OJ", post:"Ground turkey pasta + marinara + parmesan" },
+      { d:"Wed", run:"Tempo run · 6 mi", tag:"tempo", dist:6,
+        pre:"Banana + rice cake (45 min before)", post:"Salmon + quinoa + cucumber salad" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Light snack — rest the legs", post:"BIG carb dinner: pasta + protein + garlic bread 🍝" },
+      { d:"Sat", run:"Long run · 12 mi", tag:"long", dist:12,
+        pre:"Oatmeal + coffee + banana — 3 gels on course", post:"Recovery: chocolate milk immediately, then full meal in 1hr" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:2, num:10, name:"Peak Week 🏔️", dates:"Nov 3–9", miles:30,
+    note:"Highest mileage week of the plan. 13 miles Saturday is your big confidence run. You WILL finish Dec 13.",
+    days:[
+      { d:"Mon", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Oatmeal + honey + coffee", post:"Chicken stir fry + white rice + broccoli" },
+      { d:"Tue", run:"Easy run · 5 mi", tag:"easy", dist:5,
+        pre:"Smoothie + toast + eggs", post:"Turkey taco bowls + rice + corn + lime crema" },
+      { d:"Wed", run:"Tempo run · 6 mi", tag:"tempo", dist:6,
+        pre:"Banana + date energy balls (45 min before)", post:"Salmon + wild rice + roasted veggies" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Very light — apple + almond butter", post:"Pasta night. Big bowl. No apologies. 🍝" },
+      { d:"Sat", run:"Long run · 13 mi", tag:"long", dist:13,
+        pre:"Full breakfast 2hrs out — oatmeal, banana, coffee + 4 gels", post:"Treat yourself: whatever sounds amazing. You just ran a half." },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:2, num:11, name:"Hold Steady 💪", dates:"Nov 10–16", miles:26,
+    note:"The hardest work is done. This week is about staying sharp without digging deeper.",
+    days:[
+      { d:"Mon", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Overnight oats + berries", post:"Chicken + roasted sweet potato + salad" },
+      { d:"Tue", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Eggs + avocado toast + OJ", post:"Ground beef burrito bowl" },
+      { d:"Wed", run:"Tempo run · 5 mi", tag:"tempo", dist:5,
+        pre:"Banana + rice cake", post:"Shrimp pasta + lemon butter + spinach" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Light snack", post:"Pasta + chicken + pesto + garlic bread" },
+      { d:"Sat", run:"Long run · 11 mi", tag:"long", dist:11,
+        pre:"Standard pre-long breakfast + 3 gels", post:"Big recovery meal + stretch session" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
 
-    const pct = Math.round((data.completedWeeks / 14) * 100);
-    const barFill = document.getElementById('progBarFill');
-    barFill.style.width = '0%';
-    requestAnimationFrame(() => { barFill.style.transition = 'width 1s cubic-bezier(.2,.8,.3,1)'; barFill.style.width = pct + '%'; });
-    document.getElementById('progBarLeft').textContent = `Week ${data.completedWeeks} of 14`;
-    document.getElementById('progBarRight').textContent = pct + '%';
+  // PHASE 3 — TAPER
+  { phase:3, num:12, name:"Taper Begins 🕊️", dates:"Nov 17–23", miles:20,
+    note:"You'll feel sluggish or antsy — both are normal taper signs. Don't add miles. Trust the plan.",
+    days:[
+      { d:"Mon", run:"Easy run · 4 mi", tag:"easy", dist:4,
+        pre:"Oatmeal + banana", post:"Grilled chicken + quinoa + roasted veggies" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Easy + strides · 4 mi", tag:"easy", dist:4,
+        pre:"Toast + eggs", post:"Salmon + sweet potato + green salad" },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Yogurt + granola", post:"Pasta + light protein sauce + salad" },
+      { d:"Sat", run:"Long run (controlled) · 9 mi", tag:"long", dist:9,
+        pre:"Standard breakfast — don't skip it", post:"Good meal + extra sleep tonight" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:3, num:13, name:"Turkey Week 🦃", dates:"Nov 24–30", miles:14,
+    note:"Happy Thanksgiving! Keep runs easy and use the holiday to rest extra. You're almost there.",
+    days:[
+      { d:"Mon", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Smoothie + coffee", post:"Light chicken and rice bowl" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Easy + strides · 3 mi", tag:"easy", dist:3,
+        pre:"Toast + eggs", post:"Light dinner — big meal is tomorrow!" },
+      { d:"Thu", run:"Rest 🍗 Thanksgiving", tag:"rest" },
+      { d:"Fri", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Leftovers = perfect carb load 😄", post:"Light meal — salad + protein" },
+      { d:"Sat", run:"Easy long · 6 mi", tag:"long", dist:6,
+        pre:"Oatmeal + banana", post:"Pasta + marinara — start race-week habits" },
+      { d:"Sun", run:"Rest 🎉", tag:"rest" },
+    ]},
+  { phase:3, num:14, name:"Race Week 🏁", dates:"Dec 7–13", miles:10,
+    note:"Stay off your feet. Sleep 8+ hours. Hydrate all week. Dec 12 = easy shakeout only!",
+    days:[
+      { d:"Mon", run:"Easy run · 3 mi", tag:"easy", dist:3,
+        pre:"Normal breakfast", post:"Pasta + chicken + extra water all day" },
+      { d:"Tue", run:"Rest 🛋️", tag:"rest" },
+      { d:"Wed", run:"Easy jog · 2 mi", tag:"easy", dist:2,
+        pre:"Light snack", post:"Rice + lean protein + veggies. Salt your food." },
+      { d:"Thu", run:"Rest 🛋️", tag:"rest" },
+      { d:"Fri", run:"Rest 🛋️", tag:"rest" },
+      { d:"Sat", run:"5K Shakeout — EASY 🐢", tag:"shakeout", dist:3.1,
+        pre:"Light normal breakfast — don't race this!", post:"PASTA DINNER. Big carb load. Early bedtime. 😴" },
+      { d:"Sun", run:"🏁 RACE DAY — 13.1 Miles!", tag:"race", dist:13.1,
+        pre:"2hrs out: oatmeal + banana + coffee. 1 gel on start line.", post:"You did it. Eat whatever you want. Forever. 🎉🥇" },
+    ]},
+];
 
-    // Current week / phase
-    const currentWeek = data.weeks.find(w => w.isCurrent);
-    const nextUpcoming = data.weeks.find(w => w.isFuture);
-    if (currentWeek) {
-      document.getElementById('progPhase').textContent = PHASE_FOR_WEEK(currentWeek.week) + ' Phase';
-      document.getElementById('progSub').textContent = `Week ${currentWeek.week} of 14 · ${currentWeek.actualMiles} of ${currentWeek.target} mi logged (${currentWeek.pct}%)`;
-    } else if (nextUpcoming) {
-      document.getElementById('progPhase').textContent = 'Pre-Plan';
-      document.getElementById('progSub').textContent = `Plan starts September 1 · Week ${nextUpcoming.week} is next`;
-    } else {
-      document.getElementById('progPhase').textContent = 'Complete';
-      document.getElementById('progSub').textContent = 'Training block finished — race day!';
-    }
+const TRAINING_PHASES = [
+  { name: 'Base', icon: '🌱', start: 0, end: 3 },
+  { name: 'Build', icon: '🔥', start: 4, end: 7 },
+  { name: 'Peak', icon: '⛰️', start: 8, end: 10 },
+  { name: 'Taper', icon: '🕊️', start: 11, end: 13 }
+];
 
-    if (!data.stravaConnected) {
-      chartEl.innerHTML = '<div class="runs-error" style="grid-column:1/-1;">⚠️ Strava not connected — showing plan targets only. Connect in the admin dashboard for live progress.</div>';
-    }
+const TRAINING_START = new Date('2026-09-01T00:00:00');
+const TRAINING_RACE = new Date('2026-12-13T07:00:00-06:00');
 
-    // Build chart bars
-    chartEl.innerHTML = '';
-    const maxTarget = Math.max(...data.weeks.map(w => w.target));
-    data.weeks.forEach((w) => {
-      const h = Math.max(4, Math.round((w.target / maxTarget) * 62));
-      const wrap = document.createElement('div');
-      wrap.className = 'c-bar-wrap';
-      const bar = document.createElement('div');
-      bar.className = 'c-bar';
-      bar.style.height = h + 'px';
-      bar.style.cursor = 'pointer';
+let selectedPlanWeek = 0;
+let selectedPlanPhase = 0;
+let publicProgressData = null;
 
-      let color;
-      if (w.complete) color = 'var(--chart-recovery)'; // green
-      else if (w.isCurrent) color = 'var(--chart-peak)'; // orange
-      else if (w.isPast) color = 'var(--red)'; // missed
-      else color = 'var(--border)'; // future
+function plannedWeekMiles(week) {
+  return Math.round(
+    week.days.reduce((total, day) => total + (Number(day.dist) || 0), 0) * 10
+  ) / 10;
+}
 
-      bar.style.background = color;
-      bar.style.opacity = w.isFuture ? '0.5' : '0.85';
-      if (w.isCurrent) bar.style.outline = '2px solid var(--orange)';
+function plannedTrainingMiles() {
+  return Math.round(
+    TRAINING_PLAN.reduce((total, week) => total + plannedWeekMiles(week), 0) * 10
+  ) / 10;
+}
 
-      bar.title = `Week ${w.week}: ${w.actualMiles}/${w.target} mi (${w.pct}%)`;
-      bar.addEventListener('click', () => showWeekDetail(w));
+function phaseForWeekIndex(index) {
+  return TRAINING_PHASES.findIndex(phase => index >= phase.start && index <= phase.end);
+}
 
-      const num = document.createElement('div');
-      num.className = 'c-num';
-      num.textContent = w.week;
+function currentPlanWeekIndex() {
+  const now = new Date();
+  if (now < TRAINING_START) return 0;
+  if (now >= TRAINING_RACE) return TRAINING_PLAN.length - 1;
+  const difference = Math.floor((now - TRAINING_START) / 86400000);
+  return Math.min(Math.max(Math.floor(difference / 7), 0), TRAINING_PLAN.length - 1);
+}
 
-      wrap.append(bar, num);
-      chartEl.appendChild(wrap);
+function actualWeekRecord(weekNumber) {
+  if (!publicProgressData || !Array.isArray(publicProgressData.weeks)) return null;
+  return publicProgressData.weeks.find(item => Number(item.week) === Number(weekNumber)) || null;
+}
+
+function formatPlanDates(week) {
+  return week.dates
+    .replace('Sep', 'September')
+    .replace('Oct', 'October')
+    .replace('Nov', 'November')
+    .replace('Dec', 'December');
+}
+
+function workoutLabel(day) {
+  const labels = {
+    easy: 'Easy',
+    tempo: 'Tempo',
+    long: 'Long run',
+    rest: 'Rest',
+    race: 'Race',
+    shakeout: 'Shakeout'
+  };
+  return labels[day.tag] || 'Run';
+}
+
+function renderPhaseTabs() {
+  const container = document.getElementById('phaseTabs');
+  if (!container) return;
+  container.innerHTML = TRAINING_PHASES.map((phase, index) => `
+    <button type="button" class="phase-tab ${index === selectedPlanPhase ? 'active' : ''}" data-phase="${index}">
+      ${phase.icon} ${phase.name}
+    </button>
+  `).join('');
+
+  container.querySelectorAll('.phase-tab').forEach(button => {
+    button.addEventListener('click', () => {
+      selectedPlanPhase = Number(button.dataset.phase);
+      selectedPlanWeek = TRAINING_PHASES[selectedPlanPhase].start;
+      renderTrainingPlanBrowser();
     });
-
-    // Legend
-    const legend = document.createElement('div');
-    legend.style.cssText = 'grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:9px;font-weight:700;color:var(--text2);';
-    legend.innerHTML = `
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--chart-recovery);display:inline-block;"></span>Complete (90%+)</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--chart-peak);display:inline-block;"></span>Current Week</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--red);display:inline-block;"></span>Missed Target</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--border);display:inline-block;"></span>Upcoming</span>
-    `;
-    chartEl.parentElement.appendChild(legend);
-
-    // Auto-show current week detail
-    if (currentWeek) showWeekDetail(currentWeek);
-    revealObserve(document.querySelector('.prog-stats'));
-
-  } catch (e) {
-    chartEl.innerHTML = '<div class="runs-error" style="grid-column:1/-1;">Could not load progress data.</div>';
-  }
+  });
 }
 
-function showWeekDetail(w) {
-  const el = document.getElementById('weekDetail');
-  const dateStr = (d) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'});
-  let statusLabel, statusColor;
-  if (w.complete) { statusLabel = w.manualOverride !== null ? '✓ Marked complete manually' : '✓ Complete'; statusColor = 'var(--green)'; }
-  else if (w.isFuture) { statusLabel = 'Upcoming'; statusColor = 'var(--muted)'; }
-  else if (w.isCurrent) { statusLabel = 'In progress'; statusColor = 'var(--orange)'; }
-  else { statusLabel = 'Target missed'; statusColor = 'var(--red)'; }
+function renderWeekTabs() {
+  const container = document.getElementById('weekTabs');
+  if (!container) return;
 
-  el.style.display = 'block';
-  el.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <div style="font-family:'Archivo Black',sans-serif;font-size:18px;letter-spacing:.04em;color:var(--text);">Week ${w.week} · ${dateStr(w.start)}–${dateStr(w.end)}</div>
-      <div style="font-size:11px;font-weight:700;color:${statusColor};">${statusLabel}</div>
-    </div>
-    <div style="font-size:12px;color:var(--text2);">
-      <strong style="color:var(--text);">${w.actualMiles} mi</strong> logged of ${w.target} mi target (${w.pct}%) · ${w.runsCount} run${w.runsCount===1?'':'s'}
-    </div>
-  `;
-}
-window.showWeekDetail = showWeekDetail;
+  const phase = TRAINING_PHASES[selectedPlanPhase];
+  const currentIndex = currentPlanWeekIndex();
 
-// SUBSCRIBE
-const subBtn = document.getElementById('subBtn');
-const subEmail = document.getElementById('subEmail');
-subBtn.addEventListener('click', async () => {
-  const email = subEmail.value.trim();
-  if (!email || !email.includes('@')) { subEmail.style.outline='2px solid #e5193b'; return; }
-  subEmail.style.outline='';
-  try { await fetch('/api/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email}) }); } catch(e) {}
-  document.getElementById('subForm').style.display='none';
-  document.getElementById('subSuccess').style.display='block';
-});
-subEmail.addEventListener('keydown', e => { if(e.key==='Enter') subBtn.click(); });
+  container.innerHTML = TRAINING_PLAN
+    .map((week, index) => ({ week, index }))
+    .filter(item => item.index >= phase.start && item.index <= phase.end)
+    .map(item => {
+      const actual = actualWeekRecord(item.week.num);
+      const complete = actual && actual.complete;
+      const classes = [
+        'week-tab',
+        item.index === selectedPlanWeek ? 'active' : '',
+        complete ? 'complete' : '',
+        item.index === currentIndex ? 'current' : ''
+      ].filter(Boolean).join(' ');
 
-// TAG based on workout type
-function getTag(run) {
-  const name = (run.name || '').toLowerCase();
-  if (run.workout_type === 1 || name.includes('race') || name.includes('5k') || name.includes('10k')) return {cls:'tag-race', label:'🏁 Race'};
-  if (run.workout_type === 2 || name.includes('long') || (run.distance_miles >= 8)) return {cls:'tag-long', label:'Long Run'};
-  if (run.workout_type === 3 || name.includes('tempo') || name.includes('interval')) return {cls:'tag-tempo', label:'Tempo'};
-  if (name.includes('easy') || name.includes('recovery')) return {cls:'tag-easy', label:'Easy Run'};
-  return {cls:'tag-run', label:'Run'};
+      return `<button type="button" class="${classes}" data-week="${item.index}">${item.week.num}</button>`;
+    })
+    .join('');
+
+  container.querySelectorAll('.week-tab').forEach(button => {
+    button.addEventListener('click', () => {
+      selectedPlanWeek = Number(button.dataset.week);
+      selectedPlanPhase = phaseForWeekIndex(selectedPlanWeek);
+      renderTrainingPlanBrowser();
+    });
+  });
 }
 
-// HOME — latest activity strip
-async function loadHomeLatest() {
-  const card = document.getElementById('homeLatestCard');
-  try {
-    const res = await fetch('/api/strava/runs?limit=1');
-    if (!res.ok) throw new Error('API error');
-    const runs = await res.json();
-    if (!Array.isArray(runs) || runs.length === 0) {
-      card.innerHTML = '<div class="home-latest-empty">No runs logged yet — training starts Sep 1.</div>';
-      return;
-    }
-    const run = runs[0];
-    const date = run.date_display || new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    card.innerHTML = `
-      <div class="latest-name">${run.name}</div>
-      <div class="latest-date">${date}</div>
-      <div class="latest-stats">
-        <div><div class="latest-stat-num">${run.distance_miles}</div><div class="latest-stat-lbl">Miles</div></div>
-        <div><div class="latest-stat-num">${run.pace}</div><div class="latest-stat-lbl">Pace</div></div>
-        <div><div class="latest-stat-num">${run.moving_time}</div><div class="latest-stat-lbl">Time</div></div>
+function renderPlanWeekCard() {
+  const container = document.getElementById('planWeekCard');
+  if (!container) return;
+
+  const week = TRAINING_PLAN[selectedPlanWeek];
+  const target = plannedWeekMiles(week);
+  const actual = actualWeekRecord(week.num);
+  const actualMiles = actual ? Number(actual.actualMiles || 0) : 0;
+
+  const days = week.days.map(day => {
+    const distance = Number(day.dist) || 0;
+    const detail = distance ? `${distance} ${distance === 1 ? 'mile' : 'miles'} planned` : 'Recovery day';
+
+    return `
+      <div class="plan-day">
+        <div class="plan-day-name">${escapeHtml(day.d)}</div>
+        <div>
+          <div class="plan-day-workout">${escapeHtml(day.run)}</div>
+          <div class="plan-day-detail">${detail}</div>
+        </div>
+        <div class="plan-day-status ${escapeHtml(day.tag)}">${escapeHtml(workoutLabel(day))}</div>
       </div>
     `;
-    revealObserve(document.querySelector('.latest'));
-  } catch(e) {
-    card.innerHTML = '<div class="home-latest-empty">Could not load latest activity.</div>';
-  }
-}
-
-// CINEMATIC HOME — progress preview + recent run cards
-async function loadHomeExperience() {
-  try {
-    const [runRes, progressRes] = await Promise.all([
-      fetch('/api/strava/runs?limit=8'),
-      fetch('/api/progress').catch(() => null)
-    ]);
-
-    if (runRes && runRes.ok) {
-      const runs = await runRes.json();
-      const grid = document.getElementById('homeRunGrid');
-      if (grid && Array.isArray(runs) && runs.length) {
-        grid.innerHTML = runs.slice(0,3).map(run => {
-          const date = run.date_display || new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-          return `<article class="home-run-card">
-            <div class="home-run-card-date">${date}</div>
-            <div class="home-run-card-name">${run.name || 'Run'}</div>
-            <div class="home-run-card-stats">
-              <div class="home-run-card-stat"><strong>${run.distance_miles ?? '—'}</strong><span>Miles</span></div>
-              <div class="home-run-card-stat"><strong>${run.pace ?? '—'}</strong><span>Pace</span></div>
-              <div class="home-run-card-stat"><strong>${run.moving_time ?? '—'}</strong><span>Time</span></div>
-            </div>
-          </article>`;
-        }).join('');
-      }
-    }
-
-    if (progressRes && progressRes.ok) {
-      const data = await progressRes.json();
-      const weeks = Array.isArray(data.weeks) ? data.weeks : [];
-      const completed = weeks.filter(w => w.complete).length;
-      const pct = weeks.length ? Math.round((completed / weeks.length) * 100) : 0;
-      const ring = document.getElementById('homeProgressRing');
-      const pctEl = document.getElementById('homeProgressPct');
-      if (ring) ring.style.setProperty('--p', pct + '%');
-      if (pctEl) pctEl.textContent = pct + '%';
-
-      const recent = weeks.slice(-8);
-      const max = Math.max(1, ...recent.map(w => Number(w.actualMiles || 0), Number(w.target || 0)));
-      const bars = document.getElementById('homeMileageBars');
-      if (bars) bars.innerHTML = recent.map(w => {
-        const miles = Number(w.actualMiles || 0);
-        const h = Math.max(8, Math.round((miles / max) * 170));
-        return `<div class="home-bar" style="height:${h}px" title="Week ${w.week}: ${miles} miles"><span>W${w.week}</span></div>`;
-      }).join('') || '<div class="home-latest-empty">Training data will appear here.</div>';
-      const total = recent.reduce((sum,w)=>sum+Number(w.actualMiles||0),0);
-      const totalEl = document.getElementById('homeMileageTotal');
-      if (totalEl) totalEl.textContent = total.toFixed(1) + ' mi';
-    }
-  } catch (error) {
-    const grid = document.getElementById('homeRunGrid');
-    if (grid) grid.innerHTML = '<div class="home-latest-empty">Live activity is temporarily unavailable.</div>';
-  }
-}
-
-// RUNS PAGE
-async function loadRuns() {
-  const container = document.getElementById('runsContainer');
-  try {
-    const res = await fetch('/api/strava/runs?limit=8');
-    if (!res.ok) throw new Error('API error');
-    const allRuns = await res.json();
-    if (!Array.isArray(allRuns) || allRuns.length === 0) {
-      container.innerHTML = '<div class="runs-error">No runs found yet. Connect Strava in the admin dashboard.</div>';
-      document.getElementById('paceChartContainer').innerHTML = '<div class="runs-error" style="margin:0;">No pace data yet.</div>';
-      return;
-    }
-
-    const runs = allRuns.slice(0, 5); // cards show the most recent 5
-
-    countUp(document.getElementById('totalRuns'), runs.length, 700);
-    const totalMi = runs.reduce((s,r) => s + (r.distance_miles||0), 0);
-    countUp(document.getElementById('totalMiles'), Math.round(totalMi*10)/10, 800, 1);
-
-    let out = '';
-    runs.forEach((run, idx) => {
-      const tag = getTag(run);
-      const date = run.date_display || new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-      const hasHR = run.hr_zones && run.avg_hr;
-      const runId = 'r'+idx;
-      out += '<div class="card run-card"><div class="run-top"><div class="run-left">';
-      out += '<div class="run-date">'+date+'</div><div class="run-name">'+run.name+'</div>';
-      out += '<div class="run-stats"><div><div class="rsv">'+run.distance_miles+'</div><div class="rsl">Miles</div></div>';
-      out += '<div><div class="rsv">'+run.moving_time+'</div><div class="rsl">Time</div></div>';
-      out += '<div><div class="rsv">'+run.pace+'</div><div class="rsl">Pace</div></div>';
-      if (run.elevation_ft) out += '<div><div class="rsv">'+run.elevation_ft+'ft</div><div class="rsl">Elev</div></div>';
-      out += '</div><span class="run-tag '+tag.cls+'">'+tag.label+'</span></div><div class="run-map">🏃</div></div>';
-      if (hasHR) {
-        const zones = run.hr_zones;
-        out += '<div class="hr-section"><div class="hr-top"><div class="hr-lbl">❤️ Heart Rate Zones</div>';
-        if (run.calories) out += '<span class="cal-chip">🔥 '+run.calories+' cal</span>';
-        out += '</div><div class="hr-zones" data-run="'+runId+'">';
-        const colors = ['z1','z2','z3','z4','z5'];
-        zones.forEach((z,i) => { if (z.pct > 0) out += '<div class="hz '+colors[i]+'" style="flex:'+z.pct+'"><span>'+z.pct+'%</span></div>'; });
-        out += '</div><div class="hr-tap-hint">Tap zones bar for details</div><div class="hr-tooltip" id="tt-'+runId+'">';
-        const zoneNames = ['Zone 1 · Recovery','Zone 2 · Fat Burn','Zone 3 · Aerobic','Zone 4 · Threshold','Zone 5 · Max Effort'];
-        const dotColors = ['var(--hr-z1)','var(--hr-z2)','var(--hr-z3)','var(--hr-z4)','var(--hr-z5)'];
-        zones.forEach((z,i) => { out += '<div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:'+dotColors[i]+'"></div>'+zoneNames[i]+'</div><span>'+z.pct+'%</span></div>'; });
-        out += '</div><div class="hr-meta"><span class="hr-avg">Avg HR: <strong>'+Math.round(run.avg_hr)+' bpm</strong></span>';
-        if (run.max_hr) out += '<span class="hr-max">Max HR: <strong>'+Math.round(run.max_hr)+' bpm</strong></span>';
-        out += '</div></div>';
-      }
-      out += '<a class="strava-link" href="'+run.strava_url+'" target="_blank" rel="noopener">↗ View on Strava</a></div>';
-    });
-    container.innerHTML = out;
-    runs.forEach((_,idx) => {
-      const runId = 'r'+idx;
-      const zoneBar = document.querySelector('[data-run="'+runId+'"]');
-      const tooltip = document.getElementById('tt-'+runId);
-      if (zoneBar && tooltip) zoneBar.addEventListener('click', () => tooltip.classList.toggle('show'));
-    });
-
-    buildPaceChart(allRuns);
-    revealObserve(container);
-
-  } catch(e) {
-    container.innerHTML = '<div class="runs-error">⚠️ Could not load runs from Strava. Check back soon.</div>';
-    document.getElementById('paceChartContainer').innerHTML = '<div class="runs-error" style="margin:0;">Could not load pace trend.</div>';
-  }
-}
-
-function paceToSeconds(paceStr) {
-  if (!paceStr) return null;
-  const [m, s] = paceStr.split(':').map(Number);
-  return m * 60 + (s || 0);
-}
-
-function secondsToPaceLabel(sec) {
-  const m = Math.floor(sec / 60);
-  const s = Math.round(sec % 60);
-  return m + ':' + String(s).padStart(2,'0');
-}
-
-function buildPaceChart(runsDescending) {
-  const container = document.getElementById('paceChartContainer');
-  // chart oldest -> newest, left to right
-  const runs = [...runsDescending].reverse().filter(r => r.pace);
-  if (runs.length < 2) {
-    container.innerHTML = '<div class="runs-error" style="margin:0;">Not enough runs yet for a pace trend — check back after a few more.</div>';
-    return;
-  }
-
-  const paces = runs.map(r => paceToSeconds(r.pace));
-  const minPace = Math.min(...paces);
-  const maxPace = Math.max(...paces);
-  const padding = Math.max(20, (maxPace - minPace) * 0.15);
-  const yMin = minPace - padding; // fastest (top of chart)
-  const yMax = maxPace + padding; // slowest (bottom of chart)
-
-  const W = 300, H = 100;
-  const n = runs.length;
-  const xStep = n > 1 ? W / (n - 1) : 0;
-
-  const points = runs.map((r, i) => {
-    const x = n > 1 ? i * xStep : W/2;
-    const pace = paceToSeconds(r.pace);
-    const y = ((pace - yMin) / (yMax - yMin)) * H;
-    return { x, y, run: r };
-  });
-
-  const polyPoints = points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
-  const areaPath = `M${points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L')} L${W},${H} L0,${H} Z`;
-
-  let circles = '';
-  let annotations = '';
-  points.forEach((p, i) => {
-    const tag = getTag(p.run);
-    const isLast = i === points.length - 1;
-    const r = isLast ? 5 : 3;
-    circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="var(--orange)"${isLast ? ' stroke="white" stroke-width="1.5"' : ''}/>`;
-    if (tag.cls === 'tag-race') {
-      circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8" fill="none" stroke="var(--red)" stroke-width="1.5"/>`;
-      annotations += `race`;
-    } else if (tag.cls === 'tag-tempo') {
-      circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8" fill="none" stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="2,2"/>`;
-      annotations += `tempo`;
-    }
-  });
-
-  const yLabels = [yMin, (yMin+yMax)/2, yMax].map(secondsToPaceLabel);
-  const xLabels = points.map(p => {
-    const d = new Date(p.run.date);
-    return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
-  });
-
-  // Show every other x label if too many points to avoid crowding
-  const xLabelsHtml = xLabels.map((l, i) => (n > 5 && i % 2 !== 0 && i !== n-1) ? '<span></span>' : `<span>${l}</span>`).join('');
+  }).join('');
 
   container.innerHTML = `
-    <div class="pace-wrap">
-      <div class="pace-y"><span>${yLabels[2]}</span><span>${yLabels[1]}</span><span>${yLabels[0]}</span></div>
-      <div class="pace-svg-wrap">
-        <svg viewBox="0 0 ${W} ${H}" width="100%" height="100" preserveAspectRatio="none">
-          <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff5c00" stop-opacity=".18"/><stop offset="100%" stop-color="#ff5c00" stop-opacity="0"/></linearGradient></defs>
-          <line x1="0" y1="1" x2="${W}" y2="1" stroke="var(--border)" stroke-width="0.5"/>
-          <line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="var(--border)" stroke-width="0.5"/>
-          <line x1="0" y1="${H-1}" x2="${W}" y2="${H-1}" stroke="var(--border)" stroke-width="0.5"/>
-          <path d="${areaPath}" fill="url(#pg)"/>
-          <polyline points="${polyPoints}" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          ${circles}
-        </svg>
+    <div class="plan-week-header">
+      <div>
+        <h3>Week ${week.num} · ${escapeHtml(week.name)}</h3>
+        <p>${escapeHtml(formatPlanDates(week))} · ${escapeHtml(TRAINING_PHASES[week.phase].name)} phase</p>
       </div>
-      <div class="pace-x">${xLabelsHtml}</div>
+      <div class="plan-week-total">
+        <strong>${target}</strong>
+        <span>planned miles</span>
+      </div>
     </div>
-    <div class="pace-note">📉 Lower = faster${annotations.includes('tempo')?' · ⚡ tempo effort (purple ring)':''}${annotations.includes('race')?' · 🏁 race (red ring)':''} · from your last ${n} runs</div>
+    <div class="plan-days">${days}</div>
+    <div class="plan-week-note">
+      <strong>Week focus:</strong> ${escapeHtml(week.note)}
+      ${actual ? `<br><strong>Strava progress:</strong> ${actualMiles} of ${target} miles logged.` : ''}
+    </div>
   `;
 }
 
-// RESULTS PAGE — race cards
-let __racesCache = [];
-let __journalCache = [];
-let __allPhotosCache = [];
-
-async function loadRaces() {
-  const grid = document.getElementById('raceGrid');
-  try {
-    const [resultsRes, photosRes] = await Promise.all([
-      fetch('/api/results'),
-      fetch('/api/photos').catch(()=>null)
-    ]);
-    const results = await resultsRes.json();
-    let photos = [];
-    if (photosRes && photosRes.ok) { try { photos = await photosRes.json(); } catch(e){} }
-    __allPhotosCache = photos;
-
-    __racesCache = Array.isArray(results) ? results : [];
-
-    if (__racesCache.length === 0) {
-      grid.innerHTML = '<div class="runs-error">No races yet.</div>';
-      return;
-    }
-
-    grid.innerHTML = __racesCache.map((r, idx) => {
-      const isUpcoming = !r.chip_time || r.chip_time === 'TBD';
-      const racePhotos = photos.filter(p => p.race_id === r.id);
-      const coverPhoto = racePhotos[0];
-      const photoHtml = coverPhoto
-        ? '<img class="race-card-photo" src="'+coverPhoto.url+'" alt="'+r.race_name+'"/>'
-        : '<div class="race-card-photo-placeholder">🏁</div>';
-      const date = r.race_date ? new Date(r.race_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
-      return '<div class="race-card" onclick="openRaceDetail('+idx+')">'
-        + photoHtml
-        + '<div class="race-card-gradient"></div>'
-        + '<div class="race-card-poster-body">'
-        + '<div class="race-card-name">'+r.race_name+'</div>'
-        + '<div class="race-card-loc">'+(r.location||'')+(r.location&&date?' · ':'')+date+'</div>'
-        + '<div class="race-card-chip-row">'
-        + '<div class="race-card-chip">'+(isUpcoming?'':r.chip_time)+'</div>'
-        + (r.is_pr?'<div class="race-card-pr">PR ★</div>':(isUpcoming?'<div class="race-card-upcoming-badge">Upcoming</div>':''))
-        + '</div></div></div>';
-    }).join('');
-    revealObserve(grid);
-  } catch(e) {
-    grid.innerHTML = '<div class="runs-error">Could not load races.</div>';
-  }
+function renderTrainingPlanBrowser() {
+  renderPhaseTabs();
+  renderWeekTabs();
+  renderPlanWeekCard();
 }
 
-async function openRaceDetail(idx) {
-  const race = __racesCache[idx];
-  if (!race) return;
-  const overlay = document.getElementById('raceDetailOverlay');
-  document.getElementById('raceDetailTitle').textContent = race.race_name;
-  const date = race.race_date ? new Date(race.race_date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
-  document.getElementById('raceDetailLoc').textContent = (race.location||'') + (race.location&&date?' · ':'') + date;
+function renderCurrentWeek() {
+  const currentIndex = currentPlanWeekIndex();
+  const week = TRAINING_PLAN[currentIndex];
+  const phase = TRAINING_PHASES[week.phase];
+  const actual = actualWeekRecord(week.num);
+  const actualMiles = actual ? Number(actual.actualMiles || 0) : 0;
+  const target = plannedWeekMiles(week);
+  const now = new Date();
 
-  // Photos for this specific race
-  const racePhotos = __allPhotosCache.filter(p => p.race_id === race.id);
-  const bgEl = document.getElementById('raceDetailBg');
-  bgEl.style.backgroundImage = racePhotos.length ? `url('${racePhotos[0].url}')` : 'linear-gradient(135deg,#1a1208,#3d3128)';
+  document.getElementById('currentWeekPhase').textContent =
+    now < TRAINING_START ? 'Plan Preview' : `${phase.name} Phase`;
 
-  const galleryEl = document.getElementById('raceDetailGallery');
-  galleryEl.innerHTML = racePhotos.length
-    ? racePhotos.map(p => '<img src="'+p.url+'" alt="'+(p.caption||'')+'" onclick="event.stopPropagation();document.getElementById(\'raceDetailBg\').style.backgroundImage=\'url(\\\''+p.url+'\\\')\'"/>').join('')
-    : '';
-
-  // Stats
-  const statsEl = document.getElementById('raceDetailStats');
-  const isUpcoming = !race.chip_time || race.chip_time === 'TBD';
-  let statsHtml = '';
-  if (!isUpcoming) {
-    statsHtml += '<div class="race-detail-stat"><div class="race-detail-stat-num">'+race.chip_time+'</div><div class="race-detail-stat-lbl">Chip Time</div></div>';
-    if (race.overall_place) statsHtml += '<div class="race-detail-stat"><div class="race-detail-stat-num">'+race.overall_place+'/'+race.overall_total+'</div><div class="race-detail-stat-lbl">Overall</div></div>';
-    if (race.ag_place) statsHtml += '<div class="race-detail-stat"><div class="race-detail-stat-num">'+race.ag_place+'/'+race.ag_total+'</div><div class="race-detail-stat-lbl">Age Group</div></div>';
-  } else {
-    statsHtml += '<div class="race-detail-stat"><div class="race-detail-stat-num">TBD</div><div class="race-detail-stat-lbl">Upcoming Race</div></div>';
-  }
-  statsEl.innerHTML = statsHtml;
-
-  // Registration link — only relevant for upcoming races
-  const existingRegLink = document.getElementById('raceDetailRegLink');
-  if (existingRegLink) existingRegLink.remove();
-  if (isUpcoming && race.registration_link) {
-    const regLinkEl = document.createElement('a');
-    regLinkEl.id = 'raceDetailRegLink';
-    regLinkEl.href = race.registration_link;
-    regLinkEl.target = '_blank';
-    regLinkEl.rel = 'noopener';
-    regLinkEl.style.cssText = 'display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--orange);text-decoration:none;margin-bottom:20px;';
-    regLinkEl.innerHTML = '↗ Register for this race';
-    statsEl.insertAdjacentElement('afterend', regLinkEl);
-  }
-
-  // Journal entries mentioning this race
-  try {
-    if (!__journalCache.length) {
-      const jRes = await fetch('/api/posts');
-      __journalCache = jRes.ok ? await jRes.json() : [];
-    }
-    const raceKeyword = race.race_name ? race.race_name.toLowerCase().split(' ')[0] : '';
-    const matched = __journalCache.filter(p =>
-      (p.title && raceKeyword && p.title.toLowerCase().includes(raceKeyword)) ||
-      (p.body && raceKeyword && p.body.toLowerCase().includes(raceKeyword))
-    );
-    const jEl = document.getElementById('raceDetailJournal');
-    if (matched.length) {
-      jEl.innerHTML = matched.map(p => {
-        const body = (p.body||'').split('\n\n').map(para => '<p>'+para+'</p>').join('');
-        return '<div class="race-detail-journal-card"><div class="race-detail-journal-title">'+p.title+'</div><div class="race-detail-journal-body">'+body+'</div></div>';
-      }).join('');
-    } else {
-      jEl.innerHTML = '<div class="race-detail-empty">No journal entry for this race yet.</div>';
-    }
-  } catch(e) {}
-
-  overlay.classList.add('open');
-  window.scrollTo({top:0, behavior:'instant'});
-}
-window.openRaceDetail = openRaceDetail;
-
-function closeRaceDetail() {
-  document.getElementById('raceDetailOverlay').classList.remove('open');
-}
-window.closeRaceDetail = closeRaceDetail;
-
-// JOURNAL PAGE
-async function loadJournal() {
-  const container = document.getElementById('journalContainer');
-  try {
-    const res = await fetch('/api/posts');
-    const posts = await res.json();
-    __journalCache = Array.isArray(posts) ? posts : [];
-    if (!__journalCache.length) {
-      container.innerHTML = '<div class="runs-error">No journal posts yet.</div>';
-      return;
-    }
-    container.innerHTML = __journalCache.map(p => {
-      const date = new Date(p.created_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-      const body = (p.body||'').split('\n\n').map(para => '<p>'+para+'</p>').join('');
-      return '<div class="card j-card"><div class="j-meta">'
-        +'<img class="j-avatar" src="data:image/jpeg;base64,'+window.__PHOTO_B64__+'" alt="Jonathan West"/>'
-        +'<div><div class="j-author">Jonathan West</div><div class="j-date">'+date+'</div></div>'
-        +'<div class="j-tag">'+p.tag+'</div></div>'
-        +'<div class="j-title">'+p.title+'</div><div class="j-body">'+body+'</div>'
-        +(p.run_miles||p.run_time||p.avg_hr?'<div class="j-footer">'
-          +(p.run_miles?'<span class="j-stat"><span>'+p.run_miles+'</span> mi</span>':'')
-          +(p.run_time?'<span class="j-stat"><span>'+p.run_time+'</span></span>':'')
-          +(p.avg_hr?'<span class="j-stat"><span>'+p.avg_hr+' bpm</span> avg HR</span>':'')
-          +(p.calories?'<span class="j-stat"><span>'+p.calories+'</span> cal</span>':'')
-          +'</div>':'')
-        +'</div>';
-    }).join('');
-    revealObserve(container);
-  } catch(e) {
-    container.innerHTML = '<div class="runs-error">Could not load journal posts.</div>';
-  }
-}
-
-// PHOTOS PAGE
-async function loadPhotosPage() {
-  const container = document.getElementById('photosPageContainer');
-  try {
-    const res = await fetch('/api/photos');
-    const photos = res.ok ? await res.json() : [];
-    if (!Array.isArray(photos) || photos.length === 0) {
-      container.innerHTML = '<div class="photos-empty"><div class="photos-empty-icon">📸</div>No photos yet. Upload some from the admin dashboard.</div>';
-      return;
-    }
-    container.innerHTML = '<div class="photo-grid-page">' + photos.map(p =>
-      '<div class="photo-cell-page"><img src="'+p.url+'" alt="'+(p.caption||'')+'" loading="lazy"/>'
-      + (p.caption ? '<div class="photo-caption-page"><span>'+p.caption+'</span></div>' : '')
-      + '</div>'
-    ).join('') + '</div>';
-    document.querySelectorAll('.photo-cell-page').forEach(cell => {
-      cell.addEventListener('click', () => {
-        document.querySelectorAll('.photo-cell-page').forEach(c => { if(c!==cell) c.classList.remove('tapped'); });
-        cell.classList.toggle('tapped');
-      });
-    });
-    revealObserve(container);
-  } catch(e) {
-    container.innerHTML = '<div class="runs-error">Could not load photos.</div>';
-  }
-}
-</script>
-
-</body>
-</html>
+  document.getElementById('currentWeekTitle').textContent =
+    `Week ${week.num} · ${week.name.replace(/[^
