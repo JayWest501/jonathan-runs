@@ -116,10 +116,17 @@ textarea{resize:vertical;min-height:120px;}
     </div>
 
     <div class="strava-card">
-      <h3>Recent Runs Preview</h3>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Last 5 runs pulled from Strava. These auto-populate the public site.</p>
+      <h3>Recent Runs — Manage Visibility</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Last 10 runs pulled from Strava. Walks and private activities are auto-filtered — use Hide on anything else you don't want showing on the public site.</p>
       <button class="btn btn-sm btn-ghost" id="previewRunsBtn">Load Runs</button>
       <div class="run-preview" id="runPreview" style="display:none;"></div>
+    </div>
+
+    <div class="strava-card">
+      <h3>Training Progress — Weekly Overrides</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Weeks auto-complete once you hit 90%+ of target mileage on Strava. Use overrides for weeks that should count despite missed mileage (illness, travel, modified plan) — or to unmark a week.</p>
+      <button class="btn btn-sm btn-ghost" id="loadWeeksBtn">Load Weeks</button>
+      <div id="weeksList" style="margin-top:12px;display:none;"></div>
     </div>
   </div>
 
@@ -197,7 +204,7 @@ textarea{resize:vertical;min-height:120px;}
       </div>
       <div class="form-row">
         <div>
-          <label class="form-label">Chip Time</label>
+          <label class="form-label">Chip Time (leave blank if upcoming)</label>
           <input type="text" id="raceChip" placeholder="e.g. 29:22.9"/>
         </div>
         <div>
@@ -215,6 +222,8 @@ textarea{resize:vertical;min-height:120px;}
           <input type="text" id="raceAG" placeholder="e.g. 78 / 119"/>
         </div>
       </div>
+      <label class="form-label">Registration Link (optional, for upcoming races)</label>
+      <input type="text" id="raceRegLink" placeholder="https://raceroster.com/..." style="margin-bottom:10px;"/>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
         <input type="checkbox" id="raceIsPR" style="width:auto;margin:0;"/>
         <label for="raceIsPR" style="font-size:13px;font-weight:700;color:var(--orange);">This is a PR ★</label>
@@ -396,14 +405,19 @@ document.getElementById('syncBtn').addEventListener('click', async () => {
   }
 });
 
-// Preview runs
-document.getElementById('previewRunsBtn').addEventListener('click', async () => {
+// Preview runs — shows last 10, with Hide/Unhide controls per run
+document.getElementById('previewRunsBtn').addEventListener('click', loadRunsPreview);
+
+async function loadRunsPreview() {
   const preview = document.getElementById('runPreview');
   preview.style.display = 'block';
   preview.innerHTML = '<div style="color:var(--muted);font-size:12px;">Loading runs...</div>';
 
   try {
-    const res = await fetch(`${API}/api/strava/runs?limit=5`);
+    // Authenticated request — admin sees ALL runs including hidden ones, flagged
+    const res = await fetch(`${API}/api/strava/runs?limit=10`, {
+      headers: authHeaders(),
+    });
     const runs = await res.json();
 
     if (!Array.isArray(runs) || runs.length === 0) {
@@ -412,17 +426,111 @@ document.getElementById('previewRunsBtn').addEventListener('click', async () => 
     }
 
     preview.innerHTML = runs.map(r => `
-      <div class="run-preview-item">
-        <strong>${r.name}</strong><br>
-        ${new Date(r.date).toLocaleDateString()} · ${r.distance_miles} mi · ${r.moving_time} · ${r.pace}/mi
-        ${r.calories ? ` · 🔥 ${r.calories} cal` : ''}
-        ${r.avg_hr ? ` · ❤️ ${r.avg_hr} bpm avg` : ''}
+      <div class="run-preview-item" style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;${r.hidden ? 'opacity:.5;' : ''}">
+        <div>
+          <strong>${r.name}</strong>${r.hidden ? ' <span style="color:var(--red);font-size:10px;font-weight:700;">HIDDEN</span>' : ''}<br>
+          ${r.date_display || new Date(r.date).toLocaleDateString()} · ${r.distance_miles} mi · ${r.moving_time} · ${r.pace}/mi
+          ${r.calories ? ` · 🔥 ${r.calories} cal` : ''}
+          ${r.avg_hr ? ` · ❤️ ${r.avg_hr} bpm avg` : ''}
+        </div>
+        <button class="btn btn-sm ${r.hidden ? '' : 'btn-danger'}" style="flex-shrink:0;" onclick="toggleRunVisibility('${r.id}', ${!r.hidden})">
+          ${r.hidden ? 'Unhide' : 'Hide'}
+        </button>
       </div>
     `).join('');
   } catch(e) {
     preview.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load runs.</div>';
   }
-});
+}
+
+async function toggleRunVisibility(activityId, hide) {
+  try {
+    const res = await fetch(`${API}/api/strava/runs`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ activity_id: activityId, hide }),
+    });
+    if (res.ok) {
+      toast(hide ? 'Run hidden from public site' : 'Run unhidden');
+      loadRunsPreview();
+    } else {
+      const err = await res.json();
+      toast(err.error || 'Failed to update', true);
+    }
+  } catch(e) {
+    toast('Failed to update', true);
+  }
+}
+window.toggleRunVisibility = toggleRunVisibility;
+
+// TRAINING PROGRESS OVERRIDES
+document.getElementById('loadWeeksBtn').addEventListener('click', loadWeeksList);
+
+async function loadWeeksList(forceRefresh) {
+  const list = document.getElementById('weeksList');
+  list.style.display = 'block';
+  list.innerHTML = '<div style="color:var(--muted);font-size:12px;">Loading weeks from Strava...</div>';
+
+  try {
+    const url = `${API}/api/progress` + (forceRefresh ? `?bust=${Date.now()}` : '');
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.weeks) {
+      list.innerHTML = '<div style="color:var(--red);font-size:12px;">Could not load progress data.</div>';
+      return;
+    }
+
+    if (!data.stravaConnected) {
+      list.innerHTML = '<div style="color:var(--orange);font-size:12px;margin-bottom:10px;">⚠️ Strava not connected — connect it above first.</div>';
+    }
+
+    const dateStr = (d) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'});
+
+    list.innerHTML += data.weeks.map(w => {
+      const statusColor = w.complete ? 'var(--green)' : (w.isFuture ? 'var(--muted)' : (w.isCurrent ? 'var(--orange)' : 'var(--red)'));
+      const statusText = w.complete
+        ? (w.manualOverride !== null ? 'Complete (manual)' : 'Complete')
+        : (w.isFuture ? 'Upcoming' : (w.isCurrent ? 'In progress' : 'Missed target'));
+      return `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);">
+          <div>
+            <strong style="font-size:12px;">Week ${w.week}</strong>
+            <span style="font-size:11px;color:var(--muted);"> · ${dateStr(w.start)}–${dateStr(w.end)} · ${w.actualMiles}/${w.target} mi (${w.pct}%)</span><br>
+            <span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm btn-ghost" onclick="setWeekOverride(${w.week}, true)" title="Force mark complete">Mark Done</button>
+            <button class="btn btn-sm btn-ghost" onclick="setWeekOverride(${w.week}, false)" title="Force mark incomplete">Mark Incomplete</button>
+            ${w.manualOverride !== null ? `<button class="btn btn-sm btn-danger" onclick="setWeekOverride(${w.week}, null)" title="Remove override, use auto-detect">Clear</button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load weeks.</div>';
+  }
+}
+
+async function setWeekOverride(week, override) {
+  try {
+    const res = await fetch(`${API}/api/progress`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ week, override }),
+    });
+    if (res.ok) {
+      toast(override === null ? `Week ${week} override cleared` : `Week ${week} marked ${override ? 'complete' : 'incomplete'}`);
+      loadWeeksList(true);
+    } else {
+      const err = await res.json();
+      toast(err.error || 'Failed to update', true);
+    }
+  } catch(e) {
+    toast('Failed to update', true);
+  }
+}
+window.setWeekOverride = setWeekOverride;
 
 // POSTS
 async function loadPosts() {
@@ -545,23 +653,85 @@ async function loadResults() {
   }
 
   list.innerHTML = results.map(r => `
-    <div class="result-item">
-      <div>
-        <div class="result-name">${r.race_name}${r.is_pr ? '<span class="pr-badge">PR ★</span>' : ''}</div>
-        <div class="result-meta">
-          ${new Date(r.race_date).toLocaleDateString()} · ${r.location || ''} · ${r.distance}<br>
-          Chip: <strong style="color:#00b341">${r.chip_time}</strong>
-          ${r.overall_place ? ` · ${r.overall_place}/${r.overall_total} overall` : ''}
-          ${r.ag_place ? ` · ${r.ag_place}/${r.ag_total} AG` : ''}
+    <div class="result-item" style="flex-direction:column;align-items:stretch;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+        <div>
+          <div class="result-name">${r.race_name}${r.is_pr ? '<span class="pr-badge">PR ★</span>' : ''}</div>
+          <div class="result-meta">
+            ${new Date(r.race_date).toLocaleDateString()} · ${r.location || ''} · ${r.distance}<br>
+            Chip: <strong style="color:#00b341">${r.chip_time}</strong>
+            ${r.overall_place ? ` · ${r.overall_place}/${r.overall_total} overall` : ''}
+            ${r.ag_place ? ` · ${r.ag_place}/${r.ag_total} AG` : ''}
+          </div>
+        </div>
+        <div class="post-actions">
+          <button class="btn btn-sm btn-ghost" onclick="editResult('${r.id}')">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteResult('${r.id}')">Delete</button>
         </div>
       </div>
-      <div class="post-actions">
-        <button class="btn btn-sm btn-ghost" onclick="editResult('${r.id}')">Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteResult('${r.id}')">Delete</button>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Race Photos</div>
+        <div id="racePhotos-${r.id}" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;"><div style="grid-column:1/-1;color:var(--muted);font-size:11px;">Loading...</div></div>
+        <input type="file" id="raceFile-${r.id}" accept="image/*" style="display:none" onchange="uploadRacePhoto('${r.id}', this)"/>
+        <button class="btn btn-sm btn-ghost" onclick="document.getElementById('raceFile-${r.id}').click()">+ Add Photo</button>
       </div>
     </div>
   `).join('');
+
+  results.forEach(r => loadRacePhotos(r.id));
 }
+
+async function loadRacePhotos(raceId) {
+  const container = document.getElementById(`racePhotos-${raceId}`);
+  if (!container) return;
+  try {
+    const res = await fetch(`${API}/api/photos?race_id=${raceId}`);
+    const photos = res.ok ? await res.json() : [];
+    if (!photos.length) {
+      container.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);font-size:11px;">No photos yet for this race.</div>';
+      return;
+    }
+    container.innerHTML = photos.map(p => `
+      <div style="position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--border);aspect-ratio:1;">
+        <img src="${p.url}" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+        <button onclick="deleteRacePhoto('${p.name}','${raceId}')" style="position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(229,25,59,.9);color:#fff;border:none;font-size:11px;cursor:pointer;line-height:1;">×</button>
+      </div>
+    `).join('');
+  } catch(e) {
+    container.innerHTML = '<div style="grid-column:1/-1;color:var(--red);font-size:11px;">Failed to load photos.</div>';
+  }
+}
+
+async function uploadRacePhoto(raceId, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const race = __resultsCache.find(r => r.id === raceId);
+  const formData = new FormData();
+  formData.append('photo', file);
+  formData.append('caption', race ? race.race_name : '');
+  formData.append('race_id', raceId);
+  try {
+    const res = await fetch(`${API}/api/photos`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${adminPassword}` },
+      body: formData,
+    });
+    if (res.ok) { toast('Photo added to race!'); loadRacePhotos(raceId); }
+    else { const err = await res.json(); toast(err.error || 'Upload failed', true); }
+  } catch(e) {
+    toast('Upload failed', true);
+  }
+  input.value = '';
+}
+window.uploadRacePhoto = uploadRacePhoto;
+
+async function deleteRacePhoto(name, raceId) {
+  if (!confirm('Delete this photo?')) return;
+  const res = await fetch(`${API}/api/photos?name=${encodeURIComponent(name)}`, { method: 'DELETE', headers: authHeaders() });
+  if (res.ok) { toast('Photo deleted'); loadRacePhotos(raceId); }
+  else toast('Failed to delete', true);
+}
+window.deleteRacePhoto = deleteRacePhoto;
 
 function editResult(id) {
   const r = __resultsCache.find(x => x.id === id);
@@ -573,6 +743,7 @@ function editResult(id) {
   document.getElementById('raceDist').value = r.distance || '5K';
   document.getElementById('raceChip').value = r.chip_time || '';
   document.getElementById('raceGun').value = r.gun_time || '';
+  document.getElementById('raceRegLink').value = r.registration_link || '';
   document.getElementById('raceOverall').value = (r.overall_place && r.overall_total) ? `${r.overall_place} / ${r.overall_total}` : '';
   document.getElementById('raceAG').value = (r.ag_place && r.ag_total) ? `${r.ag_place} / ${r.ag_total}` : '';
   document.getElementById('raceIsPR').checked = !!r.is_pr;
@@ -585,7 +756,7 @@ window.editResult = editResult;
 
 function cancelResultEdit() {
   __editingResultId = null;
-  ['raceName','raceDate','raceLocation','raceChip','raceGun','raceOverall','raceAG','raceNotes']
+  ['raceName','raceDate','raceLocation','raceChip','raceGun','raceOverall','raceAG','raceNotes','raceRegLink']
     .forEach(id => document.getElementById(id).value = '');
   document.getElementById('raceDist').value = '5K';
   document.getElementById('raceIsPR').checked = false;
@@ -603,7 +774,7 @@ document.getElementById('submitResult').addEventListener('click', async () => {
     race_date: document.getElementById('raceDate').value,
     location: document.getElementById('raceLocation').value.trim(),
     distance: document.getElementById('raceDist').value,
-    chip_time: document.getElementById('raceChip').value.trim(),
+    chip_time: document.getElementById('raceChip').value.trim() || null,
     gun_time: document.getElementById('raceGun').value.trim() || null,
     overall_place: overall[0] ? parseInt(overall[0]) : null,
     overall_total: overall[1] ? parseInt(overall[1]) : null,
@@ -611,10 +782,11 @@ document.getElementById('submitResult').addEventListener('click', async () => {
     ag_total: ag[1] ? parseInt(ag[1]) : null,
     is_pr: document.getElementById('raceIsPR').checked,
     notes: document.getElementById('raceNotes').value.trim() || null,
+    registration_link: document.getElementById('raceRegLink').value.trim() || null,
   };
 
-  if (!body.race_name || !body.race_date || !body.chip_time) {
-    toast('Race name, date and chip time are required', true); return;
+  if (!body.race_name || !body.race_date) {
+    toast('Race name and date are required', true); return;
   }
 
   let res;
