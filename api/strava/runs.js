@@ -180,6 +180,7 @@ export default async function handler(req, res) {
     activities = activities
       .filter(act => !act.private && act.visibility !== 'only_me')
       .filter(act => requestIsAdmin || !hiddenIds.includes(String(act.id)))
+      .filter(act => !/\bwalk/i.test(act.name || '')) // exclude anything explicitly named "walk"
       .filter(act => {
         if (!act.distance || act.distance <= 0) return false;
         const paceSecPerMile = act.moving_time / (act.distance / 1609.34);
