@@ -362,12 +362,12 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   <section class="hero">
     <img class="hero-photo" id="heroPhoto" src="" alt="Jonathan running"/>
     <div class="hero-scrim"></div>
-    <div class="hero-name-strip">JONATHAN · #1301</div>
+    <div class="hero-name-strip">JONATHAN · #<span id="siteBib">1301</span></div>
     <div class="hero-content">
-      <div class="hero-eyebrow">The road to December 13</div>
-      <div class="hero-bignum">13.1</div>
-      <div class="hero-manifesto">No shortcuts.<br><span>Just miles.</span></div>
-      <div class="hero-meta-line"><span>Dallas Half Marathon</span><i></i><span>Sub-2:15</span></div>
+      <div class="hero-eyebrow" id="siteHeroEyebrow">The road to December 13</div>
+      <div class="hero-bignum" id="siteHeroDistance">13.1</div>
+      <div class="hero-manifesto"><span id="siteHeroLine1" style="color:inherit">No shortcuts.</span><br><span id="siteHeroLine2">Just miles.</span></div>
+      <div class="hero-meta-line"><span id="siteRaceName">Dallas Half Marathon</span><i></i><span id="siteRaceGoal">Sub-2:15</span></div>
       <div class="hero-bottom">
         <div class="hero-cd" aria-label="Race countdown">
           <div class="hero-cd-unit"><span class="hero-cd-num" id="cd-d">—</span><span class="hero-cd-lbl">days</span></div>
@@ -377,7 +377,7 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
         </div>
         <div class="hero-actions">
           <button class="btn-primary" onclick="goToPage('progress')">View progress →</button>
-          <a class="btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.35)" href="https://strava.com/athletes/jaycee501" target="_blank" rel="noopener">Follow on Strava</a>
+          <a class="btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.35)" href="https://strava.com/athletes/jaycee501" id="siteStravaHero" target="_blank" rel="noopener">Follow on Strava</a>
         </div>
       </div>
     </div>
@@ -387,9 +387,9 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
     <section class="home-section story-grid reveal">
       <div class="story-photo"><img id="storyPhoto" src="" alt="Jonathan on his running journey"></div>
       <div class="story-copy">
-        <div class="home-kicker">Why I run</div>
-        <h2 class="home-title">This is my<br><span>transformation.</span></h2>
-        <p class="home-copy" style="margin-top:24px">I’m documenting every early alarm, hard mile, breakthrough, and setback on the road to my first half marathon. December 13 is the finish line—but becoming someone who keeps showing up is the real goal.</p>
+        <div class="home-kicker" id="siteStoryEyebrow">Why I run</div>
+        <h2 class="home-title" id="siteStoryTitle">This is my<br><span>transformation.</span></h2>
+        <p class="home-copy" id="siteStoryBody" style="margin-top:24px">I’m documenting every early alarm, hard mile, breakthrough, and setback on the road to my first half marathon. December 13 is the finish line—but becoming someone who keeps showing up is the real goal.</p>
         <div class="story-signature">Let’s get to work.</div>
       </div>
     </section>
@@ -438,7 +438,7 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
       </div>
     </section>
   </main>
-  <div class="home-quote"><div class="home-quote-mark">“</div><blockquote>The race is one morning. The transformation happens in all the mornings before it.</blockquote><span style="color:var(--orange);font-size:11px;letter-spacing:.15em;text-transform:uppercase">Jonathan West</span></div>
+  <div class="home-quote"><div class="home-quote-mark">“</div><blockquote id="siteQuote">The race is one morning. The transformation happens in all the mornings before it.</blockquote><span id="siteQuoteAuthor" style="color:var(--orange);font-size:11px;letter-spacing:.15em;text-transform:uppercase">Jonathan West</span></div>
 </div>
 
 <!-- PROGRESS PAGE -->
@@ -519,32 +519,24 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   <div class="page-inner">
     <div class="eyebrow">What Keeps Me Moving</div>
     <div class="section-title">Gear &amp; Fuel</div>
-    <p class="gear-intro">The products I actually train with, what works for me, and what I am still testing. This page is built to stay honest: favorites are separated from gear I simply want to try.</p>
+    <p class="gear-intro" id="siteGearIntro">The products I actually train with, what works for me, and what I am still testing. This page is built to stay honest: favorites are separated from gear I simply want to try.</p>
 
     <section class="gear-section" aria-labelledby="gearFavoritesHeading">
       <h2 class="gear-heading" id="gearFavoritesHeading">Current Favorites</h2>
-      <div class="gear-grid">
-        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">👟</div><span class="gear-status">Add favorite</span></div><div class="gear-name">Daily Trainer</div><div class="gear-type">Running Shoes</div><p class="gear-note">Add the shoe you reach for on most easy and everyday miles, plus a short honest note about fit and comfort.</p></article>
-        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">⚡</div><span class="gear-status">Add favorite</span></div><div class="gear-name">Speed / Race Shoe</div><div class="gear-type">Performance Shoes</div><p class="gear-note">Add the faster option you use for workouts or race day and explain where it feels best.</p></article>
-        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">⌚</div><span class="gear-status">In use</span></div><div class="gear-name">Apple Watch</div><div class="gear-type">Training Tech</div><p class="gear-note">Used for heart rate, calories, pace, distance, and the workout data displayed throughout this site.</p></article>
-        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">💧</div><span class="gear-status">Add setup</span></div><div class="gear-name">Hydration</div><div class="gear-type">Dallas Heat</div><p class="gear-note">Add the bottle, belt, vest, or electrolyte mix that helps you manage long runs in the Texas heat.</p></article>
-      </div>
+      <div class="gear-grid" id="gearFavoritesGrid"><div class="gear-empty">Loading gear…</div></div>
     </section>
 
     <section class="gear-section" aria-labelledby="fuelHeading">
       <h2 class="gear-heading" id="fuelHeading">Fuel &amp; Recovery</h2>
-      <div class="gear-grid">
-        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">⚡</div><span class="gear-status">Add favorite</span></div><div class="gear-name">Long-Run Fuel</div><div class="gear-type">Gels, Chews or Drink Mix</div><p class="gear-note">List what your stomach handles well, when you take it, and which flavors you would buy again.</p></article>
-        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">↻</div><span class="gear-status">Add routine</span></div><div class="gear-name">Recovery</div><div class="gear-type">After the Run</div><p class="gear-note">Add the recovery tools, drinks, snacks, or mobility items that have genuinely earned a place in your routine.</p></article>
-      </div>
+      <div class="gear-grid" id="gearFuelGrid"><div class="gear-empty">Loading fuel…</div></div>
     </section>
 
     <section class="gear-section" aria-labelledby="wishlistHeading">
       <h2 class="gear-heading" id="wishlistHeading">Next Up</h2>
       <div class="wishlist-card">
-        <h3>My Running Wishlist</h3>
-        <p>Gear I am saving for or interested in testing on the road to 13.1. The Amazon button can be activated as soon as the wishlist URL is added.</p>
-        <span class="wishlist-btn is-placeholder" aria-disabled="true">Wishlist link coming soon</span>
+        <h3 id="siteWishlistTitle">My Running Wishlist</h3>
+        <p id="siteWishlistDescription">Gear I am saving for or interested in testing on the road to 13.1.</p>
+        <a class="wishlist-btn is-placeholder" id="siteWishlistButton" aria-disabled="true">Wishlist link coming soon</a>
       </div>
       <p class="gear-disclosure">Products should only be labeled favorites after real use. Wishlist items are not endorsements.</p>
     </section>
@@ -562,10 +554,10 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
 
 <footer>
   <div class="footer-logo">Jonathan Runs</div>
-  <div class="footer-sub">29:05 5K → 13.1 miles · Dallas, TX · Dec 13, 2026</div>
+  <div class="footer-sub" id="siteFooterText">29:05 5K → 13.1 miles · Dallas, TX · Dec 13, 2026</div>
   <div class="footer-links">
-    <a href="https://strava.com/athletes/jaycee501" target="_blank" rel="noopener">Strava</a>
-    <a href="https://www.tiktok.com/@runningwithjayc" target="_blank" rel="noopener">TikTok</a>
+    <a id="siteStravaFooter" href="https://strava.com/athletes/jaycee501" target="_blank" rel="noopener">Strava</a>
+    <a id="siteTikTokFooter" href="https://www.tiktok.com/@runningwithjayc" target="_blank" rel="noopener">TikTok</a>
   </div>
   <div style="font-size:10px;color:var(--text2);margin-top:18px;">Built by Jonathan West · 2026</div>
 </footer>
@@ -634,6 +626,7 @@ function goToPage(pageId) {
   if (pageId === 'runs' && !window.__runsLoaded) { loadRuns(); window.__runsLoaded = true; }
   if (pageId === 'results' && !window.__resultsLoaded) { loadRaces(); window.__resultsLoaded = true; }
   if (pageId === 'journal' && !window.__journalLoaded) { loadJournal(); window.__journalLoaded = true; }
+  if (pageId === 'gear' && !window.__gearLoaded) { loadGearPage(); window.__gearLoaded = true; }
   if (pageId === 'photos' && !window.__photosLoaded) { loadPhotosPage(); window.__photosLoaded = true; }
 }
 window.goToPage = goToPage;
@@ -710,9 +703,39 @@ function revealObserve(root) {
 loadHomeLatest();
 loadHomeExperience();
 
+// SITE CONTENT + GEAR — editable from /admin
+let SITE_CONTENT = { race_date: '2026-12-13T07:00:00-06:00' };
+function setText(id, value){ const el=document.getElementById(id); if(el && value !== undefined && value !== null) el.textContent=value; }
+async function loadSiteContent(){
+  try{
+    const r=await fetch('/api/content'); if(!r.ok) return; const c=await r.json(); SITE_CONTENT={...SITE_CONTENT,...c};
+    setText('siteBib',c.bib_number); setText('siteHeroEyebrow',c.hero_eyebrow); setText('siteHeroDistance',c.hero_distance);
+    setText('siteHeroLine1',c.hero_line_one); setText('siteHeroLine2',c.hero_line_two); setText('siteRaceName',c.race_name); setText('siteRaceGoal',c.race_goal);
+    setText('siteStoryEyebrow',c.story_eyebrow); setText('siteStoryTitle',c.story_title); setText('siteStoryBody',c.story_body);
+    setText('siteQuote',c.quote); setText('siteQuoteAuthor',c.quote_author); setText('siteGearIntro',c.gear_intro);
+    setText('siteWishlistTitle',c.wishlist_title); setText('siteWishlistDescription',c.wishlist_description); setText('siteFooterText',c.footer_text);
+    const sh=document.getElementById('siteStravaHero'), sf=document.getElementById('siteStravaFooter'), tf=document.getElementById('siteTikTokFooter');
+    if(sh&&c.strava_url) sh.href=c.strava_url; if(sf&&c.strava_url) sf.href=c.strava_url; if(tf&&c.tiktok_url) tf.href=c.tiktok_url;
+    const wb=document.getElementById('siteWishlistButton'); if(wb){ if(c.wishlist_url){wb.href=c.wishlist_url;wb.target='_blank';wb.rel='noopener';wb.textContent='View Amazon Wishlist →';wb.classList.remove('is-placeholder');wb.removeAttribute('aria-disabled');}else{wb.removeAttribute('href');wb.textContent='Wishlist link coming soon';wb.classList.add('is-placeholder');wb.setAttribute('aria-disabled','true');}}
+    tick();
+  }catch(e){ console.warn('Content load failed',e); }
+}
+function gearCard(x){
+  const link=x.product_url?`<a href="${escapeHtml(x.product_url)}" target="_blank" rel="noopener" class="strava-link">View product →</a>`:'';
+  return `<article class="gear-card"><div class="gear-card-top"><div class="gear-icon">${escapeHtml(x.icon||'✦')}</div><span class="gear-status">${escapeHtml(x.status||'In use')}</span></div><div class="gear-name">${escapeHtml(x.name)}</div><div class="gear-type">${escapeHtml(x.type||x.category||'')}</div><p class="gear-note">${escapeHtml(x.note||'')}</p>${link}</article>`;
+}
+async function loadGearPage(){
+  try{const r=await fetch('/api/gear');const items=await r.json();if(!Array.isArray(items))throw new Error('bad gear');
+    const fav=items.filter(x=>x.category==='Favorites'), fuel=items.filter(x=>x.category==='Fuel & Recovery');
+    document.getElementById('gearFavoritesGrid').innerHTML=fav.length?fav.map(gearCard).join(''):'<div class="gear-empty">No favorites published yet.</div>';
+    document.getElementById('gearFuelGrid').innerHTML=fuel.length?fuel.map(gearCard).join(''):'<div class="gear-empty">No fuel or recovery items published yet.</div>';
+  }catch(e){document.getElementById('gearFavoritesGrid').innerHTML='<div class="gear-empty">Gear is temporarily unavailable.</div>';}
+}
+loadSiteContent();
+
 // COUNTDOWN
 function tick() {
-  const diff = new Date('2026-12-13T07:00:00') - new Date();
+  const diff = new Date(SITE_CONTENT.race_date || '2026-12-13T07:00:00-06:00') - new Date();
   if (diff <= 0) { ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent='00'); return; }
   document.getElementById('cd-d').textContent = String(Math.floor(diff/86400000)).padStart(3,'0');
   document.getElementById('cd-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
