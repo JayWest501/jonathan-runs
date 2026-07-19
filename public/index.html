@@ -322,69 +322,9 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   .race-detail-stats{grid-template-columns:repeat(2,1fr);}
 }
 
-/* INTRO — photo finish: speed streaks, ribbon break, flash, bib number */
-.intro-overlay{position:fixed;inset:0;z-index:500;background:#0a0a0a;display:flex;align-items:center;justify-content:center;overflow:hidden;animation:introFadeOut .45s ease forwards;animation-delay:2s;}
-
-/* speed streaks */
-.intro-streak{position:absolute;left:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange,#ff5c00) 40%,#fff 80%,transparent);opacity:0;border-radius:2px;filter:blur(.3px);}
-.intro-streak-1{top:34%;width:46%;animation:introStreak .62s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:.05s;}
-.intro-streak-2{top:47%;width:60%;animation:introStreak .58s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:.22s;}
-.intro-streak-3{top:60%;width:40%;animation:introStreak .56s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:.4s;}
-.intro-streak-4{top:53%;width:70%;height:1px;animation:introStreak .5s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:.62s;}
-@keyframes introStreak{
-  0%{opacity:0;transform:translateX(-40%) scaleX(.3);}
-  12%{opacity:1;}
-  85%{opacity:.9;}
-  100%{opacity:0;transform:translateX(115%) scaleX(1);}
-}
-
-/* ribbon */
-.intro-ribbon-wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:280px;height:60px;}
-.intro-post{position:absolute;top:0;width:3px;height:60px;background:#333;}
-.intro-post-l{left:0;}
-.intro-post-r{right:0;}
-.intro-ribbon-l,.intro-ribbon-r{position:absolute;top:28px;height:4px;background:var(--orange,#ff5c00);transform-origin:center;}
-.intro-ribbon-l{left:3px;width:137px;animation:introBreakL .32s ease forwards;animation-delay:1.08s;transform-origin:right center;}
-.intro-ribbon-r{right:3px;width:137px;animation:introBreakR .32s ease forwards;animation-delay:1.08s;transform-origin:left center;}
-@keyframes introBreakL{0%{transform:rotate(0deg) translateY(0);opacity:1;}100%{transform:rotate(-50deg) translateY(24px);opacity:0;}}
-@keyframes introBreakR{0%{transform:rotate(0deg) translateY(0);opacity:1;}100%{transform:rotate(50deg) translateY(24px);opacity:0;}}
-
-/* flash */
-.intro-flash{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;opacity:0;animation:introFlash .4s ease forwards;animation-delay:1.05s;box-shadow:0 0 40px 20px rgba(255,255,255,.6);}
-@keyframes introFlash{0%{opacity:0;transform:scale(.3);}25%{opacity:1;transform:scale(6);}100%{opacity:0;transform:scale(11);}}
-
-/* bib number reveal */
-.intro-bib{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.85);font-family:'Bebas Neue',cursive;font-size:64px;letter-spacing:.03em;color:#fff;opacity:0;animation:introBibIn .55s cubic-bezier(.2,.8,.3,1) forwards;animation-delay:1.15s;text-shadow:0 0 30px rgba(255,92,0,.6);}
-@keyframes introBibIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.7);}35%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}100%{opacity:1;transform:translate(-50%,-50%) scale(1);}}
-
-.intro-label{position:absolute;bottom:20%;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:.4em;color:rgba(255,255,255,.5);opacity:0;animation:introLabelIn .5s ease forwards;animation-delay:1.55s;}
-@keyframes introLabelIn{0%{opacity:0;letter-spacing:.6em;}100%{opacity:1;letter-spacing:.4em;}}
-@keyframes introFadeOut{0%{opacity:1;pointer-events:auto;}100%{opacity:0;pointer-events:none;}}
-@media (prefers-reduced-motion: reduce){
-  .intro-overlay{display:none !important;}
-}
 </style>
 </head>
 <body>
-
-<!-- INTRO — photo finish: speed streaks, ribbon break, flash, bib reveal -->
-<div class="intro-overlay" id="introOverlay">
-  <div class="intro-streak intro-streak-1"></div>
-  <div class="intro-streak intro-streak-2"></div>
-  <div class="intro-streak intro-streak-3"></div>
-  <div class="intro-streak intro-streak-4"></div>
-  <div class="intro-ribbon-wrap">
-    <div class="intro-post intro-post-l"></div>
-    <div class="intro-post intro-post-r"></div>
-    <div class="intro-ribbon-l"></div>
-    <div class="intro-ribbon-r"></div>
-  </div>
-  <div class="intro-flash"></div>
-  <div class="intro-bib">1301</div>
-  <div class="intro-label">JONATHAN RUNS</div>
-</div>
-
-
 <nav>
   <div class="nav-logo" onclick="goToPage('home')">Jonathan Runs</div>
   <div class="nav-right">
@@ -680,17 +620,6 @@ function revealObserve(root) {
   else goToPage('home');
 })();
 loadHomeLatest();
-
-// INTRO cleanup — remove overlay from DOM/flow once its fade-out finishes
-(function cleanupIntro() {
-  const intro = document.getElementById('introOverlay');
-  if (!intro) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    intro.remove();
-    return;
-  }
-  setTimeout(() => { if (intro && intro.parentNode) intro.remove(); }, 2450);
-})();
 
 // COUNTDOWN
 function tick() {
