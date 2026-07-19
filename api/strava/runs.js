@@ -105,20 +105,27 @@ export default async function handler(req, res) {
       return res.status(200).json(cached.value);
     }
 
-    // Fetch fresh from Strava
+    // Fetch fresh from Strava — over-fetch since we filter out private activities after
     const accessToken = await getValidAccessToken();
-    const limit = req.query.limit || 10;
+    const limit = parseInt(req.query.limit) || 10;
+    const fetchCount = limit * 3; // buffer for private activities that get filtered out
 
     const activitiesRes = await fetch(
-      `https://www.strava.com/api/v3/athlete/activities?per_page=${limit}&type=Run`,
+      `https://www.strava.com/api/v3/athlete/activities?per_page=${fetchCount}&type=Run`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
 
-    const activities = await activitiesRes.json();
+    let activities = await activitiesRes.json();
 
     if (!Array.isArray(activities)) {
       throw new Error('Unexpected Strava response: ' + JSON.stringify(activities));
     }
+
+    // Exclude activities marked private on Strava — the API returns these
+    // to the owner regardless of visibility, so we filter manually
+    activities = activities
+      .filter(act => !act.private && act.visibility !== 'only_me')
+      .slice(0, limit);
 
     // Enrich each run with HR stream data
     const runs = await Promise.all(
@@ -144,6 +151,19 @@ export default async function handler(req, res) {
           }
         }
 
+        // Format the date using the raw local clock time Strava reports —
+        // start_date_local looks like an ISO string but isn't real UTC, so we
+        // parse it as plain text instead of through Date() to avoid the browser
+        // re-converting it to the viewer's timezone (which double-shifts it)
+        const localStr = act.start_date_local || act.start_date; // e.g. "2026-07-04T07:30:00Z"
+        const [datePart, timePart] = localStr.replace('Z', '').split('T');
+        const [year, month, day] = datePart.split('-').map(Number);
+        const [hour24, minute] = timePart.split(':').map(Number);
+        const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+        const ampm = hour24 < 12 ? 'AM' : 'PM';
+        const dateDisplay = `${monthNames[month-1]} ${day}, ${year} · ${hour12}:${String(minute).padStart(2,'0')} ${ampm}`;
+
         // Format pace as mm:ss/mi
         const paceSecPerMile = act.distance > 0
           ? (act.moving_time / (act.distance / 1609.34))
@@ -164,6 +184,7 @@ export default async function handler(req, res) {
           id: act.id,
           name: act.name,
           date: act.start_date_local,
+          date_display: dateDisplay,
           distance_miles: Math.round((act.distance / 1609.34) * 100) / 100,
           moving_time: timeStr,
           pace: paceStr,
