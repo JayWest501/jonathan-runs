@@ -31,21 +31,22 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const { race_name, race_date, location, distance, chip_time, gun_time, overall_place, overall_total, ag_place, ag_total, is_pr, notes } = req.body;
+    const { race_name, race_date, location, distance, chip_time, gun_time, overall_place, overall_total, ag_place, ag_total, is_pr, notes, registration_link } = req.body;
 
-    if (!race_name || !race_date || !chip_time) {
-      return res.status(400).json({ error: 'race_name, race_date, and chip_time are required.' });
+    if (!race_name || !race_date) {
+      return res.status(400).json({ error: 'race_name and race_date are required.' });
     }
 
     const { data, error } = await supabase
       .from('results')
       .insert({
         race_name, race_date, location, distance,
-        chip_time, gun_time,
+        chip_time: chip_time || null, gun_time,
         overall_place, overall_total,
         ag_place, ag_total,
         is_pr: is_pr || false,
         notes: notes || null,
+        registration_link: registration_link || null,
       })
       .select()
       .single();
