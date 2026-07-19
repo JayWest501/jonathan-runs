@@ -63,6 +63,34 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;jus
 [data-theme="dark"] .hero-bg{background:radial-gradient(ellipse at 30% 20%,rgba(255,92,0,.1) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(255,92,0,.06) 0%,transparent 50%);}
 .hero-dots{position:absolute;inset:0;background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:28px 28px;opacity:.5;pointer-events:none;}
 
+/* SIGNATURE: heart-rate pulse trace behind the bib */
+.pulse-trace{position:absolute;top:50%;left:0;width:100%;height:120px;transform:translateY(-50%);pointer-events:none;opacity:.5;z-index:0;}
+.pulse-trace svg{width:100%;height:100%;}
+.pulse-trace path{fill:none;stroke:var(--orange);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;opacity:.55;}
+.pulse-trace .pulse-line-1{stroke-dasharray:8 2400;animation:pulseDraw 7s linear infinite;}
+.pulse-trace .pulse-line-2{stroke-dasharray:8 2400;animation:pulseDraw 7s linear infinite;animation-delay:2.3s;opacity:.3;}
+@keyframes pulseDraw{
+  0%{stroke-dashoffset:0;}
+  100%{stroke-dashoffset:-2408;}
+}
+@media (prefers-reduced-motion: reduce){
+  .pulse-trace path{animation:none !important;stroke-dasharray:none;opacity:.15;}
+}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1;transform:none;transition:none;}
+}
+
+/* NAV SLIDING INDICATOR */
+.nav-links{position:relative;}
+.nav-indicator{position:absolute;bottom:-1px;height:2px;background:var(--orange);border-radius:2px;transition:left .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1);pointer-events:none;}
+@media (prefers-reduced-motion: reduce){
+  .nav-indicator{transition:none;}
+}
+
 .profile-photo-hero{width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid var(--orange);box-shadow:var(--shadow-lg);margin-bottom:16px;position:relative;z-index:1;}
 
 .bib{background:var(--bib-bg);border-radius:6px;width:100%;max-width:400px;box-shadow:var(--shadow-lg);overflow:hidden;position:relative;z-index:1;}
@@ -215,7 +243,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;jus
 @media(max-width:520px){.race-grid{grid-template-columns:1fr;}}
 .race-card{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s;aspect-ratio:3/4;background:var(--card2);border:1.5px solid var(--border);}
 .race-card:hover{transform:translateY(-3px);}
-.race-card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.race-card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
+.race-card:hover .race-card-photo{transform:scale(1.06);}
 .race-card-photo-placeholder{position:absolute;inset:0;background:linear-gradient(135deg,var(--orange-pale),var(--bg2));display:flex;align-items:center;justify-content:center;font-size:44px;}
 .race-card-gradient{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.5) 35%,transparent 65%);}
 .race-card-poster-body{position:absolute;left:0;right:0;bottom:0;padding:16px;}
@@ -300,7 +329,7 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   <div class="nav-logo" onclick="goToPage('home')">Jonathan Runs</div>
   <div class="nav-right">
     <div class="nav-links">
-      <button data-page="home" class="active" onclick="goToPage('home')">Home</button>
+      <div class="nav-indicator" id="navIndicator"></div>      <button data-page="home" class="active" onclick="goToPage('home')">Home</button>
       <button data-page="progress" onclick="goToPage('progress')">Progress</button>
       <button data-page="runs" onclick="goToPage('runs')">Runs</button>
       <button data-page="results" onclick="goToPage('results')">Results</button>
@@ -326,6 +355,12 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   <div class="hero">
     <div class="hero-bg"></div>
     <div class="hero-dots"></div>
+    <div class="pulse-trace">
+      <svg viewBox="0 0 800 120" preserveAspectRatio="none">
+        <path class="pulse-line-1" d="M0,60 L140,60 L160,60 L172,20 L184,100 L196,60 L220,60 L800,60 L940,60 L960,60 L972,20 L984,100 L996,60 L1020,60 L1600,60"/>
+        <path class="pulse-line-2" d="M0,60 L340,60 L360,60 L372,25 L384,95 L396,60 L420,60 L800,60 L1140,60 L1160,60 L1172,25 L1184,95 L1196,60 L1220,60 L1600,60"/>
+      </svg>
+    </div>
     <img class="profile-photo-hero" id="profilePhoto" src="" alt="Jonathan West" style="display:none;"/>
     <div class="bib">
       <div class="bib-perf"><div class="bib-perf-holes"></div></div>
@@ -529,6 +564,7 @@ function goToPage(pageId) {
   document.querySelectorAll('.nav-links button, .mobile-menu button').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.page === pageId);
   });
+  updateNavIndicator();
   mobileMenu.classList.remove('open');
   window.scrollTo({top:0, behavior:'instant'});
   try { history.replaceState(null, '', '#'+pageId); } catch(e){}
@@ -540,6 +576,42 @@ function goToPage(pageId) {
   if (pageId === 'photos' && !window.__photosLoaded) { loadPhotosPage(); window.__photosLoaded = true; }
 }
 window.goToPage = goToPage;
+
+// NAV SLIDING INDICATOR
+function updateNavIndicator() {
+  const activeBtn = document.querySelector('.nav-links button.active');
+  const indicator = document.getElementById('navIndicator');
+  if (!activeBtn || !indicator) return;
+  indicator.style.left = activeBtn.offsetLeft + 'px';
+  indicator.style.width = activeBtn.offsetWidth + 'px';
+}
+window.addEventListener('resize', updateNavIndicator);
+window.addEventListener('load', updateNavIndicator);
+
+// SCROLL REVEAL — applied to cards as they're rendered into the DOM
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+function revealObserve(root) {
+  const scope = root || document;
+  const selectors = '.run-card, .j-card, .race-card, .photo-cell-page, .home-latest-card, .prog-stat';
+  scope.querySelectorAll(selectors).forEach(el => {
+    if (el.classList.contains('reveal')) return; // already set up
+    el.classList.add('reveal');
+    if (prefersReducedMotion) {
+      el.classList.add('in');
+    } else {
+      revealObserver.observe(el);
+    }
+  });
+}
 
 // Init page from hash
 (function initPage() {
@@ -654,6 +726,7 @@ async function loadProgress() {
 
     // Auto-show current week detail
     if (currentWeek) showWeekDetail(currentWeek);
+    revealObserve(document.querySelector('.prog-stats'));
 
   } catch (e) {
     chartEl.innerHTML = '<div class="runs-error" style="grid-column:1/-1;">Could not load progress data.</div>';
@@ -733,6 +806,7 @@ async function loadHomeLatest() {
         <div class="home-latest-stat"><div class="home-latest-stat-val">${run.moving_time}</div><div class="home-latest-stat-lbl">Time</div></div>
       </div>
     `;
+    revealObserve(document.querySelector('.home-latest-wrap'));
   } catch(e) {
     card.innerHTML = '<div class="home-latest-empty">Could not load latest activity.</div>';
   }
@@ -796,6 +870,7 @@ async function loadRuns() {
     });
 
     buildPaceChart(allRuns);
+    revealObserve(container);
 
   } catch(e) {
     container.innerHTML = '<div class="runs-error">⚠️ Could not load runs from Strava. Check back soon.</div>';
@@ -933,6 +1008,7 @@ async function loadRaces() {
         + (r.is_pr?'<div class="race-card-pr">PR ★</div>':(isUpcoming?'<div class="race-card-upcoming-badge">Upcoming</div>':''))
         + '</div></div></div>';
     }).join('');
+    revealObserve(grid);
   } catch(e) {
     grid.innerHTML = '<div class="runs-error">Could not load races.</div>';
   }
@@ -1028,6 +1104,7 @@ async function loadJournal() {
           +'</div>':'')
         +'</div>';
     }).join('');
+    revealObserve(container);
   } catch(e) {
     container.innerHTML = '<div class="runs-error">Could not load journal posts.</div>';
   }
@@ -1054,6 +1131,7 @@ async function loadPhotosPage() {
         cell.classList.toggle('tapped');
       });
     });
+    revealObserve(container);
   } catch(e) {
     container.innerHTML = '<div class="runs-error">Could not load photos.</div>';
   }
