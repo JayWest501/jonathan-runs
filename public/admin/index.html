@@ -121,6 +121,13 @@ textarea{resize:vertical;min-height:120px;}
       <button class="btn btn-sm btn-ghost" id="previewRunsBtn">Load Runs</button>
       <div class="run-preview" id="runPreview" style="display:none;"></div>
     </div>
+
+    <div class="strava-card">
+      <h3>Training Progress — Weekly Overrides</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Weeks auto-complete once you hit 90%+ of target mileage on Strava. Use overrides for weeks that should count despite missed mileage (illness, travel, modified plan) — or to unmark a week.</p>
+      <button class="btn btn-sm btn-ghost" id="loadWeeksBtn">Load Weeks</button>
+      <div id="weeksList" style="margin-top:12px;display:none;"></div>
+    </div>
   </div>
 
   <!-- POSTS TAB -->
@@ -423,6 +430,75 @@ document.getElementById('previewRunsBtn').addEventListener('click', async () => 
     preview.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load runs.</div>';
   }
 });
+
+// TRAINING PROGRESS OVERRIDES
+document.getElementById('loadWeeksBtn').addEventListener('click', loadWeeksList);
+
+async function loadWeeksList(forceRefresh) {
+  const list = document.getElementById('weeksList');
+  list.style.display = 'block';
+  list.innerHTML = '<div style="color:var(--muted);font-size:12px;">Loading weeks from Strava...</div>';
+
+  try {
+    const url = `${API}/api/progress` + (forceRefresh ? `?bust=${Date.now()}` : '');
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.weeks) {
+      list.innerHTML = '<div style="color:var(--red);font-size:12px;">Could not load progress data.</div>';
+      return;
+    }
+
+    if (!data.stravaConnected) {
+      list.innerHTML = '<div style="color:var(--orange);font-size:12px;margin-bottom:10px;">⚠️ Strava not connected — connect it above first.</div>';
+    }
+
+    const dateStr = (d) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'});
+
+    list.innerHTML += data.weeks.map(w => {
+      const statusColor = w.complete ? 'var(--green)' : (w.isFuture ? 'var(--muted)' : (w.isCurrent ? 'var(--orange)' : 'var(--red)'));
+      const statusText = w.complete
+        ? (w.manualOverride !== null ? 'Complete (manual)' : 'Complete')
+        : (w.isFuture ? 'Upcoming' : (w.isCurrent ? 'In progress' : 'Missed target'));
+      return `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);">
+          <div>
+            <strong style="font-size:12px;">Week ${w.week}</strong>
+            <span style="font-size:11px;color:var(--muted);"> · ${dateStr(w.start)}–${dateStr(w.end)} · ${w.actualMiles}/${w.target} mi (${w.pct}%)</span><br>
+            <span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm btn-ghost" onclick="setWeekOverride(${w.week}, true)" title="Force mark complete">Mark Done</button>
+            <button class="btn btn-sm btn-ghost" onclick="setWeekOverride(${w.week}, false)" title="Force mark incomplete">Mark Incomplete</button>
+            ${w.manualOverride !== null ? `<button class="btn btn-sm btn-danger" onclick="setWeekOverride(${w.week}, null)" title="Remove override, use auto-detect">Clear</button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load weeks.</div>';
+  }
+}
+
+async function setWeekOverride(week, override) {
+  try {
+    const res = await fetch(`${API}/api/progress`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ week, override }),
+    });
+    if (res.ok) {
+      toast(override === null ? `Week ${week} override cleared` : `Week ${week} marked ${override ? 'complete' : 'incomplete'}`);
+      loadWeeksList(true);
+    } else {
+      const err = await res.json();
+      toast(err.error || 'Failed to update', true);
+    }
+  } catch(e) {
+    toast('Failed to update', true);
+  }
+}
+window.setWeekOverride = setWeekOverride;
 
 // POSTS
 async function loadPosts() {
