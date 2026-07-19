@@ -403,32 +403,8 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
     </div>
     <div id="runsContainer"><div class="runs-loading">Loading runs from Strava...</div></div>
     <div class="card pace-chart">
-      <div class="pace-chart-title">Pace Trend — Last 8 Runs</div>
-      <div class="pace-wrap">
-        <div class="pace-y"><span>9:00</span><span>10:00</span><span>11:00</span><span>12:00</span></div>
-        <div class="pace-svg-wrap">
-          <svg viewBox="0 0 300 100" width="100%" height="100" preserveAspectRatio="xMidYMid meet">
-            <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff5c00" stop-opacity=".18"/><stop offset="100%" stop-color="#ff5c00" stop-opacity="0"/></linearGradient></defs>
-            <line x1="0" y1="1" x2="300" y2="1" stroke="var(--border)" stroke-width="0.5"/>
-            <line x1="0" y1="33" x2="300" y2="33" stroke="var(--border)" stroke-width="0.5"/>
-            <line x1="0" y1="66" x2="300" y2="66" stroke="var(--border)" stroke-width="0.5"/>
-            <path d="M0,72 L43,60 L86,78 L129,45 L172,54 L215,30 L258,66 L300,36 L300,100 L0,100Z" fill="url(#pg)"/>
-            <polyline points="0,72 43,60 86,78 129,45 172,54 215,30 258,66 300,36" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="0" cy="72" r="3" fill="var(--orange)"/><circle cx="43" cy="60" r="3" fill="var(--orange)"/>
-            <circle cx="86" cy="78" r="3" fill="var(--orange)"/><circle cx="86" cy="78" r="6" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2,2"/>
-            <text x="88" y="95" font-size="7" fill="#f59e0b" font-family="DM Sans,sans-serif" font-weight="700">☀️ hot</text>
-            <circle cx="129" cy="45" r="3" fill="var(--orange)"/><circle cx="172" cy="54" r="3" fill="var(--orange)"/>
-            <circle cx="215" cy="30" r="3" fill="var(--orange)"/><circle cx="215" cy="30" r="6" fill="none" stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="2,2"/>
-            <text x="200" y="22" font-size="7" fill="var(--purple)" font-family="DM Sans,sans-serif" font-weight="700">⚡ tempo</text>
-            <circle cx="258" cy="66" r="3" fill="var(--orange)"/>
-            <circle cx="300" cy="36" r="5" fill="var(--orange)" stroke="white" stroke-width="1.5"/>
-            <circle cx="300" cy="36" r="9" fill="none" stroke="var(--red)" stroke-width="1.5"/>
-            <text x="262" y="28" font-size="7" fill="var(--red)" font-family="DM Sans,sans-serif" font-weight="700">🏁 race</text>
-          </svg>
-        </div>
-        <div class="pace-x"><span>Jun 1</span><span>Jun 8</span><span>Jun 15</span><span>Jun 21</span><span>Jun 28</span><span>Jul 4</span><span></span><span>Latest</span></div>
-      </div>
-      <div class="pace-note">📉 Lower = faster · ☀️ hot run · ⚡ tempo effort · 🏁 race</div>
+      <div class="pace-chart-title">Pace Trend — Recent Runs</div>
+      <div id="paceChartContainer"><div class="runs-loading" style="padding:20px;">Loading pace trend...</div></div>
     </div>
   </div>
 </div>
@@ -706,13 +682,17 @@ function getTag(run) {
 async function loadRuns() {
   const container = document.getElementById('runsContainer');
   try {
-    const res = await fetch('/api/strava/runs?limit=5');
+    const res = await fetch('/api/strava/runs?limit=8');
     if (!res.ok) throw new Error('API error');
-    const runs = await res.json();
-    if (!Array.isArray(runs) || runs.length === 0) {
+    const allRuns = await res.json();
+    if (!Array.isArray(allRuns) || allRuns.length === 0) {
       container.innerHTML = '<div class="runs-error">No runs found yet. Connect Strava in the admin dashboard.</div>';
+      document.getElementById('paceChartContainer').innerHTML = '<div class="runs-error" style="margin:0;">No pace data yet.</div>';
       return;
     }
+
+    const runs = allRuns.slice(0, 5); // cards show the most recent 5
+
     document.getElementById('totalRuns').textContent = runs.length;
     const totalMi = runs.reduce((s,r) => s + (r.distance_miles||0), 0);
     document.getElementById('totalMiles').textContent = Math.round(totalMi*10)/10;
@@ -754,9 +734,100 @@ async function loadRuns() {
       const tooltip = document.getElementById('tt-'+runId);
       if (zoneBar && tooltip) zoneBar.addEventListener('click', () => tooltip.classList.toggle('show'));
     });
+
+    buildPaceChart(allRuns);
+
   } catch(e) {
     container.innerHTML = '<div class="runs-error">⚠️ Could not load runs from Strava. Check back soon.</div>';
+    document.getElementById('paceChartContainer').innerHTML = '<div class="runs-error" style="margin:0;">Could not load pace trend.</div>';
   }
+}
+
+function paceToSeconds(paceStr) {
+  if (!paceStr) return null;
+  const [m, s] = paceStr.split(':').map(Number);
+  return m * 60 + (s || 0);
+}
+
+function secondsToPaceLabel(sec) {
+  const m = Math.floor(sec / 60);
+  const s = Math.round(sec % 60);
+  return m + ':' + String(s).padStart(2,'0');
+}
+
+function buildPaceChart(runsDescending) {
+  const container = document.getElementById('paceChartContainer');
+  // chart oldest -> newest, left to right
+  const runs = [...runsDescending].reverse().filter(r => r.pace);
+  if (runs.length < 2) {
+    container.innerHTML = '<div class="runs-error" style="margin:0;">Not enough runs yet for a pace trend — check back after a few more.</div>';
+    return;
+  }
+
+  const paces = runs.map(r => paceToSeconds(r.pace));
+  const minPace = Math.min(...paces);
+  const maxPace = Math.max(...paces);
+  const padding = Math.max(20, (maxPace - minPace) * 0.15);
+  const yMin = minPace - padding; // fastest (top of chart)
+  const yMax = maxPace + padding; // slowest (bottom of chart)
+
+  const W = 300, H = 100;
+  const n = runs.length;
+  const xStep = n > 1 ? W / (n - 1) : 0;
+
+  const points = runs.map((r, i) => {
+    const x = n > 1 ? i * xStep : W/2;
+    const pace = paceToSeconds(r.pace);
+    const y = ((pace - yMin) / (yMax - yMin)) * H;
+    return { x, y, run: r };
+  });
+
+  const polyPoints = points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const areaPath = `M${points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L')} L${W},${H} L0,${H} Z`;
+
+  let circles = '';
+  let annotations = '';
+  points.forEach((p, i) => {
+    const tag = getTag(p.run);
+    const isLast = i === points.length - 1;
+    const r = isLast ? 5 : 3;
+    circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="var(--orange)"${isLast ? ' stroke="white" stroke-width="1.5"' : ''}/>`;
+    if (tag.cls === 'tag-race') {
+      circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8" fill="none" stroke="var(--red)" stroke-width="1.5"/>`;
+      annotations += `race`;
+    } else if (tag.cls === 'tag-tempo') {
+      circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8" fill="none" stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="2,2"/>`;
+      annotations += `tempo`;
+    }
+  });
+
+  const yLabels = [yMin, (yMin+yMax)/2, yMax].map(secondsToPaceLabel);
+  const xLabels = points.map(p => {
+    const d = new Date(p.run.date);
+    return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+  });
+
+  // Show every other x label if too many points to avoid crowding
+  const xLabelsHtml = xLabels.map((l, i) => (n > 5 && i % 2 !== 0 && i !== n-1) ? '<span></span>' : `<span>${l}</span>`).join('');
+
+  container.innerHTML = `
+    <div class="pace-wrap">
+      <div class="pace-y"><span>${yLabels[2]}</span><span>${yLabels[1]}</span><span>${yLabels[0]}</span></div>
+      <div class="pace-svg-wrap">
+        <svg viewBox="0 0 ${W} ${H}" width="100%" height="100" preserveAspectRatio="none">
+          <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff5c00" stop-opacity=".18"/><stop offset="100%" stop-color="#ff5c00" stop-opacity="0"/></linearGradient></defs>
+          <line x1="0" y1="1" x2="${W}" y2="1" stroke="var(--border)" stroke-width="0.5"/>
+          <line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="var(--border)" stroke-width="0.5"/>
+          <line x1="0" y1="${H-1}" x2="${W}" y2="${H-1}" stroke="var(--border)" stroke-width="0.5"/>
+          <path d="${areaPath}" fill="url(#pg)"/>
+          <polyline points="${polyPoints}" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          ${circles}
+        </svg>
+      </div>
+      <div class="pace-x">${xLabelsHtml}</div>
+    </div>
+    <div class="pace-note">📉 Lower = faster${annotations.includes('tempo')?' · ⚡ tempo effort (purple ring)':''}${annotations.includes('race')?' · 🏁 race (red ring)':''} · from your last ${n} runs</div>
+  `;
 }
 
 // RESULTS PAGE — race cards
