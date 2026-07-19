@@ -116,8 +116,8 @@ textarea{resize:vertical;min-height:120px;}
     </div>
 
     <div class="strava-card">
-      <h3>Recent Runs Preview</h3>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Last 5 runs pulled from Strava. These auto-populate the public site.</p>
+      <h3>Recent Runs — Manage Visibility</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Last 10 runs pulled from Strava. Walks and private activities are auto-filtered — use Hide on anything else you don't want showing on the public site.</p>
       <button class="btn btn-sm btn-ghost" id="previewRunsBtn">Load Runs</button>
       <div class="run-preview" id="runPreview" style="display:none;"></div>
     </div>
@@ -403,14 +403,19 @@ document.getElementById('syncBtn').addEventListener('click', async () => {
   }
 });
 
-// Preview runs
-document.getElementById('previewRunsBtn').addEventListener('click', async () => {
+// Preview runs — shows last 10, with Hide/Unhide controls per run
+document.getElementById('previewRunsBtn').addEventListener('click', loadRunsPreview);
+
+async function loadRunsPreview() {
   const preview = document.getElementById('runPreview');
   preview.style.display = 'block';
   preview.innerHTML = '<div style="color:var(--muted);font-size:12px;">Loading runs...</div>';
 
   try {
-    const res = await fetch(`${API}/api/strava/runs?limit=5`);
+    // Authenticated request — admin sees ALL runs including hidden ones, flagged
+    const res = await fetch(`${API}/api/strava/runs?limit=10`, {
+      headers: authHeaders(),
+    });
     const runs = await res.json();
 
     if (!Array.isArray(runs) || runs.length === 0) {
@@ -419,17 +424,42 @@ document.getElementById('previewRunsBtn').addEventListener('click', async () => 
     }
 
     preview.innerHTML = runs.map(r => `
-      <div class="run-preview-item">
-        <strong>${r.name}</strong><br>
-        ${new Date(r.date).toLocaleDateString()} · ${r.distance_miles} mi · ${r.moving_time} · ${r.pace}/mi
-        ${r.calories ? ` · 🔥 ${r.calories} cal` : ''}
-        ${r.avg_hr ? ` · ❤️ ${r.avg_hr} bpm avg` : ''}
+      <div class="run-preview-item" style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;${r.hidden ? 'opacity:.5;' : ''}">
+        <div>
+          <strong>${r.name}</strong>${r.hidden ? ' <span style="color:var(--red);font-size:10px;font-weight:700;">HIDDEN</span>' : ''}<br>
+          ${r.date_display || new Date(r.date).toLocaleDateString()} · ${r.distance_miles} mi · ${r.moving_time} · ${r.pace}/mi
+          ${r.calories ? ` · 🔥 ${r.calories} cal` : ''}
+          ${r.avg_hr ? ` · ❤️ ${r.avg_hr} bpm avg` : ''}
+        </div>
+        <button class="btn btn-sm ${r.hidden ? '' : 'btn-danger'}" style="flex-shrink:0;" onclick="toggleRunVisibility('${r.id}', ${!r.hidden})">
+          ${r.hidden ? 'Unhide' : 'Hide'}
+        </button>
       </div>
     `).join('');
   } catch(e) {
     preview.innerHTML = '<div style="color:var(--red);font-size:12px;">Failed to load runs.</div>';
   }
-});
+}
+
+async function toggleRunVisibility(activityId, hide) {
+  try {
+    const res = await fetch(`${API}/api/strava/runs`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ activity_id: activityId, hide }),
+    });
+    if (res.ok) {
+      toast(hide ? 'Run hidden from public site' : 'Run unhidden');
+      loadRunsPreview();
+    } else {
+      const err = await res.json();
+      toast(err.error || 'Failed to update', true);
+    }
+  } catch(e) {
+    toast('Failed to update', true);
+  }
+}
+window.toggleRunVisibility = toggleRunVisibility;
 
 // TRAINING PROGRESS OVERRIDES
 document.getElementById('loadWeeksBtn').addEventListener('click', loadWeeksList);
