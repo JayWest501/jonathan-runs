@@ -301,7 +301,7 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
 
 /* ===== CINEMATIC HOME REDESIGN ===== */
 #page-home{background:#0b0907;color:#fff;}
-#page-home .hero{min-height:calc(100svh - 52px);border-bottom:1px solid rgba(255,255,255,.12);}
+#page-home .hero{height:calc(100svh - 52px);min-height:620px;max-height:920px;border-bottom:1px solid rgba(255,255,255,.12);}
 #page-home .hero-photo{animation:heroDrift 18s ease-in-out infinite alternate;}
 @keyframes heroDrift{from{transform:scale(1.02) translate3d(0,0,0)}to{transform:scale(1.08) translate3d(-1.5%,.5%,0)}}
 #page-home .hero-scrim{background:linear-gradient(90deg,rgba(8,6,4,.96) 0%,rgba(8,6,4,.76) 34%,rgba(8,6,4,.12) 67%),linear-gradient(180deg,rgba(8,6,4,.5),transparent 36%,rgba(8,6,4,.94));}
@@ -320,9 +320,12 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
 .progress-preview{display:grid;grid-template-columns:.72fr 1.28fr;gap:28px;margin-top:36px}.progress-ring-card,.mileage-preview{border:1px solid #3a2a1a;background:#15100c;padding:28px}.progress-ring{width:180px;height:180px;border-radius:50%;display:grid;place-items:center;margin:12px auto;background:conic-gradient(var(--orange) var(--p,0%),#31251c 0);position:relative}.progress-ring:after{content:'';position:absolute;width:136px;height:136px;border-radius:50%;background:#15100c}.progress-ring-content{z-index:1;text-align:center}.progress-ring-value{font-family:'Archivo Black',sans-serif;font-size:47px}.progress-ring-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#bfb4a6}.home-bars{height:190px;display:flex;align-items:flex-end;gap:12px;margin-top:24px;border-bottom:1px solid #493426;padding:0 6px}.home-bar{flex:1;background:linear-gradient(#ff792d,#ff5c00);min-height:8px;position:relative}.home-bar span{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font-size:9px;color:#948778;white-space:nowrap}
 .home-run-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}.home-run-card{border:1px solid #3a2a1a;background:#17110c;padding:18px;min-height:180px}.home-run-card-date{font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--orange);text-transform:uppercase}.home-run-card-name{font-family:'Archivo Black',sans-serif;font-size:19px;margin-top:9px}.home-run-card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:24px}.home-run-card-stat strong{font-family:'DM Mono',monospace;font-size:15px;display:block}.home-run-card-stat span{font-size:8px;color:#928679;text-transform:uppercase;letter-spacing:.08em}
 .explore-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:30px}.explore-card{min-height:210px;border:1px solid #3a2a1a;padding:20px;position:relative;overflow:hidden;background:linear-gradient(145deg,#1d140d,#100b08);cursor:pointer;text-align:left;color:#fff}.explore-card:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 10%,rgba(255,92,0,.18),transparent 43%);transition:.35s}.explore-card:hover:before{transform:scale(1.2)}.explore-icon{font-size:25px;color:var(--orange)}.explore-name{font-family:'Archivo Black',sans-serif;font-size:20px;margin-top:55px;text-transform:uppercase}.explore-copy{font-size:11px;line-height:1.5;color:#aaa095;margin-top:8px}.explore-arrow{position:absolute;bottom:18px;font-size:20px;color:var(--orange)}
-.home-quote{padding:34px 5vw;display:flex;justify-content:space-between;gap:30px;align-items:center;max-width:1240px;margin:0 auto}.home-quote blockquote{font-size:17px;max-width:670px;color:#ded7ce}.home-quote-mark{font-family:Georgia,serif;font-size:54px;color:var(--orange);line-height:.5}
+.home-quote{padding:28px 5vw;display:flex;justify-content:space-between;gap:30px;align-items:center;max-width:1240px;margin:0 auto}.home-quote blockquote{font-size:17px;max-width:670px;color:#ded7ce}.home-quote-mark{font-family:Georgia,serif;font-size:54px;color:var(--orange);line-height:.5}
 @media(max-width:900px){.story-grid,.progress-preview{grid-template-columns:1fr}.metric-grid{grid-template-columns:repeat(2,1fr)}.explore-grid{grid-template-columns:repeat(2,1fr)}.home-run-grid{grid-template-columns:1fr}.hero-bottom{align-items:flex-start;flex-direction:column}.hero-content{padding-left:24px;padding-right:24px}.story-photo{min-height:330px}}
-@media(max-width:520px){#page-home .hero{min-height:760px}.hero-bignum{font-size:35vw}.hero-manifesto{font-size:34px}.hero-cd{gap:13px}.hero-cd-num{font-size:22px}.metric-grid{grid-template-columns:1fr 1fr}.metric-card{min-height:125px;padding:18px 15px}.metric-value{font-size:31px}.explore-grid{grid-template-columns:1fr}.home-shell{padding:0 20px}.home-section{padding:56px 0}.story-photo{min-height:280px}.home-quote{align-items:flex-start;flex-direction:column}}
+@media(max-width:520px){#page-home .hero{height:calc(100svh - 52px);min-height:600px;max-height:780px}.hero-bignum{font-size:35vw}.hero-manifesto{font-size:34px}.hero-cd{gap:13px}.hero-cd-num{font-size:22px}.metric-grid{grid-template-columns:1fr 1fr}.metric-card{min-height:125px;padding:18px 15px}.metric-value{font-size:31px}.explore-grid{grid-template-columns:1fr}.home-shell{padding:0 20px}.home-section{padding:56px 0}.story-photo{min-height:280px}.home-quote{align-items:flex-start;flex-direction:column}}
+
+/* GEAR + FUEL */
+.gear-intro{font-size:14px;line-height:1.75;color:var(--text2);max-width:610px;margin-top:-14px;margin-bottom:30px}.gear-section{margin-top:38px}.gear-heading{font-family:'Archivo Black',sans-serif;font-size:22px;letter-spacing:-.02em;margin-bottom:14px}.gear-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.gear-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:22px;min-height:190px;display:flex;flex-direction:column;transition:transform .2s,border-color .2s,box-shadow .2s}.gear-card:hover{transform:translateY(-3px);border-color:var(--orange);box-shadow:var(--shadow)}.gear-card-top{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.gear-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(255,92,0,.12);color:var(--orange);font-size:21px}.gear-status{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);border:1px solid rgba(255,92,0,.3);border-radius:999px;padding:4px 8px}.gear-name{font-family:'Archivo Black',sans-serif;font-size:20px;line-height:1.08;margin-top:22px}.gear-type{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:5px}.gear-note{font-size:12px;line-height:1.65;color:var(--text2);margin-top:12px}.wishlist-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#ff5c00,#e44800);border-radius:16px;padding:30px;color:#fff;margin-top:14px}.wishlist-card:after{content:'13.1';position:absolute;right:-10px;bottom:-35px;font-family:'Archivo Black',sans-serif;font-size:120px;color:rgba(0,0,0,.12);letter-spacing:-.08em}.wishlist-card h3{font-family:'Archivo Black',sans-serif;font-size:27px;position:relative;z-index:1}.wishlist-card p{font-size:13px;line-height:1.65;max-width:500px;margin:8px 0 19px;position:relative;z-index:1}.wishlist-btn{display:inline-flex;position:relative;z-index:1;background:#18100b;color:#fff;text-decoration:none;padding:11px 17px;border-radius:8px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:0;cursor:pointer}.wishlist-btn.is-placeholder{opacity:.72;cursor:default}.gear-disclosure{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px}.gear-empty{border:1.5px dashed var(--border);border-radius:12px;padding:18px;color:var(--muted);font-size:12px;line-height:1.6}@media(max-width:620px){.gear-grid{grid-template-columns:1fr}.gear-card{min-height:0}}
 
 </style>
 </head>
@@ -336,6 +339,7 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
       <button data-page="runs" onclick="goToPage('runs')">Runs</button>
       <button data-page="results" onclick="goToPage('results')">Results</button>
       <button data-page="journal" onclick="goToPage('journal')">Journal</button>
+      <button data-page="gear" onclick="goToPage('gear')">Gear</button>
       <button data-page="photos" onclick="goToPage('photos')">Photos</button>
     </div>
     <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode"></button>
@@ -349,6 +353,7 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   <button data-page="runs" onclick="goToPage('runs')">Runs</button>
   <button data-page="results" onclick="goToPage('results')">Results</button>
   <button data-page="journal" onclick="goToPage('journal')">Journal</button>
+  <button data-page="gear" onclick="goToPage('gear')">Gear</button>
   <button data-page="photos" onclick="goToPage('photos')">Photos</button>
 </div>
 
@@ -428,6 +433,7 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
         <button class="explore-card" onclick="goToPage('runs')"><div class="explore-icon">⌁</div><div class="explore-name">Runs</div><div class="explore-copy">Every workout, pace, heart-rate zone, and hard-earned mile.</div><div class="explore-arrow">→</div></button>
         <button class="explore-card" onclick="goToPage('results')"><div class="explore-icon">◇</div><div class="explore-name">Results</div><div class="explore-copy">Race day, official times, and the moments the work pays off.</div><div class="explore-arrow">→</div></button>
         <button class="explore-card" onclick="goToPage('journal')"><div class="explore-icon">▤</div><div class="explore-name">Journal</div><div class="explore-copy">Honest reflections from the good runs, bad runs, and long miles.</div><div class="explore-arrow">→</div></button>
+        <button class="explore-card" onclick="goToPage('gear')"><div class="explore-icon">✦</div><div class="explore-name">Gear</div><div class="explore-copy">The shoes, tech, hydration, and fuel supporting the journey.</div><div class="explore-arrow">→</div></button>
         <button class="explore-card" onclick="goToPage('photos')"><div class="explore-icon">▣</div><div class="explore-name">Photos</div><div class="explore-copy">The people, places, sweat, and scenery behind the numbers.</div><div class="explore-arrow">→</div></button>
       </div>
     </section>
@@ -508,6 +514,43 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   </div>
 </div>
 
+<!-- GEAR PAGE -->
+<div class="page" id="page-gear">
+  <div class="page-inner">
+    <div class="eyebrow">What Keeps Me Moving</div>
+    <div class="section-title">Gear &amp; Fuel</div>
+    <p class="gear-intro">The products I actually train with, what works for me, and what I am still testing. This page is built to stay honest: favorites are separated from gear I simply want to try.</p>
+
+    <section class="gear-section" aria-labelledby="gearFavoritesHeading">
+      <h2 class="gear-heading" id="gearFavoritesHeading">Current Favorites</h2>
+      <div class="gear-grid">
+        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">👟</div><span class="gear-status">Add favorite</span></div><div class="gear-name">Daily Trainer</div><div class="gear-type">Running Shoes</div><p class="gear-note">Add the shoe you reach for on most easy and everyday miles, plus a short honest note about fit and comfort.</p></article>
+        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">⚡</div><span class="gear-status">Add favorite</span></div><div class="gear-name">Speed / Race Shoe</div><div class="gear-type">Performance Shoes</div><p class="gear-note">Add the faster option you use for workouts or race day and explain where it feels best.</p></article>
+        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">⌚</div><span class="gear-status">In use</span></div><div class="gear-name">Apple Watch</div><div class="gear-type">Training Tech</div><p class="gear-note">Used for heart rate, calories, pace, distance, and the workout data displayed throughout this site.</p></article>
+        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">💧</div><span class="gear-status">Add setup</span></div><div class="gear-name">Hydration</div><div class="gear-type">Dallas Heat</div><p class="gear-note">Add the bottle, belt, vest, or electrolyte mix that helps you manage long runs in the Texas heat.</p></article>
+      </div>
+    </section>
+
+    <section class="gear-section" aria-labelledby="fuelHeading">
+      <h2 class="gear-heading" id="fuelHeading">Fuel &amp; Recovery</h2>
+      <div class="gear-grid">
+        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">⚡</div><span class="gear-status">Add favorite</span></div><div class="gear-name">Long-Run Fuel</div><div class="gear-type">Gels, Chews or Drink Mix</div><p class="gear-note">List what your stomach handles well, when you take it, and which flavors you would buy again.</p></article>
+        <article class="gear-card"><div class="gear-card-top"><div class="gear-icon">↻</div><span class="gear-status">Add routine</span></div><div class="gear-name">Recovery</div><div class="gear-type">After the Run</div><p class="gear-note">Add the recovery tools, drinks, snacks, or mobility items that have genuinely earned a place in your routine.</p></article>
+      </div>
+    </section>
+
+    <section class="gear-section" aria-labelledby="wishlistHeading">
+      <h2 class="gear-heading" id="wishlistHeading">Next Up</h2>
+      <div class="wishlist-card">
+        <h3>My Running Wishlist</h3>
+        <p>Gear I am saving for or interested in testing on the road to 13.1. The Amazon button can be activated as soon as the wishlist URL is added.</p>
+        <span class="wishlist-btn is-placeholder" aria-disabled="true">Wishlist link coming soon</span>
+      </div>
+      <p class="gear-disclosure">Products should only be labeled favorites after real use. Wishlist items are not endorsements.</p>
+    </section>
+  </div>
+</div>
+
 <!-- PHOTOS PAGE -->
 <div class="page" id="page-photos">
   <div class="page-inner">
@@ -571,7 +614,7 @@ hamBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
 document.addEventListener('click', e => { if (!hamBtn.contains(e.target) && !mobileMenu.contains(e.target)) mobileMenu.classList.remove('open'); });
 
 // PAGE NAVIGATION (SPA)
-const pages = ['home','progress','runs','results','journal','photos'];
+const pages = ['home','progress','runs','results','journal','gear','photos'];
 let currentPage = 'home';
 function goToPage(pageId) {
   if (!pages.includes(pageId)) return;
@@ -616,6 +659,13 @@ const revealObserver = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+// Register the homepage sections that already have the reveal class in the HTML.
+// Without this, they remain transparent while still occupying layout space.
+document.querySelectorAll('#page-home .reveal').forEach(el => {
+  if (prefersReducedMotion) el.classList.add('in');
+  else revealObserver.observe(el);
+});
 
 // Animate a number counting up from 0 to its target value
 function countUp(el, target, duration = 900, decimals = 0) {
