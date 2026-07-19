@@ -322,28 +322,43 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   .race-detail-stats{grid-template-columns:repeat(2,1fr);}
 }
 
-/* INTRO — finish line runner */
-.intro-overlay{position:fixed;inset:0;z-index:500;background:#0d0d0d;display:flex;align-items:center;justify-content:center;overflow:hidden;animation:introFadeOut .5s ease forwards;animation-delay:2.05s;}
-.intro-svg{width:100%;height:100%;max-width:900px;}
-.intro-runner{animation:introRun 1.85s cubic-bezier(.45,.05,.55,.95) forwards;}
-@keyframes introRun{
-  0%{transform:translate(-30px,0);}
-  15%{transform:translate(-30px,-2px);}
-  30%{transform:translate(60px,0);}
-  45%{transform:translate(150px,-2px);}
-  60%{transform:translate(230px,0);}
-  75%{transform:translate(280px,-1px);}
-  92%{transform:translate(300px,0);}
-  100%{transform:translate(430px,-1px);}
+/* INTRO — photo finish: speed streaks, ribbon break, flash, bib number */
+.intro-overlay{position:fixed;inset:0;z-index:500;background:#0a0a0a;display:flex;align-items:center;justify-content:center;overflow:hidden;animation:introFadeOut .45s ease forwards;animation-delay:2s;}
+
+/* speed streaks */
+.intro-streak{position:absolute;left:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange,#ff5c00) 40%,#fff 80%,transparent);opacity:0;border-radius:2px;filter:blur(.3px);}
+.intro-streak-1{top:34%;width:46%;animation:introStreak .62s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:.05s;}
+.intro-streak-2{top:47%;width:60%;animation:introStreak .58s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:.22s;}
+.intro-streak-3{top:60%;width:40%;animation:introStreak .56s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:.4s;}
+.intro-streak-4{top:53%;width:70%;height:1px;animation:introStreak .5s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:.62s;}
+@keyframes introStreak{
+  0%{opacity:0;transform:translateX(-40%) scaleX(.3);}
+  12%{opacity:1;}
+  85%{opacity:.9;}
+  100%{opacity:0;transform:translateX(115%) scaleX(1);}
 }
-.intro-ribbon-l{animation:introBreakL .3s ease forwards;animation-delay:1.75s;transform-origin:222px 101px;}
-.intro-ribbon-r{animation:introBreakR .3s ease forwards;animation-delay:1.75s;transform-origin:290px 101px;}
-@keyframes introBreakL{0%{transform:rotate(0deg) translate(0,0);opacity:1;}100%{transform:rotate(-35deg) translate(-14px,10px);opacity:0;}}
-@keyframes introBreakR{0%{transform:rotate(0deg) translate(0,0);opacity:1;}100%{transform:rotate(35deg) translate(14px,10px);opacity:0;}}
-.intro-flash{opacity:0;animation:introFlash .35s ease forwards;animation-delay:1.75s;}
-@keyframes introFlash{0%{opacity:0;transform:scale(0.5);}30%{opacity:1;transform:scale(3.5);}100%{opacity:0;transform:scale(5);}}
-.intro-label{position:absolute;bottom:18%;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:.35em;color:rgba(255,255,255,.55);opacity:0;animation:introLabelIn .5s ease forwards;animation-delay:.15s;}
-@keyframes introLabelIn{0%{opacity:0;letter-spacing:.6em;}100%{opacity:1;letter-spacing:.35em;}}
+
+/* ribbon */
+.intro-ribbon-wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:280px;height:60px;}
+.intro-post{position:absolute;top:0;width:3px;height:60px;background:#333;}
+.intro-post-l{left:0;}
+.intro-post-r{right:0;}
+.intro-ribbon-l,.intro-ribbon-r{position:absolute;top:28px;height:4px;background:var(--orange,#ff5c00);transform-origin:center;}
+.intro-ribbon-l{left:3px;width:137px;animation:introBreakL .32s ease forwards;animation-delay:1.08s;transform-origin:right center;}
+.intro-ribbon-r{right:3px;width:137px;animation:introBreakR .32s ease forwards;animation-delay:1.08s;transform-origin:left center;}
+@keyframes introBreakL{0%{transform:rotate(0deg) translateY(0);opacity:1;}100%{transform:rotate(-50deg) translateY(24px);opacity:0;}}
+@keyframes introBreakR{0%{transform:rotate(0deg) translateY(0);opacity:1;}100%{transform:rotate(50deg) translateY(24px);opacity:0;}}
+
+/* flash */
+.intro-flash{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;opacity:0;animation:introFlash .4s ease forwards;animation-delay:1.05s;box-shadow:0 0 40px 20px rgba(255,255,255,.6);}
+@keyframes introFlash{0%{opacity:0;transform:scale(.3);}25%{opacity:1;transform:scale(6);}100%{opacity:0;transform:scale(11);}}
+
+/* bib number reveal */
+.intro-bib{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.85);font-family:'Bebas Neue',cursive;font-size:64px;letter-spacing:.03em;color:#fff;opacity:0;animation:introBibIn .55s cubic-bezier(.2,.8,.3,1) forwards;animation-delay:1.15s;text-shadow:0 0 30px rgba(255,92,0,.6);}
+@keyframes introBibIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.7);}35%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}100%{opacity:1;transform:translate(-50%,-50%) scale(1);}}
+
+.intro-label{position:absolute;bottom:20%;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:.4em;color:rgba(255,255,255,.5);opacity:0;animation:introLabelIn .5s ease forwards;animation-delay:1.55s;}
+@keyframes introLabelIn{0%{opacity:0;letter-spacing:.6em;}100%{opacity:1;letter-spacing:.4em;}}
 @keyframes introFadeOut{0%{opacity:1;pointer-events:auto;}100%{opacity:0;pointer-events:none;}}
 @media (prefers-reduced-motion: reduce){
   .intro-overlay{display:none !important;}
@@ -352,24 +367,20 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
 </head>
 <body>
 
-<!-- INTRO — runner breaks the finish line, wipes into the site -->
+<!-- INTRO — photo finish: speed streaks, ribbon break, flash, bib reveal -->
 <div class="intro-overlay" id="introOverlay">
-  <svg class="intro-svg" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
-    <!-- finish posts -->
-    <rect x="286" y="60" width="5" height="90" fill="#3a3a3a"/>
-    <rect x="286" y="60" width="5" height="90" fill="#3a3a3a" transform="translate(0,0)"/>
-    <!-- ribbon (two halves) -->
-    <rect class="intro-ribbon intro-ribbon-l" x="222" y="98" width="66" height="6" fill="var(--orange, #ff5c00)"/>
-    <rect class="intro-ribbon intro-ribbon-r" x="288" y="98" width="2" height="6" fill="var(--orange, #ff5c00)"/>
-    <rect x="286" y="60" width="5" height="90" fill="#3a3a3a"/>
-    <!-- flash burst at break point -->
-    <circle class="intro-flash" cx="288" cy="101" r="4" fill="#fff"/>
-    <!-- runner pictogram -->
-    <g class="intro-runner">
-      <circle cx="0" cy="88" r="7" fill="#fff"/>
-      <path d="M0,95 L-2,118 M0,95 L10,110 M-2,118 L-10,138 M-2,118 L6,140 M10,110 L22,102 M10,110 L18,122" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>
-    </g>
-  </svg>
+  <div class="intro-streak intro-streak-1"></div>
+  <div class="intro-streak intro-streak-2"></div>
+  <div class="intro-streak intro-streak-3"></div>
+  <div class="intro-streak intro-streak-4"></div>
+  <div class="intro-ribbon-wrap">
+    <div class="intro-post intro-post-l"></div>
+    <div class="intro-post intro-post-r"></div>
+    <div class="intro-ribbon-l"></div>
+    <div class="intro-ribbon-r"></div>
+  </div>
+  <div class="intro-flash"></div>
+  <div class="intro-bib">1301</div>
   <div class="intro-label">JONATHAN RUNS</div>
 </div>
 
@@ -678,7 +689,7 @@ loadHomeLatest();
     intro.remove();
     return;
   }
-  setTimeout(() => { if (intro && intro.parentNode) intro.remove(); }, 2600);
+  setTimeout(() => { if (intro && intro.parentNode) intro.remove(); }, 2450);
 })();
 
 // COUNTDOWN
