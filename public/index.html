@@ -633,7 +633,7 @@ function goToPage(pageId) {
   if (pageId === 'runs' && !window.__runsLoaded) { loadRuns(); window.__runsLoaded = true; }
   if (pageId === 'results' && !window.__resultsLoaded) { loadRaces(); window.__resultsLoaded = true; }
   if (pageId === 'journal' && !window.__journalLoaded) { loadJournal(); window.__journalLoaded = true; }
-  if (pageId === 'gear' && !window.__gearLoaded) { loadGearPage(); window.__gearLoaded = true; }
+  if (pageId === 'gear') { loadGearPage(); }
   if (pageId === 'photos' && !window.__photosLoaded) { loadPhotosPage(); window.__photosLoaded = true; }
 }
 window.goToPage = goToPage;
@@ -710,6 +710,16 @@ function revealObserve(root) {
 loadHomeLatest();
 loadHomeExperience();
 
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>'"]/g, character => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;'
+  })[character]);
+}
+
 // SITE CONTENT + GEAR — editable from /admin
 let SITE_CONTENT = { race_date: '2026-12-13T07:00:00-06:00' };
 function setText(id, value){ const el=document.getElementById(id); if(el && value !== undefined && value !== null) el.textContent=value; }
@@ -732,12 +742,52 @@ function gearCard(x){
   const link=x.product_url?`<a href="${escapeHtml(x.product_url)}" target="_blank" rel="noopener sponsored" class="gear-product-link">View product →</a>`:'';
   return `<article class="gear-card">${image}<div class="gear-card-body"><div class="gear-card-top"><div class="gear-icon">${escapeHtml(x.icon||'✦')}</div><span class="gear-status">${escapeHtml(x.status||'In use')}</span></div><div class="gear-name">${escapeHtml(x.name)}</div><div class="gear-type">${escapeHtml(x.type||x.category||'')}</div><p class="gear-note">${escapeHtml(x.note||'')}</p>${link}</div></article>`;
 }
-async function loadGearPage(){
-  try{const r=await fetch('/api/gear');const items=await r.json();if(!Array.isArray(items))throw new Error('bad gear');
-    const fav=items.filter(x=>x.category==='Favorites'), fuel=items.filter(x=>x.category==='Fuel & Recovery');
-    document.getElementById('gearFavoritesGrid').innerHTML=fav.length?fav.map(gearCard).join(''):'<div class="gear-empty">No favorites published yet.</div>';
-    document.getElementById('gearFuelGrid').innerHTML=fuel.length?fuel.map(gearCard).join(''):'<div class="gear-empty">No fuel or recovery items published yet.</div>';
-  }catch(e){document.getElementById('gearFavoritesGrid').innerHTML='<div class="gear-empty">Gear is temporarily unavailable.</div>';}
+async function loadGearPage() {
+  const favoritesGrid = document.getElementById('gearFavoritesGrid');
+  const fuelGrid = document.getElementById('gearFuelGrid');
+
+  favoritesGrid.innerHTML = '<div class="gear-empty">Loading gear…</div>';
+  fuelGrid.innerHTML = '<div class="gear-empty">Loading fuel…</div>';
+
+  try {
+    const response = await fetch('/api/gear', { cache: 'no-store' });
+    const payload = await response.json();
+
+    if (!response.ok) {
+      throw new Error(payload.error || 'Unable to load gear.');
+    }
+
+    if (!Array.isArray(payload)) {
+      throw new Error('Gear API returned an invalid response.');
+    }
+
+    const normalize = value => String(value || '').trim().toLowerCase();
+
+    const favorites = payload.filter(item =>
+      ['favorites', 'favorite'].includes(normalize(item.category))
+    );
+
+    const fuel = payload.filter(item =>
+      ['fuel & recovery', 'fuel and recovery', 'fuel', 'recovery'].includes(
+        normalize(item.category)
+      )
+    );
+
+    favoritesGrid.innerHTML = favorites.length
+      ? favorites.map(gearCard).join('')
+      : '<div class="gear-empty">No favorites published yet.</div>';
+
+    fuelGrid.innerHTML = fuel.length
+      ? fuel.map(gearCard).join('')
+      : '<div class="gear-empty">No fuel or recovery items published yet.</div>';
+  } catch (error) {
+    console.error('Gear page error:', error);
+    const message =
+      '<div class="gear-empty">Gear is temporarily unavailable. Please refresh the page.</div>';
+
+    favoritesGrid.innerHTML = message;
+    fuelGrid.innerHTML = message;
+  }
 }
 loadSiteContent();
 
