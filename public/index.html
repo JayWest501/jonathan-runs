@@ -58,7 +58,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;jus
 .page-inner{max-width:720px;margin:0 auto;padding:32px 20px 60px;}
 
 /* HOME/HERO */
-.hero{min-height:calc(100vh - 52px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px 60px;position:relative;overflow:hidden;}
+.hero{min-height:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px 20px 36px;position:relative;overflow:hidden;}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(255,92,0,.07) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(255,122,46,.05) 0%,transparent 50%);}
 [data-theme="dark"] .hero-bg{background:radial-gradient(ellipse at 30% 20%,rgba(255,92,0,.1) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(255,92,0,.06) 0%,transparent 50%);}
 .hero-dots{position:absolute;inset:0;background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:28px 28px;opacity:.5;pointer-events:none;}
@@ -95,6 +95,23 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;jus
 .hero-sub h2{font-family:'Bebas Neue',cursive;font-size:26px;letter-spacing:.06em;color:var(--text);line-height:1.15;}
 .hero-sub p{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.65;}
 .hero-actions{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+
+/* LATEST ACTIVITY STRIP */
+.home-latest-section{padding:0 20px 60px;position:relative;z-index:1;}
+.home-latest-wrap{max-width:460px;margin:0 auto;}
+.home-latest-eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);text-align:center;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.home-latest-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1.5s ease-in-out infinite;}
+.home-latest-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);}
+.home-latest-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.home-latest-name{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:.04em;color:var(--text);line-height:1.05;}
+.home-latest-date{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+.home-latest-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+.home-latest-stat{text-align:center;padding:8px 4px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);}
+.home-latest-stat-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--text);}
+.home-latest-stat-lbl{font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);margin-top:2px;}
+.home-latest-link{display:block;text-align:center;margin-top:12px;font-size:11px;font-weight:700;color:var(--orange);text-decoration:none;letter-spacing:.04em;}
+.home-latest-link:hover{text-decoration:underline;}
+.home-latest-loading,.home-latest-empty{text-align:center;padding:20px;color:var(--muted);font-size:12px;}
 .btn-primary{display:inline-flex;align-items:center;gap:7px;background:var(--orange);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 18px;border-radius:7px;text-decoration:none;transition:background .2s;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .btn-primary:hover{background:#cc4a00;}
 .btn-ghost{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--text2);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 18px;border-radius:7px;text-decoration:none;border:1.5px solid var(--border);transition:border-color .2s,color .2s;cursor:pointer;font-family:'DM Sans',sans-serif;}
@@ -343,7 +360,7 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
       </div>
     </div>
     <div class="hero-sub">
-      <h2>Building from a 29:05 5K<br>to 13.1 Miles by December</h2>
+      <h2>I've never ran more than 6 miles in my life.<br>December 13, that changes.</h2>
       <p>14 weeks. Every run logged. Dallas heat and all.<br>Training starts September 1 — follow the journey.</p>
       <div class="hero-actions">
         <a class="btn-primary" href="https://strava.com/athletes/jaycee501" target="_blank" rel="noopener">
@@ -352,6 +369,15 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
         </a>
         <button class="btn-ghost" onclick="goToPage('journal')">Read the Journal</button>
       </div>
+    </div>
+  </div>
+  <div class="home-latest-section">
+    <div class="home-latest-wrap">
+      <div class="home-latest-eyebrow"><div class="home-latest-dot"></div>Latest Activity · Live from Strava</div>
+      <div class="home-latest-card" id="homeLatestCard">
+        <div class="home-latest-loading">Loading latest run...</div>
+      </div>
+      <a class="home-latest-link" href="#runs" onclick="goToPage('runs')">See all recent runs →</a>
     </div>
   </div>
 </div>
@@ -521,6 +547,7 @@ window.goToPage = goToPage;
   if (pages.includes(hash)) goToPage(hash);
   else goToPage('home');
 })();
+loadHomeLatest();
 
 // COUNTDOWN
 function tick() {
@@ -676,6 +703,39 @@ function getTag(run) {
   if (run.workout_type === 3 || name.includes('tempo') || name.includes('interval')) return {cls:'tag-tempo', label:'Tempo'};
   if (name.includes('easy') || name.includes('recovery')) return {cls:'tag-easy', label:'Easy Run'};
   return {cls:'tag-run', label:'Run'};
+}
+
+// HOME — latest activity strip
+async function loadHomeLatest() {
+  const card = document.getElementById('homeLatestCard');
+  try {
+    const res = await fetch('/api/strava/runs?limit=1');
+    if (!res.ok) throw new Error('API error');
+    const runs = await res.json();
+    if (!Array.isArray(runs) || runs.length === 0) {
+      card.innerHTML = '<div class="home-latest-empty">No runs logged yet — training starts Sep 1.</div>';
+      return;
+    }
+    const run = runs[0];
+    const tag = getTag(run);
+    const date = run.date_display || new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    card.innerHTML = `
+      <div class="home-latest-top">
+        <div>
+          <div class="home-latest-name">${run.name}</div>
+          <div class="home-latest-date">${date}</div>
+        </div>
+        <span class="run-tag ${tag.cls}" style="margin-top:0;">${tag.label}</span>
+      </div>
+      <div class="home-latest-stats">
+        <div class="home-latest-stat"><div class="home-latest-stat-val">${run.distance_miles}</div><div class="home-latest-stat-lbl">Miles</div></div>
+        <div class="home-latest-stat"><div class="home-latest-stat-val">${run.pace}</div><div class="home-latest-stat-lbl">Pace</div></div>
+        <div class="home-latest-stat"><div class="home-latest-stat-val">${run.moving_time}</div><div class="home-latest-stat-lbl">Time</div></div>
+      </div>
+    `;
+  } catch(e) {
+    card.innerHTML = '<div class="home-latest-empty">Could not load latest activity.</div>';
+  }
 }
 
 // RUNS PAGE
