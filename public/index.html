@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -297,6 +298,32 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   .stat-num{font-size:19vw;}
 }
 
+
+/* ===== CINEMATIC HOME REDESIGN ===== */
+#page-home{background:#0b0907;color:#fff;}
+#page-home .hero{min-height:calc(100svh - 52px);border-bottom:1px solid rgba(255,255,255,.12);}
+#page-home .hero-photo{animation:heroDrift 18s ease-in-out infinite alternate;}
+@keyframes heroDrift{from{transform:scale(1.02) translate3d(0,0,0)}to{transform:scale(1.08) translate3d(-1.5%,.5%,0)}}
+#page-home .hero-scrim{background:linear-gradient(90deg,rgba(8,6,4,.96) 0%,rgba(8,6,4,.76) 34%,rgba(8,6,4,.12) 67%),linear-gradient(180deg,rgba(8,6,4,.5),transparent 36%,rgba(8,6,4,.94));}
+.hero-content{max-width:1240px;margin:0 auto;padding:clamp(94px,14vh,150px) 5vw 54px;align-self:stretch;display:flex;flex-direction:column;justify-content:flex-end;}
+.hero-eyebrow{display:flex;align-items:center;gap:12px}.hero-eyebrow:before{content:'';width:20px;height:2px;background:var(--orange)}
+.hero-bignum{font-size:clamp(112px,20vw,250px);line-height:.72;letter-spacing:-.065em;max-width:700px;text-shadow:0 12px 48px rgba(0,0,0,.5)}
+.hero-manifesto{font-family:'Archivo Black',sans-serif;font-size:clamp(30px,4.4vw,65px);font-style:italic;line-height:.92;text-transform:uppercase;margin-top:26px;max-width:620px;letter-spacing:-.04em}
+.hero-manifesto span{color:var(--orange)}
+.hero-meta-line{display:flex;gap:14px;align-items:center;margin-top:22px;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.hero-meta-line i{width:5px;height:5px;background:var(--orange);border-radius:50%}
+.hero-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-top:30px}.hero-cd{gap:22px}.hero-cd-num{color:var(--orange);font-size:30px}.hero-cd-lbl{color:rgba(255,255,255,.66)}
+.hero-name-strip{top:78px;right:0;border-radius:0;background:var(--orange);padding:9px 22px;color:#130c07}
+.home-shell{max-width:1240px;margin:0 auto;padding:0 5vw}.home-section{padding:74px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.home-kicker{font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:12px}.home-title{font-family:'Archivo Black',sans-serif;font-size:clamp(34px,5vw,64px);line-height:.94;letter-spacing:-.045em;text-transform:uppercase}.home-copy{font-size:14px;line-height:1.8;color:#bfb4a6;max-width:520px}
+.story-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:stretch}.story-photo{min-height:430px;border-radius:3px;overflow:hidden;position:relative;background:#19120d}.story-photo img{width:100%;height:100%;object-fit:cover}.story-photo:after{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,.12)}.story-copy{display:flex;flex-direction:column;justify-content:center}.story-copy .home-title span{color:var(--orange)}.story-signature{font-family:cursive;font-size:31px;margin-top:20px;transform:rotate(-4deg);color:#fff}.story-signature:after{content:'';display:block;width:180px;height:2px;background:var(--orange);margin-top:4px}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:34px}.metric-card{border:1px solid #3a2a1a;background:linear-gradient(145deg,#1c130d,#110c08);padding:25px 20px;min-height:145px;display:flex;flex-direction:column;justify-content:space-between}.metric-icon{color:var(--orange);font-size:23px}.metric-value{font-family:'Archivo Black',sans-serif;font-size:40px;line-height:1}.metric-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#bfb4a6;margin-top:6px}
+.progress-preview{display:grid;grid-template-columns:.72fr 1.28fr;gap:28px;margin-top:36px}.progress-ring-card,.mileage-preview{border:1px solid #3a2a1a;background:#15100c;padding:28px}.progress-ring{width:180px;height:180px;border-radius:50%;display:grid;place-items:center;margin:12px auto;background:conic-gradient(var(--orange) var(--p,0%),#31251c 0);position:relative}.progress-ring:after{content:'';position:absolute;width:136px;height:136px;border-radius:50%;background:#15100c}.progress-ring-content{z-index:1;text-align:center}.progress-ring-value{font-family:'Archivo Black',sans-serif;font-size:47px}.progress-ring-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#bfb4a6}.home-bars{height:190px;display:flex;align-items:flex-end;gap:12px;margin-top:24px;border-bottom:1px solid #493426;padding:0 6px}.home-bar{flex:1;background:linear-gradient(#ff792d,#ff5c00);min-height:8px;position:relative}.home-bar span{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font-size:9px;color:#948778;white-space:nowrap}
+.home-run-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}.home-run-card{border:1px solid #3a2a1a;background:#17110c;padding:18px;min-height:180px}.home-run-card-date{font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--orange);text-transform:uppercase}.home-run-card-name{font-family:'Archivo Black',sans-serif;font-size:19px;margin-top:9px}.home-run-card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:24px}.home-run-card-stat strong{font-family:'DM Mono',monospace;font-size:15px;display:block}.home-run-card-stat span{font-size:8px;color:#928679;text-transform:uppercase;letter-spacing:.08em}
+.explore-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:30px}.explore-card{min-height:210px;border:1px solid #3a2a1a;padding:20px;position:relative;overflow:hidden;background:linear-gradient(145deg,#1d140d,#100b08);cursor:pointer;text-align:left;color:#fff}.explore-card:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 10%,rgba(255,92,0,.18),transparent 43%);transition:.35s}.explore-card:hover:before{transform:scale(1.2)}.explore-icon{font-size:25px;color:var(--orange)}.explore-name{font-family:'Archivo Black',sans-serif;font-size:20px;margin-top:55px;text-transform:uppercase}.explore-copy{font-size:11px;line-height:1.5;color:#aaa095;margin-top:8px}.explore-arrow{position:absolute;bottom:18px;font-size:20px;color:var(--orange)}
+.home-quote{padding:34px 5vw;display:flex;justify-content:space-between;gap:30px;align-items:center;max-width:1240px;margin:0 auto}.home-quote blockquote{font-size:17px;max-width:670px;color:#ded7ce}.home-quote-mark{font-family:Georgia,serif;font-size:54px;color:var(--orange);line-height:.5}
+@media(max-width:900px){.story-grid,.progress-preview{grid-template-columns:1fr}.metric-grid{grid-template-columns:repeat(2,1fr)}.explore-grid{grid-template-columns:repeat(2,1fr)}.home-run-grid{grid-template-columns:1fr}.hero-bottom{align-items:flex-start;flex-direction:column}.hero-content{padding-left:24px;padding-right:24px}.story-photo{min-height:330px}}
+@media(max-width:520px){#page-home .hero{min-height:760px}.hero-bignum{font-size:35vw}.hero-manifesto{font-size:34px}.hero-cd{gap:13px}.hero-cd-num{font-size:22px}.metric-grid{grid-template-columns:1fr 1fr}.metric-card{min-height:125px;padding:18px 15px}.metric-value{font-size:31px}.explore-grid{grid-template-columns:1fr}.home-shell{padding:0 20px}.home-section{padding:56px 0}.story-photo{min-height:280px}.home-quote{align-items:flex-start;flex-direction:column}}
+
 </style>
 </head>
 <body>
@@ -327,60 +354,85 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
 
 <!-- HOME PAGE -->
 <div class="page active" id="page-home">
-  <div class="hero">
+  <section class="hero">
     <img class="hero-photo" id="heroPhoto" src="" alt="Jonathan running"/>
     <div class="hero-scrim"></div>
     <div class="hero-name-strip">JONATHAN · #1301</div>
     <div class="hero-content">
-      <div class="hero-eyebrow">Road to December 13 · Dallas, TX</div>
+      <div class="hero-eyebrow">The road to December 13</div>
       <div class="hero-bignum">13.1</div>
-      <div class="hero-sub-row">
-        <div class="hero-goal">SUB-2:15</div>
-        <div class="hero-cd">
+      <div class="hero-manifesto">No shortcuts.<br><span>Just miles.</span></div>
+      <div class="hero-meta-line"><span>Dallas Half Marathon</span><i></i><span>Sub-2:15</span></div>
+      <div class="hero-bottom">
+        <div class="hero-cd" aria-label="Race countdown">
           <div class="hero-cd-unit"><span class="hero-cd-num" id="cd-d">—</span><span class="hero-cd-lbl">days</span></div>
           <div class="hero-cd-unit"><span class="hero-cd-num" id="cd-h">—</span><span class="hero-cd-lbl">hrs</span></div>
           <div class="hero-cd-unit"><span class="hero-cd-num" id="cd-m">—</span><span class="hero-cd-lbl">min</span></div>
           <div class="hero-cd-unit"><span class="hero-cd-num" id="cd-s">—</span><span class="hero-cd-lbl">sec</span></div>
         </div>
-      </div>
-      <div class="hero-actions">
-        <a class="btn-primary" href="https://strava.com/athletes/jaycee501" target="_blank" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
-          Follow on Strava
-        </a>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="goToPage('progress')">View progress →</button>
+          <a class="btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.35)" href="https://strava.com/athletes/jaycee501" target="_blank" rel="noopener">Follow on Strava</a>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="stat-break">
-    <div class="stat-row">
-      <div class="stat-block">
-        <div class="stat-num">14</div>
-        <div class="stat-lbl">Weeks</div>
+  <main class="home-shell">
+    <section class="home-section story-grid reveal">
+      <div class="story-photo"><img id="storyPhoto" src="" alt="Jonathan on his running journey"></div>
+      <div class="story-copy">
+        <div class="home-kicker">Why I run</div>
+        <h2 class="home-title">This is my<br><span>transformation.</span></h2>
+        <p class="home-copy" style="margin-top:24px">I’m documenting every early alarm, hard mile, breakthrough, and setback on the road to my first half marathon. December 13 is the finish line—but becoming someone who keeps showing up is the real goal.</p>
+        <div class="story-signature">Let’s get to work.</div>
       </div>
-      <div class="stat-block">
-        <div class="stat-num accent">300</div>
-        <div class="stat-lbl">Miles Ahead</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-num">29:05</div>
-        <div class="stat-lbl">5K PR</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-num accent">0</div>
-        <div class="stat-lbl">Halfs Finished</div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="latest">
-    <div class="latest-line"></div>
-    <div class="latest-eyebrow"><div class="latest-dot"></div>Latest Activity · Live from Strava</div>
-    <div id="homeLatestCard">
-      <div class="latest-name" style="font-size:18px;opacity:.6;">Loading latest run…</div>
-    </div>
-    <a class="home-latest-link" href="#runs" onclick="goToPage('runs')">See all recent runs →</a>
-  </div>
+    <section class="home-section reveal">
+      <div class="home-kicker">The target</div>
+      <h2 class="home-title">Numbers that matter.</h2>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-icon">▣</div><div><div class="metric-value">14</div><div class="metric-label">Weeks to race day</div></div></div>
+        <div class="metric-card"><div class="metric-icon">⌁</div><div><div class="metric-value">300</div><div class="metric-label">Miles planned</div></div></div>
+        <div class="metric-card"><div class="metric-icon">◴</div><div><div class="metric-value">29:05</div><div class="metric-label">Current 5K PR</div></div></div>
+        <div class="metric-card"><div class="metric-icon">♢</div><div><div class="metric-value">0</div><div class="metric-label">Halfs finished—for now</div></div></div>
+      </div>
+    </section>
+
+    <section class="home-section reveal">
+      <div class="home-kicker">The journey so far</div>
+      <h2 class="home-title">Built one week at a time.</h2>
+      <div class="progress-preview">
+        <div class="progress-ring-card">
+          <div class="home-kicker">Training complete</div>
+          <div class="progress-ring" id="homeProgressRing" style="--p:0%"><div class="progress-ring-content"><div class="progress-ring-value" id="homeProgressPct">0%</div><div class="progress-ring-label">of the plan</div></div></div>
+          <button class="btn-primary" style="width:100%;justify-content:center" onclick="goToPage('progress')">View full progress →</button>
+        </div>
+        <div class="mileage-preview">
+          <div style="display:flex;justify-content:space-between;gap:20px;align-items:end"><div><div class="home-kicker">Weekly mileage</div><div class="home-title" style="font-size:30px">Last eight weeks</div></div><div id="homeMileageTotal" style="font-family:'DM Mono',monospace;color:var(--orange)">— mi</div></div>
+          <div class="home-bars" id="homeMileageBars"><div class="runs-loading" style="width:100%">Loading training data…</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section reveal">
+      <div style="display:flex;justify-content:space-between;gap:20px;align-items:end"><div><div class="home-kicker">Live from Strava</div><h2 class="home-title">Latest activity.</h2></div><button class="btn-ghost" style="color:#fff" onclick="goToPage('runs')">View all runs →</button></div>
+      <div class="home-run-grid" id="homeRunGrid"><div class="runs-loading">Loading recent runs…</div></div>
+    </section>
+
+    <section class="home-section reveal">
+      <div class="home-kicker">Explore the journey</div><h2 class="home-title">Every mile tells a story.</h2>
+      <div class="explore-grid">
+        <button class="explore-card" onclick="goToPage('progress')"><div class="explore-icon">↗</div><div class="explore-name">Progress</div><div class="explore-copy">The plan, mileage targets, and the numbers that tell the truth.</div><div class="explore-arrow">→</div></button>
+        <button class="explore-card" onclick="goToPage('runs')"><div class="explore-icon">⌁</div><div class="explore-name">Runs</div><div class="explore-copy">Every workout, pace, heart-rate zone, and hard-earned mile.</div><div class="explore-arrow">→</div></button>
+        <button class="explore-card" onclick="goToPage('results')"><div class="explore-icon">◇</div><div class="explore-name">Results</div><div class="explore-copy">Race day, official times, and the moments the work pays off.</div><div class="explore-arrow">→</div></button>
+        <button class="explore-card" onclick="goToPage('journal')"><div class="explore-icon">▤</div><div class="explore-name">Journal</div><div class="explore-copy">Honest reflections from the good runs, bad runs, and long miles.</div><div class="explore-arrow">→</div></button>
+        <button class="explore-card" onclick="goToPage('photos')"><div class="explore-icon">▣</div><div class="explore-name">Photos</div><div class="explore-copy">The people, places, sweat, and scenery behind the numbers.</div><div class="explore-arrow">→</div></button>
+      </div>
+    </section>
+  </main>
+  <div class="home-quote"><div class="home-quote-mark">“</div><blockquote>The race is one morning. The transformation happens in all the mornings before it.</blockquote><span style="color:var(--orange);font-size:11px;letter-spacing:.15em;text-transform:uppercase">Jonathan West</span></div>
 </div>
 
 <!-- PROGRESS PAGE -->
@@ -500,6 +552,7 @@ window.__PHOTO_B64__ = "/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHI
 
 // PROFILE PHOTO
 document.getElementById('heroPhoto').src = 'data:image/jpeg;base64,' + window.__PHOTO_B64__;
+const storyPhotoEl=document.getElementById('storyPhoto'); if(storyPhotoEl) storyPhotoEl.src='data:image/jpeg;base64,'+window.__PHOTO_B64__;
 
 // THEME
 const html = document.documentElement;
@@ -605,6 +658,7 @@ function revealObserve(root) {
   else goToPage('home');
 })();
 loadHomeLatest();
+loadHomeExperience();
 
 // COUNTDOWN
 function tick() {
@@ -790,6 +844,61 @@ async function loadHomeLatest() {
     revealObserve(document.querySelector('.latest'));
   } catch(e) {
     card.innerHTML = '<div class="home-latest-empty">Could not load latest activity.</div>';
+  }
+}
+
+// CINEMATIC HOME — progress preview + recent run cards
+async function loadHomeExperience() {
+  try {
+    const [runRes, progressRes] = await Promise.all([
+      fetch('/api/strava/runs?limit=8'),
+      fetch('/api/progress').catch(() => null)
+    ]);
+
+    if (runRes && runRes.ok) {
+      const runs = await runRes.json();
+      const grid = document.getElementById('homeRunGrid');
+      if (grid && Array.isArray(runs) && runs.length) {
+        grid.innerHTML = runs.slice(0,3).map(run => {
+          const date = run.date_display || new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+          return `<article class="home-run-card">
+            <div class="home-run-card-date">${date}</div>
+            <div class="home-run-card-name">${run.name || 'Run'}</div>
+            <div class="home-run-card-stats">
+              <div class="home-run-card-stat"><strong>${run.distance_miles ?? '—'}</strong><span>Miles</span></div>
+              <div class="home-run-card-stat"><strong>${run.pace ?? '—'}</strong><span>Pace</span></div>
+              <div class="home-run-card-stat"><strong>${run.moving_time ?? '—'}</strong><span>Time</span></div>
+            </div>
+          </article>`;
+        }).join('');
+      }
+    }
+
+    if (progressRes && progressRes.ok) {
+      const data = await progressRes.json();
+      const weeks = Array.isArray(data.weeks) ? data.weeks : [];
+      const completed = weeks.filter(w => w.complete).length;
+      const pct = weeks.length ? Math.round((completed / weeks.length) * 100) : 0;
+      const ring = document.getElementById('homeProgressRing');
+      const pctEl = document.getElementById('homeProgressPct');
+      if (ring) ring.style.setProperty('--p', pct + '%');
+      if (pctEl) pctEl.textContent = pct + '%';
+
+      const recent = weeks.slice(-8);
+      const max = Math.max(1, ...recent.map(w => Number(w.actualMiles || 0), Number(w.target || 0)));
+      const bars = document.getElementById('homeMileageBars');
+      if (bars) bars.innerHTML = recent.map(w => {
+        const miles = Number(w.actualMiles || 0);
+        const h = Math.max(8, Math.round((miles / max) * 170));
+        return `<div class="home-bar" style="height:${h}px" title="Week ${w.week}: ${miles} miles"><span>W${w.week}</span></div>`;
+      }).join('') || '<div class="home-latest-empty">Training data will appear here.</div>';
+      const total = recent.reduce((sum,w)=>sum+Number(w.actualMiles||0),0);
+      const totalEl = document.getElementById('homeMileageTotal');
+      if (totalEl) totalEl.textContent = total.toFixed(1) + ' mi';
+    }
+  } catch (error) {
+    const grid = document.getElementById('homeRunGrid');
+    if (grid) grid.innerHTML = '<div class="home-latest-empty">Live activity is temporarily unavailable.</div>';
   }
 }
 
