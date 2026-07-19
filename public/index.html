@@ -372,21 +372,22 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
     <div class="section-title">The Journey So Far</div>
     <div class="card">
       <div class="prog-header">
-        <div><div class="prog-title">14-Week Plan · Sep 1 – Dec 13</div><div class="prog-sub">Plan starts September 1 · Currently building base</div></div>
-        <div class="phase-pill">Pre-Plan</div>
+        <div><div class="prog-title" id="progTitle">14-Week Plan · Sep 1 – Dec 13</div><div class="prog-sub" id="progSub">Plan starts September 1 · Currently building base</div></div>
+        <div class="phase-pill" id="progPhase">Pre-Plan</div>
       </div>
       <div class="prog-stats">
-        <div class="prog-stat"><div class="prog-stat-num">0</div><div class="prog-stat-lbl">Weeks Done</div></div>
+        <div class="prog-stat"><div class="prog-stat-num" id="weeksDone">0</div><div class="prog-stat-lbl">Weeks Done</div></div>
         <div class="prog-stat"><div class="prog-stat-num" id="totalRuns">0</div><div class="prog-stat-lbl">Runs Logged</div></div>
         <div class="prog-stat"><div class="prog-stat-num" id="totalMiles">0</div><div class="prog-stat-lbl">Miles Run</div></div>
         <div class="prog-stat"><div class="prog-stat-num">29:05</div><div class="prog-stat-lbl">5K PR</div></div>
       </div>
-      <div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:0%"></div></div>
-      <div class="prog-bar-meta"><span>Week 0 of 14</span><span>0%</span></div>
+      <div class="prog-bar-wrap"><div class="prog-bar-fill" id="progBarFill" style="width:0%"></div></div>
+      <div class="prog-bar-meta"><span id="progBarLeft">Week 0 of 14</span><span id="progBarRight">0%</span></div>
       <div class="chart-wrap">
-        <div class="chart-lbl">Weekly Mileage Arc — 14-week plan overview</div>
+        <div class="chart-lbl">Weekly Mileage Arc — tap a bar for details · live from Strava</div>
         <div class="chart-bars" id="mileageChart"></div>
       </div>
+      <div id="weekDetail" style="display:none;margin-top:14px;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;"></div>
     </div>
   </div>
 </div>
@@ -530,6 +531,7 @@ function goToPage(pageId) {
   window.scrollTo({top:0, behavior:'instant'});
   try { history.replaceState(null, '', '#'+pageId); } catch(e){}
   // Lazy-load content per page
+  if (pageId === 'progress' && !window.__progressLoaded) { loadProgress(); window.__progressLoaded = true; }
   if (pageId === 'runs' && !window.__runsLoaded) { loadRuns(); window.__runsLoaded = true; }
   if (pageId === 'results' && !window.__resultsLoaded) { loadRaces(); window.__resultsLoaded = true; }
   if (pageId === 'journal' && !window.__journalLoaded) { loadJournal(); window.__journalLoaded = true; }
@@ -555,21 +557,127 @@ function tick() {
 }
 tick(); setInterval(tick, 1000);
 
-// MILEAGE CHART
-const miles=[18,20,22,16,23,25,27,18,28,30,26,20,14,10];
-const types=['build','build','build','recovery','build','build','build','recovery','peak','peak','peak','taper','taper','taper'];
-const colorMap={build:'var(--chart-build)',recovery:'var(--chart-recovery)',peak:'var(--chart-peak)',taper:'var(--chart-taper)'};
-const mx=Math.max(...miles);
-const chartEl=document.getElementById('mileageChart');
-miles.forEach((m,i)=>{
-  const h=Math.max(4,Math.round((m/mx)*62));
-  const wrap=document.createElement('div'); wrap.className='c-bar-wrap';
-  const bar=document.createElement('div'); bar.className='c-bar';
-  bar.style.height=h+'px'; bar.style.background=colorMap[types[i]]; bar.style.opacity='0.75';
-  bar.title='Week '+(i+1)+': '+m+' miles';
-  const num=document.createElement('div'); num.className='c-num'; num.textContent=i+1;
-  wrap.append(bar,num); chartEl.appendChild(wrap);
-});
+// PROGRESS PAGE — live from Strava via /api/progress
+const PHASE_FOR_WEEK = w => {
+  if (w <= 4) return 'Base';
+  if (w <= 8) return 'Build';
+  if (w <= 11) return 'Peak';
+  return 'Taper';
+};
+
+let __progressCache = null;
+
+async function loadProgress() {
+  const chartEl = document.getElementById('mileageChart');
+  chartEl.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:10px 0;">Loading from Strava…</div>';
+  try {
+    const res = await fetch('/api/progress');
+    const data = await res.json();
+    __progressCache = data;
+
+    if (!data.weeks || !Array.isArray(data.weeks)) throw new Error('bad data');
+
+    // Stats
+    document.getElementById('weeksDone').textContent = data.completedWeeks;
+    document.getElementById('totalRuns').textContent = data.totalRunsLogged;
+    document.getElementById('totalMiles').textContent = data.totalMilesLogged;
+
+    const pct = Math.round((data.completedWeeks / 14) * 100);
+    document.getElementById('progBarFill').style.width = pct + '%';
+    document.getElementById('progBarLeft').textContent = `Week ${data.completedWeeks} of 14`;
+    document.getElementById('progBarRight').textContent = pct + '%';
+
+    // Current week / phase
+    const currentWeek = data.weeks.find(w => w.isCurrent);
+    const nextUpcoming = data.weeks.find(w => w.isFuture);
+    if (currentWeek) {
+      document.getElementById('progPhase').textContent = PHASE_FOR_WEEK(currentWeek.week) + ' Phase';
+      document.getElementById('progSub').textContent = `Week ${currentWeek.week} of 14 · ${currentWeek.actualMiles} of ${currentWeek.target} mi logged (${currentWeek.pct}%)`;
+    } else if (nextUpcoming) {
+      document.getElementById('progPhase').textContent = 'Pre-Plan';
+      document.getElementById('progSub').textContent = `Plan starts September 1 · Week ${nextUpcoming.week} is next`;
+    } else {
+      document.getElementById('progPhase').textContent = 'Complete';
+      document.getElementById('progSub').textContent = 'Training block finished — race day!';
+    }
+
+    if (!data.stravaConnected) {
+      chartEl.innerHTML = '<div class="runs-error" style="grid-column:1/-1;">⚠️ Strava not connected — showing plan targets only. Connect in the admin dashboard for live progress.</div>';
+    }
+
+    // Build chart bars
+    chartEl.innerHTML = '';
+    const maxTarget = Math.max(...data.weeks.map(w => w.target));
+    data.weeks.forEach((w) => {
+      const h = Math.max(4, Math.round((w.target / maxTarget) * 62));
+      const wrap = document.createElement('div');
+      wrap.className = 'c-bar-wrap';
+      const bar = document.createElement('div');
+      bar.className = 'c-bar';
+      bar.style.height = h + 'px';
+      bar.style.cursor = 'pointer';
+
+      let color;
+      if (w.complete) color = 'var(--chart-recovery)'; // green
+      else if (w.isCurrent) color = 'var(--chart-peak)'; // orange
+      else if (w.isPast) color = 'var(--red)'; // missed
+      else color = 'var(--border)'; // future
+
+      bar.style.background = color;
+      bar.style.opacity = w.isFuture ? '0.5' : '0.85';
+      if (w.isCurrent) bar.style.outline = '2px solid var(--orange)';
+
+      bar.title = `Week ${w.week}: ${w.actualMiles}/${w.target} mi (${w.pct}%)`;
+      bar.addEventListener('click', () => showWeekDetail(w));
+
+      const num = document.createElement('div');
+      num.className = 'c-num';
+      num.textContent = w.week;
+
+      wrap.append(bar, num);
+      chartEl.appendChild(wrap);
+    });
+
+    // Legend
+    const legend = document.createElement('div');
+    legend.style.cssText = 'grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:9px;font-weight:700;color:var(--text2);';
+    legend.innerHTML = `
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--chart-recovery);display:inline-block;"></span>Complete (90%+)</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--chart-peak);display:inline-block;"></span>Current Week</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--red);display:inline-block;"></span>Missed Target</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:var(--border);display:inline-block;"></span>Upcoming</span>
+    `;
+    chartEl.parentElement.appendChild(legend);
+
+    // Auto-show current week detail
+    if (currentWeek) showWeekDetail(currentWeek);
+
+  } catch (e) {
+    chartEl.innerHTML = '<div class="runs-error" style="grid-column:1/-1;">Could not load progress data.</div>';
+  }
+}
+
+function showWeekDetail(w) {
+  const el = document.getElementById('weekDetail');
+  const dateStr = (d) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'});
+  let statusLabel, statusColor;
+  if (w.complete) { statusLabel = w.manualOverride !== null ? '✓ Marked complete manually' : '✓ Complete'; statusColor = 'var(--green)'; }
+  else if (w.isFuture) { statusLabel = 'Upcoming'; statusColor = 'var(--muted)'; }
+  else if (w.isCurrent) { statusLabel = 'In progress'; statusColor = 'var(--orange)'; }
+  else { statusLabel = 'Target missed'; statusColor = 'var(--red)'; }
+
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div style="font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:.04em;color:var(--text);">Week ${w.week} · ${dateStr(w.start)}–${dateStr(w.end)}</div>
+      <div style="font-size:11px;font-weight:700;color:${statusColor};">${statusLabel}</div>
+    </div>
+    <div style="font-size:12px;color:var(--text2);">
+      <strong style="color:var(--text);">${w.actualMiles} mi</strong> logged of ${w.target} mi target (${w.pct}%) · ${w.runsCount} run${w.runsCount===1?'':'s'}
+    </div>
+  `;
+}
+window.showWeekDetail = showWeekDetail;
 
 // SUBSCRIBE
 const subBtn = document.getElementById('subBtn');
