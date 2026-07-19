@@ -720,7 +720,7 @@ async function loadRuns() {
     let out = '';
     runs.forEach((run, idx) => {
       const tag = getTag(run);
-      const date = new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+      const date = run.date_display || new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
       const hasHR = run.hr_zones && run.avg_hr;
       const runId = 'r'+idx;
       out += '<div class="card run-card"><div class="run-top"><div class="run-left">';
