@@ -321,9 +321,58 @@ footer{padding:40px 20px;border-top:1px solid var(--border);max-width:720px;marg
   .hero-actions .btn-primary,.hero-actions .btn-ghost{justify-content:center;}
   .race-detail-stats{grid-template-columns:repeat(2,1fr);}
 }
+
+/* INTRO — finish line runner */
+.intro-overlay{position:fixed;inset:0;z-index:500;background:#0d0d0d;display:flex;align-items:center;justify-content:center;overflow:hidden;animation:introFadeOut .5s ease forwards;animation-delay:2.05s;}
+.intro-svg{width:100%;height:100%;max-width:900px;}
+.intro-runner{animation:introRun 1.85s cubic-bezier(.45,.05,.55,.95) forwards;}
+@keyframes introRun{
+  0%{transform:translate(-30px,0);}
+  15%{transform:translate(-30px,-2px);}
+  30%{transform:translate(60px,0);}
+  45%{transform:translate(150px,-2px);}
+  60%{transform:translate(230px,0);}
+  75%{transform:translate(280px,-1px);}
+  92%{transform:translate(300px,0);}
+  100%{transform:translate(430px,-1px);}
+}
+.intro-ribbon-l{animation:introBreakL .3s ease forwards;animation-delay:1.75s;transform-origin:222px 101px;}
+.intro-ribbon-r{animation:introBreakR .3s ease forwards;animation-delay:1.75s;transform-origin:290px 101px;}
+@keyframes introBreakL{0%{transform:rotate(0deg) translate(0,0);opacity:1;}100%{transform:rotate(-35deg) translate(-14px,10px);opacity:0;}}
+@keyframes introBreakR{0%{transform:rotate(0deg) translate(0,0);opacity:1;}100%{transform:rotate(35deg) translate(14px,10px);opacity:0;}}
+.intro-flash{opacity:0;animation:introFlash .35s ease forwards;animation-delay:1.75s;}
+@keyframes introFlash{0%{opacity:0;transform:scale(0.5);}30%{opacity:1;transform:scale(3.5);}100%{opacity:0;transform:scale(5);}}
+.intro-label{position:absolute;bottom:18%;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:.35em;color:rgba(255,255,255,.55);opacity:0;animation:introLabelIn .5s ease forwards;animation-delay:.15s;}
+@keyframes introLabelIn{0%{opacity:0;letter-spacing:.6em;}100%{opacity:1;letter-spacing:.35em;}}
+@keyframes introFadeOut{0%{opacity:1;pointer-events:auto;}100%{opacity:0;pointer-events:none;}}
+@media (prefers-reduced-motion: reduce){
+  .intro-overlay{display:none !important;}
+}
 </style>
 </head>
 <body>
+
+<!-- INTRO — runner breaks the finish line, wipes into the site -->
+<div class="intro-overlay" id="introOverlay">
+  <svg class="intro-svg" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
+    <!-- finish posts -->
+    <rect x="286" y="60" width="5" height="90" fill="#3a3a3a"/>
+    <rect x="286" y="60" width="5" height="90" fill="#3a3a3a" transform="translate(0,0)"/>
+    <!-- ribbon (two halves) -->
+    <rect class="intro-ribbon intro-ribbon-l" x="222" y="98" width="66" height="6" fill="var(--orange, #ff5c00)"/>
+    <rect class="intro-ribbon intro-ribbon-r" x="288" y="98" width="2" height="6" fill="var(--orange, #ff5c00)"/>
+    <rect x="286" y="60" width="5" height="90" fill="#3a3a3a"/>
+    <!-- flash burst at break point -->
+    <circle class="intro-flash" cx="288" cy="101" r="4" fill="#fff"/>
+    <!-- runner pictogram -->
+    <g class="intro-runner">
+      <circle cx="0" cy="88" r="7" fill="#fff"/>
+      <path d="M0,95 L-2,118 M0,95 L10,110 M-2,118 L-10,138 M-2,118 L6,140 M10,110 L22,102 M10,110 L18,122" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>
+    </g>
+  </svg>
+  <div class="intro-label">JONATHAN RUNS</div>
+</div>
+
 
 <nav>
   <div class="nav-logo" onclick="goToPage('home')">Jonathan Runs</div>
@@ -620,6 +669,17 @@ function revealObserve(root) {
   else goToPage('home');
 })();
 loadHomeLatest();
+
+// INTRO cleanup — remove overlay from DOM/flow once its fade-out finishes
+(function cleanupIntro() {
+  const intro = document.getElementById('introOverlay');
+  if (!intro) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    intro.remove();
+    return;
+  }
+  setTimeout(() => { if (intro && intro.parentNode) intro.remove(); }, 2600);
+})();
 
 // COUNTDOWN
 function tick() {
