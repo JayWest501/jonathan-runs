@@ -84,31 +84,72 @@ function calcHRZones(heartrateStream, timeStream) {
   }));
 }
 
+function isAdmin(req) {
+  return req.headers.authorization === `Bearer ${process.env.ADMIN_PASSWORD}`;
+}
+
 export default async function handler(req, res) {
   // CORS headers for frontend fetch
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  // POST — admin manually hides or unhides a specific run by Strava activity ID
+  if (req.method === 'POST') {
+    if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { activity_id, hide } = req.body || {};
+    if (!activity_id) return res.status(400).json({ error: 'activity_id is required' });
+
+    const { data } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'hidden_run_ids')
+      .single();
+
+    let hiddenIds = (data && Array.isArray(data.value)) ? data.value : [];
+    const idStr = String(activity_id);
+
+    if (hide) {
+      if (!hiddenIds.includes(idStr)) hiddenIds.push(idStr);
+    } else {
+      hiddenIds = hiddenIds.filter(id => id !== idStr);
+    }
+
+    await supabase.from('settings').upsert({ key: 'hidden_run_ids', value: hiddenIds });
+    // Bust the runs cache so the change shows immediately, not after 30 min
+    await supabase.from('settings').delete().eq('key', 'runs_cache');
+
+    return res.status(200).json({ success: true, hiddenIds });
+  }
+
   res.setHeader('Cache-Control', 's-maxage=1800'); // 30 min cache
 
   try {
-    // Check cache first
-    const { data: cached } = await supabase
-      .from('settings')
-      .select('value, updated_at')
-      .eq('key', 'runs_cache')
-      .single();
+    const bust = req.query.bust;
 
-    const cacheAge = cached
-      ? (Date.now() - new Date(cached.updated_at).getTime()) / 1000
-      : Infinity;
+    // Check cache first (skip if bust param present)
+    if (!bust) {
+      const { data: cached } = await supabase
+        .from('settings')
+        .select('value, updated_at')
+        .eq('key', 'runs_cache')
+        .single();
 
-    if (cached && cacheAge < 1800) {
-      return res.status(200).json(cached.value);
+      const cacheAge = cached
+        ? (Date.now() - new Date(cached.updated_at).getTime()) / 1000
+        : Infinity;
+
+      if (cached && cacheAge < 1800) {
+        return res.status(200).json(cached.value);
+      }
     }
 
-    // Fetch fresh from Strava — over-fetch since we filter out private activities after
+    // Fetch fresh from Strava — over-fetch since we filter out private/hidden activities after
     const accessToken = await getValidAccessToken();
     const limit = parseInt(req.query.limit) || 10;
-    const fetchCount = limit * 3; // buffer for private activities that get filtered out
+    const fetchCount = limit * 4; // buffer for private/hidden activities that get filtered out
 
     const activitiesRes = await fetch(
       `https://www.strava.com/api/v3/athlete/activities?per_page=${fetchCount}&type=Run`,
@@ -121,13 +162,24 @@ export default async function handler(req, res) {
       throw new Error('Unexpected Strava response: ' + JSON.stringify(activities));
     }
 
+    // Get manually-hidden run IDs (set from the admin dashboard)
+    const { data: hiddenData } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'hidden_run_ids')
+      .single();
+    const hiddenIds = (hiddenData && Array.isArray(hiddenData.value)) ? hiddenData.value : [];
+
     // Exclude activities marked private on Strava — the API returns these
-    // to the owner regardless of visibility, so we filter manually
-    // Also exclude walks: anything slower than 15:00/mile pace isn't a run
+    // to the owner regardless of visibility, so we filter manually.
+    // Also exclude walks (anything slower than 15:00/mile).
+    // Admin requests (authenticated) see hidden runs too, flagged, so they can unhide them.
     const MIN_PACE_SEC_PER_MILE = 15 * 60; // 15:00/mi — walking pace threshold
+    const requestIsAdmin = isAdmin(req);
 
     activities = activities
       .filter(act => !act.private && act.visibility !== 'only_me')
+      .filter(act => requestIsAdmin || !hiddenIds.includes(String(act.id)))
       .filter(act => {
         if (!act.distance || act.distance <= 0) return false;
         const paceSecPerMile = act.moving_time / (act.distance / 1609.34);
@@ -205,15 +257,18 @@ export default async function handler(req, res) {
           start_latlng: act.start_latlng,
           map_polyline: act.map?.summary_polyline || null,
           strava_url: `https://www.strava.com/activities/${act.id}`,
+          hidden: hiddenIds.includes(String(act.id)),
         };
       })
     );
 
-    // Cache results
-    await supabase.from('settings').upsert({
-      key: 'runs_cache',
-      value: runs,
-    });
+    // Cache results — skip caching admin views since they include hidden runs
+    if (!requestIsAdmin) {
+      await supabase.from('settings').upsert({
+        key: 'runs_cache',
+        value: runs,
+      });
+    }
 
     res.status(200).json(runs);
   } catch (err) {
