@@ -1328,4 +1328,575 @@ function renderCurrentWeek() {
     now < TRAINING_START ? 'Plan Preview' : `${phase.name} Phase`;
 
   document.getElementById('currentWeekTitle').textContent =
-    `Week ${week.num} · ${week.name.replace(/[^
+    `Week ${week.num} · ${week.name.replace(/[^\u0000-]/g, '').trim()}`;
+
+  document.getElementById('currentWeekDates').textContent = formatPlanDates(week);
+  document.getElementById('currentWeekActual').textContent = actualMiles;
+  document.getElementById('currentWeekTarget').textContent = target;
+  document.getElementById('currentWeekNote').textContent = week.note;
+
+  const runDays = week.days.filter(day => day.tag !== 'rest');
+  const nextRun = runDays[0];
+  const longRun = week.days.find(day => day.tag === 'long') ||
+    week.days.find(day => day.tag === 'race') ||
+    runDays[runDays.length - 1];
+
+  document.getElementById('nextWorkout').textContent =
+    nextRun ? `${nextRun.d} · ${nextRun.run}` : 'Recovery week';
+
+  document.getElementById('longRunWorkout').textContent =
+    longRun ? `${longRun.d} · ${longRun.run}` : 'No long run scheduled';
+
+  selectedPlanWeek = currentIndex;
+  selectedPlanPhase = phaseForWeekIndex(currentIndex);
+}
+
+function renderMileageChart() {
+  const chart = document.getElementById('mileageChart');
+  if (!chart) return;
+
+  const maximum = Math.max(...TRAINING_PLAN.map(plannedWeekMiles));
+
+  chart.innerHTML = TRAINING_PLAN.map((week, index) => {
+    const target = plannedWeekMiles(week);
+    const actual = actualWeekRecord(week.num);
+    const actualMiles = actual ? Number(actual.actualMiles || 0) : 0;
+    const current = index === currentPlanWeekIndex();
+    const past = index < currentPlanWeekIndex();
+    const complete = actual && actual.complete;
+
+    let state = 'future';
+    if (complete) state = 'complete';
+    else if (current) state = 'current';
+    else if (past) state = 'missed';
+
+    const height = Math.max(5, Math.round((target / maximum) * 66));
+    const color = {
+      complete: 'var(--green)',
+      current: 'var(--orange)',
+      missed: 'var(--red)',
+      future: 'var(--border)'
+    }[state];
+
+    return `
+      <div class="c-bar-wrap">
+        <button
+          type="button"
+          class="c-bar"
+          data-week="${index}"
+          title="Week ${week.num}: ${actualMiles} of ${target} miles"
+          style="height:${height}px;background:${color};border:0;"
+          aria-label="Open week ${week.num}, ${actualMiles} of ${target} miles completed"
+        ></button>
+        <div class="c-num">${week.num}</div>
+      </div>
+    `;
+  }).join('');
+
+  chart.querySelectorAll('.c-bar').forEach(button => {
+    button.addEventListener('click', () => {
+      selectedPlanWeek = Number(button.dataset.week);
+      selectedPlanPhase = phaseForWeekIndex(selectedPlanWeek);
+      renderTrainingPlanBrowser();
+      document.getElementById('planBrowserTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
+function updatePlanSummary(data) {
+  const plannedMiles = plannedTrainingMiles();
+  const completedWeeks = Number(data && data.completedWeeks || 0);
+  const totalRuns = Number(data && data.totalRunsLogged || 0);
+  const totalMiles = Number(data && data.totalMilesLogged || 0);
+  const pct = Math.round((completedWeeks / TRAINING_PLAN.length) * 100);
+  const now = new Date();
+
+  document.getElementById('plannedMiles').textContent = plannedMiles;
+  document.getElementById('homePlanWeeks').textContent = TRAINING_PLAN.length;
+  document.getElementById('homePlanMiles').textContent = plannedMiles;
+
+  countUp(document.getElementById('weeksDone'), completedWeeks, 650);
+  countUp(document.getElementById('totalRuns'), totalRuns, 750);
+  countUp(document.getElementById('totalMiles'), totalMiles, 850, 1);
+
+  document.getElementById('progBarFill').style.width = `${pct}%`;
+  document.getElementById('progBarLeft').textContent =
+    `${completedWeeks} of ${TRAINING_PLAN.length} weeks complete`;
+  document.getElementById('progBarRight').textContent = `${pct}%`;
+
+  if (now < TRAINING_START) {
+    document.getElementById('progPhase').textContent = 'Pre-Plan';
+    document.getElementById('progSub').textContent =
+      'Base building now · Official plan begins September 1';
+  } else if (now < TRAINING_RACE) {
+    const index = currentPlanWeekIndex();
+    const week = TRAINING_PLAN[index];
+    const phase = TRAINING_PHASES[week.phase];
+    document.getElementById('progPhase').textContent = `${phase.name} Phase`;
+    document.getElementById('progSub').textContent =
+      `Week ${week.num} of ${TRAINING_PLAN.length} · ${plannedWeekMiles(week)} planned miles`;
+  } else {
+    document.getElementById('progPhase').textContent = 'Complete';
+    document.getElementById('progSub').textContent =
+      'The training block is complete. Race day results are in the Results section.';
+  }
+}
+
+async function loadProgress() {
+  try {
+    const response = await fetch('/api/progress', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Progress API unavailable');
+    publicProgressData = await response.json();
+  } catch (error) {
+    console.error('Progress API error:', error);
+    publicProgressData = {
+      completedWeeks: 0,
+      totalRunsLogged: 0,
+      totalMilesLogged: 0,
+      weeks: []
+    };
+  }
+
+  updatePlanSummary(publicProgressData);
+  renderCurrentWeek();
+  renderTrainingPlanBrowser();
+  renderMileageChart();
+}
+
+document.getElementById('homePlanWeeks').textContent = TRAINING_PLAN.length;
+document.getElementById('homePlanMiles').textContent = plannedTrainingMiles();
+
+function getTag(run) {
+  const name = (run.name || '').toLowerCase();
+  if (run.workout_type === 1 || name.includes('race') || name.includes('5k') || name.includes('10k')) return {cls:'tag-race', label:'🏁 Race'};
+  if (run.workout_type === 2 || name.includes('long') || (run.distance_miles >= 8)) return {cls:'tag-long', label:'Long Run'};
+  if (run.workout_type === 3 || name.includes('tempo') || name.includes('interval')) return {cls:'tag-tempo', label:'Tempo'};
+  if (name.includes('easy') || name.includes('recovery')) return {cls:'tag-easy', label:'Easy Run'};
+  return {cls:'tag-run', label:'Run'};
+}
+
+// HOME — latest activity strip
+async function loadHomeLatest() {
+  const card = document.getElementById('homeLatestCard');
+  try {
+    const res = await fetch('/api/strava/runs?limit=1');
+    if (!res.ok) throw new Error('API error');
+    const runs = await res.json();
+    if (!Array.isArray(runs) || runs.length === 0) {
+      card.innerHTML = '<div class="home-latest-empty">No runs logged yet — training starts Sep 1.</div>';
+      return;
+    }
+    const run = runs[0];
+    const date = run.date_display || new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    card.innerHTML = `
+      <div class="latest-name">${run.name}</div>
+      <div class="latest-date">${date}</div>
+      <div class="latest-stats">
+        <div><div class="latest-stat-num">${run.distance_miles}</div><div class="latest-stat-lbl">Miles</div></div>
+        <div><div class="latest-stat-num">${run.pace}</div><div class="latest-stat-lbl">Pace</div></div>
+        <div><div class="latest-stat-num">${run.moving_time}</div><div class="latest-stat-lbl">Time</div></div>
+      </div>
+    `;
+    revealObserve(document.querySelector('.latest'));
+  } catch(e) {
+    card.innerHTML = '<div class="home-latest-empty">Could not load latest activity.</div>';
+  }
+}
+
+// CINEMATIC HOME — progress preview + recent run cards
+async function loadHomeExperience() {
+  try {
+    const [runRes, progressRes] = await Promise.all([
+      fetch('/api/strava/runs?limit=8'),
+      fetch('/api/progress').catch(() => null)
+    ]);
+
+    if (runRes && runRes.ok) {
+      const runs = await runRes.json();
+      const grid = document.getElementById('homeRunGrid');
+      if (grid && Array.isArray(runs) && runs.length) {
+        grid.innerHTML = runs.slice(0,3).map(run => {
+          const date = run.date_display || new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+          return `<article class="home-run-card">
+            <div class="home-run-card-date">${date}</div>
+            <div class="home-run-card-name">${run.name || 'Run'}</div>
+            <div class="home-run-card-stats">
+              <div class="home-run-card-stat"><strong>${run.distance_miles ?? '—'}</strong><span>Miles</span></div>
+              <div class="home-run-card-stat"><strong>${run.pace ?? '—'}</strong><span>Pace</span></div>
+              <div class="home-run-card-stat"><strong>${run.moving_time ?? '—'}</strong><span>Time</span></div>
+            </div>
+          </article>`;
+        }).join('');
+      }
+    }
+
+    if (progressRes && progressRes.ok) {
+      const data = await progressRes.json();
+      const weeks = Array.isArray(data.weeks) ? data.weeks : [];
+      const completed = weeks.filter(w => w.complete).length;
+      const pct = weeks.length ? Math.round((completed / weeks.length) * 100) : 0;
+      const ring = document.getElementById('homeProgressRing');
+      const pctEl = document.getElementById('homeProgressPct');
+      if (ring) ring.style.setProperty('--p', pct + '%');
+      if (pctEl) pctEl.textContent = pct + '%';
+
+      const recent = weeks.slice(-8);
+      const max = Math.max(1, ...recent.map(w => Number(w.actualMiles || 0), Number(w.target || 0)));
+      const bars = document.getElementById('homeMileageBars');
+      if (bars) bars.innerHTML = recent.map(w => {
+        const miles = Number(w.actualMiles || 0);
+        const h = Math.max(8, Math.round((miles / max) * 170));
+        return `<div class="home-bar" style="height:${h}px" title="Week ${w.week}: ${miles} miles"><span>W${w.week}</span></div>`;
+      }).join('') || '<div class="home-latest-empty">Training data will appear here.</div>';
+      const total = recent.reduce((sum,w)=>sum+Number(w.actualMiles||0),0);
+      const totalEl = document.getElementById('homeMileageTotal');
+      if (totalEl) totalEl.textContent = total.toFixed(1) + ' mi';
+    }
+  } catch (error) {
+    const grid = document.getElementById('homeRunGrid');
+    if (grid) grid.innerHTML = '<div class="home-latest-empty">Live activity is temporarily unavailable.</div>';
+  }
+}
+
+// RUNS PAGE
+async function loadRuns() {
+  const container = document.getElementById('runsContainer');
+  try {
+    const res = await fetch('/api/strava/runs?limit=8');
+    if (!res.ok) throw new Error('API error');
+    const allRuns = await res.json();
+    if (!Array.isArray(allRuns) || allRuns.length === 0) {
+      container.innerHTML = '<div class="runs-error">No runs found yet. Connect Strava in the admin dashboard.</div>';
+      document.getElementById('paceChartContainer').innerHTML = '<div class="runs-error" style="margin:0;">No pace data yet.</div>';
+      return;
+    }
+
+    const runs = allRuns.slice(0, 5); // cards show the most recent 5
+
+    countUp(document.getElementById('totalRuns'), runs.length, 700);
+    const totalMi = runs.reduce((s,r) => s + (r.distance_miles||0), 0);
+    countUp(document.getElementById('totalMiles'), Math.round(totalMi*10)/10, 800, 1);
+
+    let out = '';
+    runs.forEach((run, idx) => {
+      const tag = getTag(run);
+      const date = run.date_display || new Date(run.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      const hasHR = run.hr_zones && run.avg_hr;
+      const runId = 'r'+idx;
+      out += '<div class="card run-card"><div class="run-top"><div class="run-left">';
+      out += '<div class="run-date">'+date+'</div><div class="run-name">'+run.name+'</div>';
+      out += '<div class="run-stats"><div><div class="rsv">'+run.distance_miles+'</div><div class="rsl">Miles</div></div>';
+      out += '<div><div class="rsv">'+run.moving_time+'</div><div class="rsl">Time</div></div>';
+      out += '<div><div class="rsv">'+run.pace+'</div><div class="rsl">Pace</div></div>';
+      if (run.elevation_ft) out += '<div><div class="rsv">'+run.elevation_ft+'ft</div><div class="rsl">Elev</div></div>';
+      out += '</div><span class="run-tag '+tag.cls+'">'+tag.label+'</span></div><div class="run-map">🏃</div></div>';
+      if (hasHR) {
+        const zones = run.hr_zones;
+        out += '<div class="hr-section"><div class="hr-top"><div class="hr-lbl">❤️ Heart Rate Zones</div>';
+        if (run.calories) out += '<span class="cal-chip">🔥 '+run.calories+' cal</span>';
+        out += '</div><div class="hr-zones" data-run="'+runId+'">';
+        const colors = ['z1','z2','z3','z4','z5'];
+        zones.forEach((z,i) => { if (z.pct > 0) out += '<div class="hz '+colors[i]+'" style="flex:'+z.pct+'"><span>'+z.pct+'%</span></div>'; });
+        out += '</div><div class="hr-tap-hint">Tap zones bar for details</div><div class="hr-tooltip" id="tt-'+runId+'">';
+        const zoneNames = ['Zone 1 · Recovery','Zone 2 · Fat Burn','Zone 3 · Aerobic','Zone 4 · Threshold','Zone 5 · Max Effort'];
+        const dotColors = ['var(--hr-z1)','var(--hr-z2)','var(--hr-z3)','var(--hr-z4)','var(--hr-z5)'];
+        zones.forEach((z,i) => { out += '<div class="hr-tooltip-row"><div class="hr-tooltip-zone"><div class="hr-tooltip-dot" style="background:'+dotColors[i]+'"></div>'+zoneNames[i]+'</div><span>'+z.pct+'%</span></div>'; });
+        out += '</div><div class="hr-meta"><span class="hr-avg">Avg HR: <strong>'+Math.round(run.avg_hr)+' bpm</strong></span>';
+        if (run.max_hr) out += '<span class="hr-max">Max HR: <strong>'+Math.round(run.max_hr)+' bpm</strong></span>';
+        out += '</div></div>';
+      }
+      out += '<a class="strava-link" href="'+run.strava_url+'" target="_blank" rel="noopener">↗ View on Strava</a></div>';
+    });
+    container.innerHTML = out;
+    runs.forEach((_,idx) => {
+      const runId = 'r'+idx;
+      const zoneBar = document.querySelector('[data-run="'+runId+'"]');
+      const tooltip = document.getElementById('tt-'+runId);
+      if (zoneBar && tooltip) zoneBar.addEventListener('click', () => tooltip.classList.toggle('show'));
+    });
+
+    buildPaceChart(allRuns);
+    revealObserve(container);
+
+  } catch(e) {
+    container.innerHTML = '<div class="runs-error">⚠️ Could not load runs from Strava. Check back soon.</div>';
+    document.getElementById('paceChartContainer').innerHTML = '<div class="runs-error" style="margin:0;">Could not load pace trend.</div>';
+  }
+}
+
+function paceToSeconds(paceStr) {
+  if (!paceStr) return null;
+  const [m, s] = paceStr.split(':').map(Number);
+  return m * 60 + (s || 0);
+}
+
+function secondsToPaceLabel(sec) {
+  const m = Math.floor(sec / 60);
+  const s = Math.round(sec % 60);
+  return m + ':' + String(s).padStart(2,'0');
+}
+
+function buildPaceChart(runsDescending) {
+  const container = document.getElementById('paceChartContainer');
+  // chart oldest -> newest, left to right
+  const runs = [...runsDescending].reverse().filter(r => r.pace);
+  if (runs.length < 2) {
+    container.innerHTML = '<div class="runs-error" style="margin:0;">Not enough runs yet for a pace trend — check back after a few more.</div>';
+    return;
+  }
+
+  const paces = runs.map(r => paceToSeconds(r.pace));
+  const minPace = Math.min(...paces);
+  const maxPace = Math.max(...paces);
+  const padding = Math.max(20, (maxPace - minPace) * 0.15);
+  const yMin = minPace - padding; // fastest (top of chart)
+  const yMax = maxPace + padding; // slowest (bottom of chart)
+
+  const W = 300, H = 100;
+  const n = runs.length;
+  const xStep = n > 1 ? W / (n - 1) : 0;
+
+  const points = runs.map((r, i) => {
+    const x = n > 1 ? i * xStep : W/2;
+    const pace = paceToSeconds(r.pace);
+    const y = ((pace - yMin) / (yMax - yMin)) * H;
+    return { x, y, run: r };
+  });
+
+  const polyPoints = points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const areaPath = `M${points.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L')} L${W},${H} L0,${H} Z`;
+
+  let circles = '';
+  let annotations = '';
+  points.forEach((p, i) => {
+    const tag = getTag(p.run);
+    const isLast = i === points.length - 1;
+    const r = isLast ? 5 : 3;
+    circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="var(--orange)"${isLast ? ' stroke="white" stroke-width="1.5"' : ''}/>`;
+    if (tag.cls === 'tag-race') {
+      circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8" fill="none" stroke="var(--red)" stroke-width="1.5"/>`;
+      annotations += `race`;
+    } else if (tag.cls === 'tag-tempo') {
+      circles += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8" fill="none" stroke="var(--purple)" stroke-width="1.5" stroke-dasharray="2,2"/>`;
+      annotations += `tempo`;
+    }
+  });
+
+  const yLabels = [yMin, (yMin+yMax)/2, yMax].map(secondsToPaceLabel);
+  const xLabels = points.map(p => {
+    const d = new Date(p.run.date);
+    return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+  });
+
+  // Show every other x label if too many points to avoid crowding
+  const xLabelsHtml = xLabels.map((l, i) => (n > 5 && i % 2 !== 0 && i !== n-1) ? '<span></span>' : `<span>${l}</span>`).join('');
+
+  container.innerHTML = `
+    <div class="pace-wrap">
+      <div class="pace-y"><span>${yLabels[2]}</span><span>${yLabels[1]}</span><span>${yLabels[0]}</span></div>
+      <div class="pace-svg-wrap">
+        <svg viewBox="0 0 ${W} ${H}" width="100%" height="100" preserveAspectRatio="none">
+          <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff5c00" stop-opacity=".18"/><stop offset="100%" stop-color="#ff5c00" stop-opacity="0"/></linearGradient></defs>
+          <line x1="0" y1="1" x2="${W}" y2="1" stroke="var(--border)" stroke-width="0.5"/>
+          <line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="var(--border)" stroke-width="0.5"/>
+          <line x1="0" y1="${H-1}" x2="${W}" y2="${H-1}" stroke="var(--border)" stroke-width="0.5"/>
+          <path d="${areaPath}" fill="url(#pg)"/>
+          <polyline points="${polyPoints}" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          ${circles}
+        </svg>
+      </div>
+      <div class="pace-x">${xLabelsHtml}</div>
+    </div>
+    <div class="pace-note">📉 Lower = faster${annotations.includes('tempo')?' · ⚡ tempo effort (purple ring)':''}${annotations.includes('race')?' · 🏁 race (red ring)':''} · from your last ${n} runs</div>
+  `;
+}
+
+// RESULTS PAGE — race cards
+let __racesCache = [];
+let __journalCache = [];
+let __allPhotosCache = [];
+
+async function loadRaces() {
+  const grid = document.getElementById('raceGrid');
+  try {
+    const [resultsRes, photosRes] = await Promise.all([
+      fetch('/api/results'),
+      fetch('/api/photos').catch(()=>null)
+    ]);
+    const results = await resultsRes.json();
+    let photos = [];
+    if (photosRes && photosRes.ok) { try { photos = await photosRes.json(); } catch(e){} }
+    __allPhotosCache = photos;
+
+    __racesCache = Array.isArray(results) ? results : [];
+
+    if (__racesCache.length === 0) {
+      grid.innerHTML = '<div class="runs-error">No races yet.</div>';
+      return;
+    }
+
+    grid.innerHTML = __racesCache.map((r, idx) => {
+      const isUpcoming = !r.chip_time || r.chip_time === 'TBD';
+      const racePhotos = photos.filter(p => p.race_id === r.id);
+      const coverPhoto = racePhotos[0];
+      const photoHtml = coverPhoto
+        ? '<img class="race-card-photo" src="'+coverPhoto.url+'" alt="'+r.race_name+'"/>'
+        : '<div class="race-card-photo-placeholder">🏁</div>';
+      const date = r.race_date ? new Date(r.race_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+      return '<div class="race-card" onclick="openRaceDetail('+idx+')">'
+        + photoHtml
+        + '<div class="race-card-gradient"></div>'
+        + '<div class="race-card-poster-body">'
+        + '<div class="race-card-name">'+r.race_name+'</div>'
+        + '<div class="race-card-loc">'+(r.location||'')+(r.location&&date?' · ':'')+date+'</div>'
+        + '<div class="race-card-chip-row">'
+        + '<div class="race-card-chip">'+(isUpcoming?'':r.chip_time)+'</div>'
+        + (r.is_pr?'<div class="race-card-pr">PR ★</div>':(isUpcoming?'<div class="race-card-upcoming-badge">Upcoming</div>':''))
+        + '</div></div></div>';
+    }).join('');
+    revealObserve(grid);
+  } catch(e) {
+    grid.innerHTML = '<div class="runs-error">Could not load races.</div>';
+  }
+}
+
+async function openRaceDetail(idx) {
+  const race = __racesCache[idx];
+  if (!race) return;
+  const overlay = document.getElementById('raceDetailOverlay');
+  document.getElementById('raceDetailTitle').textContent = race.race_name;
+  const date = race.race_date ? new Date(race.race_date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+  document.getElementById('raceDetailLoc').textContent = (race.location||'') + (race.location&&date?' · ':'') + date;
+
+  // Photos for this specific race
+  const racePhotos = __allPhotosCache.filter(p => p.race_id === race.id);
+  const bgEl = document.getElementById('raceDetailBg');
+  bgEl.style.backgroundImage = racePhotos.length ? `url('${racePhotos[0].url}')` : 'linear-gradient(135deg,#1a1208,#3d3128)';
+
+  const galleryEl = document.getElementById('raceDetailGallery');
+  galleryEl.innerHTML = racePhotos.length
+    ? racePhotos.map(p => '<img src="'+p.url+'" alt="'+(p.caption||'')+'" onclick="event.stopPropagation();document.getElementById(\'raceDetailBg\').style.backgroundImage=\'url(\\\''+p.url+'\\\')\'"/>').join('')
+    : '';
+
+  // Stats
+  const statsEl = document.getElementById('raceDetailStats');
+  const isUpcoming = !race.chip_time || race.chip_time === 'TBD';
+  let statsHtml = '';
+  if (!isUpcoming) {
+    statsHtml += '<div class="race-detail-stat"><div class="race-detail-stat-num">'+race.chip_time+'</div><div class="race-detail-stat-lbl">Chip Time</div></div>';
+    if (race.overall_place) statsHtml += '<div class="race-detail-stat"><div class="race-detail-stat-num">'+race.overall_place+'/'+race.overall_total+'</div><div class="race-detail-stat-lbl">Overall</div></div>';
+    if (race.ag_place) statsHtml += '<div class="race-detail-stat"><div class="race-detail-stat-num">'+race.ag_place+'/'+race.ag_total+'</div><div class="race-detail-stat-lbl">Age Group</div></div>';
+  } else {
+    statsHtml += '<div class="race-detail-stat"><div class="race-detail-stat-num">TBD</div><div class="race-detail-stat-lbl">Upcoming Race</div></div>';
+  }
+  statsEl.innerHTML = statsHtml;
+
+  // Registration link — only relevant for upcoming races
+  const existingRegLink = document.getElementById('raceDetailRegLink');
+  if (existingRegLink) existingRegLink.remove();
+  if (isUpcoming && race.registration_link) {
+    const regLinkEl = document.createElement('a');
+    regLinkEl.id = 'raceDetailRegLink';
+    regLinkEl.href = race.registration_link;
+    regLinkEl.target = '_blank';
+    regLinkEl.rel = 'noopener';
+    regLinkEl.style.cssText = 'display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--orange);text-decoration:none;margin-bottom:20px;';
+    regLinkEl.innerHTML = '↗ Register for this race';
+    statsEl.insertAdjacentElement('afterend', regLinkEl);
+  }
+
+  // Journal entries mentioning this race
+  try {
+    if (!__journalCache.length) {
+      const jRes = await fetch('/api/posts');
+      __journalCache = jRes.ok ? await jRes.json() : [];
+    }
+    const raceKeyword = race.race_name ? race.race_name.toLowerCase().split(' ')[0] : '';
+    const matched = __journalCache.filter(p =>
+      (p.title && raceKeyword && p.title.toLowerCase().includes(raceKeyword)) ||
+      (p.body && raceKeyword && p.body.toLowerCase().includes(raceKeyword))
+    );
+    const jEl = document.getElementById('raceDetailJournal');
+    if (matched.length) {
+      jEl.innerHTML = matched.map(p => {
+        const body = (p.body||'').split('\n\n').map(para => '<p>'+para+'</p>').join('');
+        return '<div class="race-detail-journal-card"><div class="race-detail-journal-title">'+p.title+'</div><div class="race-detail-journal-body">'+body+'</div></div>';
+      }).join('');
+    } else {
+      jEl.innerHTML = '<div class="race-detail-empty">No journal entry for this race yet.</div>';
+    }
+  } catch(e) {}
+
+  overlay.classList.add('open');
+  window.scrollTo({top:0, behavior:'instant'});
+}
+window.openRaceDetail = openRaceDetail;
+
+function closeRaceDetail() {
+  document.getElementById('raceDetailOverlay').classList.remove('open');
+}
+window.closeRaceDetail = closeRaceDetail;
+
+// JOURNAL PAGE
+async function loadJournal() {
+  const container = document.getElementById('journalContainer');
+  try {
+    const res = await fetch('/api/posts');
+    const posts = await res.json();
+    __journalCache = Array.isArray(posts) ? posts : [];
+    if (!__journalCache.length) {
+      container.innerHTML = '<div class="runs-error">No journal posts yet.</div>';
+      return;
+    }
+    container.innerHTML = __journalCache.map(p => {
+      const date = new Date(p.created_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+      const body = (p.body||'').split('\n\n').map(para => '<p>'+para+'</p>').join('');
+      return '<div class="card j-card"><div class="j-meta">'
+        +'<img class="j-avatar" src="data:image/jpeg;base64,'+window.__PHOTO_B64__+'" alt="Jonathan West"/>'
+        +'<div><div class="j-author">Jonathan West</div><div class="j-date">'+date+'</div></div>'
+        +'<div class="j-tag">'+p.tag+'</div></div>'
+        +'<div class="j-title">'+p.title+'</div><div class="j-body">'+body+'</div>'
+        +(p.run_miles||p.run_time||p.avg_hr?'<div class="j-footer">'
+          +(p.run_miles?'<span class="j-stat"><span>'+p.run_miles+'</span> mi</span>':'')
+          +(p.run_time?'<span class="j-stat"><span>'+p.run_time+'</span></span>':'')
+          +(p.avg_hr?'<span class="j-stat"><span>'+p.avg_hr+' bpm</span> avg HR</span>':'')
+          +(p.calories?'<span class="j-stat"><span>'+p.calories+'</span> cal</span>':'')
+          +'</div>':'')
+        +'</div>';
+    }).join('');
+    revealObserve(container);
+  } catch(e) {
+    container.innerHTML = '<div class="runs-error">Could not load journal posts.</div>';
+  }
+}
+
+// PHOTOS PAGE
+async function loadPhotosPage() {
+  const container = document.getElementById('photosPageContainer');
+  try {
+    const res = await fetch('/api/photos');
+    const photos = res.ok ? await res.json() : [];
+    if (!Array.isArray(photos) || photos.length === 0) {
+      container.innerHTML = '<div class="photos-empty"><div class="photos-empty-icon">📸</div>No photos yet. Upload some from the admin dashboard.</div>';
+      return;
+    }
+    container.innerHTML = '<div class="photo-grid-page">' + photos.map(p =>
+      '<div class="photo-cell-page"><img src="'+p.url+'" alt="'+(p.caption||'')+'" loading="lazy"/>'
+      + (p.caption ? '<div class="photo-caption-page"><span>'+p.caption+'</span></div>' : '')
+      + '</div>'
+    ).join('') + '</div>';
+    document.querySelectorAll('.photo-cell-page').forEach(cell => {
+      cell.addEventListener('click', () => {
+        document.querySelectorAll('.photo-cell-page').forEach(c => { if(c!==cell) c.classList.remove('tapped'); });
+        cell.classList.toggle('tapped');
+      });
+    });
+    revealObserve(container);
+  } catch(e) {
+    container.innerHTML = '<div class="runs-error">Could not load photos.</div>';
+  }
+}
+</script>
+
+</body>
+</html>
