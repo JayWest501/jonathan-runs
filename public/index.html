@@ -734,20 +734,35 @@ document.addEventListener('click', e => { if (!hamBtn.contains(e.target) && !mob
 
 // PAGE NAVIGATION (SPA)
 const pages = ['home','progress','runs','results','journal','gear','photos'];
-let currentPage = 'home';
-function goToPage(pageId) {
-  if (!pages.includes(pageId)) return;
+let currentPage = null;
+
+function showPage(pageId, addToHistory = true) {
+  if (!pages.includes(pageId)) pageId = 'home';
+
+  const pageChanged = currentPage !== pageId;
   currentPage = pageId;
+
   pages.forEach(p => {
-    document.getElementById('page-'+p).classList.toggle('active', p === pageId);
+    document.getElementById('page-' + p).classList.toggle('active', p === pageId);
   });
+
   document.querySelectorAll('.nav-links button, .mobile-menu button').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.page === pageId);
   });
+
   updateNavIndicator();
   mobileMenu.classList.remove('open');
-  window.scrollTo({top:0, behavior:'instant'});
-  try { history.replaceState(null, '', '#'+pageId); } catch(e){}
+
+  if (pageChanged) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  if (addToHistory && pageChanged) {
+    try {
+      history.pushState({ page: pageId }, '', '#' + pageId);
+    } catch (e) {}
+  }
+
   // Lazy-load content per page
   if (pageId === 'progress' && !window.__progressLoaded) { loadProgress(); window.__progressLoaded = true; }
   if (pageId === 'runs' && !window.__runsLoaded) { loadRuns(); window.__runsLoaded = true; }
@@ -756,7 +771,22 @@ function goToPage(pageId) {
   if (pageId === 'gear') { loadGearPage(); }
   if (pageId === 'photos' && !window.__photosLoaded) { loadPhotosPage(); window.__photosLoaded = true; }
 }
+
+function goToPage(pageId) {
+  showPage(pageId, true);
+}
+
 window.goToPage = goToPage;
+
+window.addEventListener('popstate', event => {
+  const statePage = event.state && event.state.page;
+  const hashPage = window.location.hash.replace('#', '');
+  const pageId = pages.includes(statePage)
+    ? statePage
+    : (pages.includes(hashPage) ? hashPage : 'home');
+
+  showPage(pageId, false);
+});
 
 // NAV SLIDING INDICATOR
 function updateNavIndicator() {
@@ -821,11 +851,16 @@ function revealObserve(root) {
   });
 }
 
-// Init page from hash
+// Init page from the URL without adding a duplicate history entry
 (function initPage() {
-  const hash = window.location.hash.replace('#','');
-  if (pages.includes(hash)) goToPage(hash);
-  else goToPage('home');
+  const hash = window.location.hash.replace('#', '');
+  const firstPage = pages.includes(hash) ? hash : 'home';
+
+  try {
+    history.replaceState({ page: firstPage }, '', '#' + firstPage);
+  } catch (e) {}
+
+  showPage(firstPage, false);
 })();
 loadHomeLatest();
 loadHomeExperience();
